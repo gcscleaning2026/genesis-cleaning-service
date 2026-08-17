@@ -6,6 +6,9 @@ import React from 'react';
 // into the HTML, this component never renders it, so the ~96 KB string stays out of
 // the browser bundle.
 import { ES as ES_DICT, HEAD as HEAD_META } from '@/lib/i18n';
+// The card template lives in lib/review-card.ts because the server renders approved
+// reviews into the static HTML with the same function.
+import { renderTrack } from '@/lib/review-card';
 
 // This component renders nothing. Everything below the fold already exists as real DOM
 // by the time it mounts — the server wrote it — so the runtime's job is the behaviour
@@ -31,43 +34,6 @@ function loadMotion() {
   );
 }
 
-const REVIEW_CARD = `<article style="flex:0 0 clamp(280px,74vw,352px);display:flex;flex-direction:column">
-            <div style="position:relative;background:#fff;border:1px solid #E3ECF3;border-radius:20px;padding:26px 26px 28px;box-shadow:0 10px 30px rgba(11,30,78,.06)">
-              <svg class="gi" aria-hidden="true" style="width:24px;height:24px;color:#8FD4EE"><use href="#i-fill-quotes"/></svg>
-              <p style="font-size:15.5px;line-height:1.62;color:#2A3A60;margin:12px 0 0">{{ r.c }}</p>
-              <span aria-hidden="true" style="position:absolute;left:36px;bottom:-9px;width:16px;height:16px;background:#fff;border-right:1px solid #E3ECF3;border-bottom:1px solid #E3ECF3;transform:rotate(45deg)"></span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:9px;padding:24px 0 0 36px">
-              <div role="img" aria-label="{{ r.aria }}" style="position:relative;display:inline-flex;align-self:flex-start;flex:0 0 auto">
-              <div style="display:flex;gap:3px;color:#DAE4EC;width:max-content">
-                <svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg>
-              </div>
-              <div style="position:absolute;top:0;left:0;bottom:0;overflow:hidden;width:{{ r.pct }}">
-                <div style="display:flex;gap:3px;color:#F5A623;width:max-content">
-                  <svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg><svg class="gi" aria-hidden="true" style="width:16px;height:16px"><use href="#i-fill-star"/></svg>
-                </div>
-              </div>
-            </div>
-              <p style="font-family:Outfit,sans-serif;font-size:15.5px;font-weight:700;color:#0B1E4E;margin:0">{{ r.n }}</p>
-            </div>
-          </article>`;
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
-
-function renderReviewCard(r) {
-  return REVIEW_CARD
-    .replaceAll('{{ r.c }}', escapeHtml(r.c))
-    .replaceAll('{{ r.n }}', escapeHtml(r.n))
-    .replaceAll('{{ r.aria }}', escapeHtml(r.aria))
-    .replaceAll('{{ r.pct }}', escapeHtml(r.pct));
-}
 
 class GenesisSite extends React.Component {
   state = { lang: 'en', reviews: [] };
@@ -1121,12 +1087,10 @@ class GenesisSite extends React.Component {
   updateReviewMarkup() {
     const track = document.getElementById('gcs-track');
     if (!track) return;
-    const all = this.state.reviews.concat(this.SAMPLES).map(v => {
-      const r = Math.max(0, Math.min(5, v.r == null ? 5 : v.r));
-      return { n: v.n, c: v.c, pct: (r / 5 * 100) + '%', aria: r + ' / 5' };
-    });
-    const once = all.map(renderReviewCard).join('');
-    track.innerHTML = once + once;
+    const all = this.state.reviews
+      .concat(this.SAMPLES)
+      .map(v => ({ name: v.n, comment: v.c, rating: v.r == null ? 5 : v.r }));
+    track.innerHTML = renderTrack(all);
   }
 
   // Nothing to render: the shell and every node inside it were written by the server.
