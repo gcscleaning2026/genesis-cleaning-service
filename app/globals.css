@@ -51,6 +51,7 @@ input::placeholder,textarea::placeholder{color:#5A6A8C;opacity:1}
 [data-navlink]::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;border-radius:2px;background:#007AA8;transform:scaleX(0);transform-origin:50% 50%;transition:transform .45s cubic-bezier(.22,1,.36,1)}
 [data-navlink="dark"]::after{background:#4FD3F5;bottom:-5px}
 [data-navlink]:hover::after,[data-navlink]:focus-visible::after{transform:scaleX(1)}
+footer [data-navlink]:hover:not(:focus-visible)::after{transform:scaleX(0);transition:none}
 /* mix-blend-mode on a fixed full-viewport layer makes the compositor blend the whole
    viewport against everything beneath it on every frame, and blocks straightforward
    layer promotion for the content underneath. Plain alpha at a slightly lower opacity
