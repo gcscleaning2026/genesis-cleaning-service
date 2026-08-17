@@ -38,16 +38,6 @@ function loadMotion() {
 class GenesisSite extends React.Component {
   state = { lang: 'en', reviews: [] };
 
-  // PLACEHOLDER testimonials — replace with real customer reviews before launch.
-  SAMPLES = [
-    { n: 'Yesenia M.', r: 5, c: 'They cleaned the whole apartment before we moved in. Even the window tracks were spotless, and booking took one WhatsApp message.' },
-    { n: 'Daniel R.', r: 5, c: 'We use GCS every two weeks for the office. Always on time, and the kitchen and bathrooms are ready before staff arrive.' },
-    { n: 'Carla V.', r: 4.5, c: 'Después de la remodelación había polvo por todas partes. Lo dejaron impecable en un solo día.' },
-    { n: 'Michael T.', r: 5, c: 'Careful work on the hardwood floors and baseboards. They moved furniture back exactly where it was.' },
-    { n: 'Rosa E.', r: 5, c: 'Limpiaron las ventanas por dentro y por fuera. Ahora entra muchísima más luz en la casa.' },
-    { n: 'Priya N.', r: 4.5, c: 'Straightforward quote, no surprises, and the team was easy to talk to throughout the job.' }
-  ];
-
   ES = ES_DICT;
 
   WA = {
@@ -92,12 +82,29 @@ class GenesisSite extends React.Component {
         this.basePh[el.getAttribute('data-i18n-ph')] = el.getAttribute('placeholder');
       });
     }
-    this.EN_MSG = { 'rev.err': 'Please add your name and a short comment.' };
+    // Status messages have no element in SITE_HTML to read English from, so they live here.
+    this.EN_MSG = {
+      'rev.err': 'Please add your name and a short comment.',
+      'rev.err.words': 'Please write between 8 and 80 words.',
+      'rev.err.profanity': 'Please rewrite your comment without offensive language.',
+      'rev.err.links': 'Links and email addresses are not allowed in reviews.',
+      'rev.err.rate': 'You have already sent a review recently. Please try again later.',
+      'rev.err.bot': 'We could not verify this submission. Please try again.',
+      'rev.err.network': 'We could not send your review. Please try again.',
+      'rev.thanks': 'Thank you. Your review will appear once the owner approves it.'
+    };
     this.rating = 5;
 
-    let stored = [];
-    try { stored = JSON.parse(localStorage.getItem('gcs-reviews') || '[]'); } catch (e) {}
-    if (Array.isArray(stored) && stored.length) this.setState({ reviews: stored });
+    // Approved reviews are already in the DOM; this seed is what the strip is rebuilt from
+    // after a language switch. Submitted reviews are pending, so they are not in it.
+    let seeded = [];
+    try { seeded = JSON.parse(document.getElementById('gcs-reviews')?.textContent || '[]'); } catch (e) {}
+    if (Array.isArray(seeded) && seeded.length) {
+      // componentDidUpdate rebuilds #gcs-track from this, which reproduces the markup the
+      // server already wrote — same cards, same order, so nothing visibly changes.
+      this.reviewCount = seeded.length;
+      this.setState({ reviews: seeded });
+    }
 
     this.onKey = (e) => {
       if (e.key !== 'Escape') return;
@@ -230,6 +237,7 @@ class GenesisSite extends React.Component {
     if (this.lenis) { open ? this.lenis.stop() : this.lenis.start(); }
 
     if (open) {
+      this.modalOpenedAt = Date.now();
       const msg = document.getElementById('rev-msg');
       if (msg) msg.style.display = 'none';
       this.paintStars();
@@ -1084,13 +1092,11 @@ class GenesisSite extends React.Component {
     if (typeof fn === 'function') fn(e);
   };
 
+  // The server already wrote these cards; this only runs when the list itself changes.
   updateReviewMarkup() {
     const track = document.getElementById('gcs-track');
     if (!track) return;
-    const all = this.state.reviews
-      .concat(this.SAMPLES)
-      .map(v => ({ name: v.n, comment: v.c, rating: v.r == null ? 5 : v.r }));
-    track.innerHTML = renderTrack(all);
+    track.innerHTML = renderTrack(this.state.reviews);
   }
 
   // Nothing to render: the shell and every node inside it were written by the server.
@@ -1098,43 +1104,72 @@ class GenesisSite extends React.Component {
     return null;
   }
 
+  // Looks a status message up in the active language, falling back to the English table.
+  text(key) {
+    if (this.state.lang === 'es' && this.ES[key] != null) return this.ES[key];
+    return this.EN_MSG?.[key] ?? this.base?.[key] ?? '';
+  }
+
   renderVals() {
-    const all = this.state.reviews.concat(this.SAMPLES);
     return {
-      marquee: all.map(v => {
-        const r = Math.max(0, Math.min(5, v.r == null ? 5 : v.r));
-        return { n: v.n, c: v.c, pct: (r / 5 * 100) + '%', aria: r + ' / 5' };
-      }),
       openModal: () => this.toggleModal(true),
       closeModal: () => this.toggleModal(false),
       setStar: (e) => {
         this.rating = parseInt(e.currentTarget.getAttribute('data-star'), 10) || 5;
         this.paintStars();
       },
-      submitReview: (e) => {
+      submitReview: async (e) => {
         e.preventDefault();
         const nameEl = document.getElementById('rev-name');
         const textEl = document.getElementById('rev-text');
         const n = (nameEl.value || '').trim();
         const c = (textEl.value || '').trim();
-        if (n.length < 2 || c.length < 4) {
+        const button = e.target.querySelector('button[type="submit"]');
+        const show = (key) => {
           const msg = document.getElementById('rev-msg');
-          if (msg) {
-            msg.textContent = this.state.lang === 'es' ? this.ES['rev.err'] : this.EN_MSG['rev.err'];
-            msg.style.display = 'block';
+          if (!msg) return;
+          msg.textContent = this.text(key);
+          msg.style.display = 'block';
+        };
+
+        if (button) button.disabled = true;
+        try {
+          const response = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: n,
+              comment: c,
+              rating: this.rating || 5,
+              lang: this.state.lang,
+              website: document.getElementById('rev-website')?.value || '',
+              elapsedMs: Date.now() - (this.modalOpenedAt || 0)
+            })
+          });
+          const data = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            const MESSAGE = {
+              words: 'rev.err.words', length: 'rev.err.words', profanity: 'rev.err.profanity',
+              shouting: 'rev.err.profanity', links: 'rev.err.links', name: 'rev.err',
+              rating: 'rev.err', rate: 'rev.err.rate', bot: 'rev.err.bot'
+            };
+            show(MESSAGE[data.reason] || 'rev.err.network');
+            return;
           }
-          return;
+
+          nameEl.value = '';
+          textEl.value = '';
+          this.rating = 5;
+          // The review is pending: it joins the strip only after the owner approves it and
+          // the page revalidates, so nothing is added to state here.
+          show('rev.thanks');
+          setTimeout(() => this.toggleModal(false), 2200);
+        } catch (err) {
+          show('rev.err.network');
+        } finally {
+          if (button) button.disabled = false;
         }
-        const r = this.rating || 5;
-        const next = [{ n: n, c: c, r: r }].concat(this.state.reviews).slice(0, 30);
-        this.setState({ reviews: next });
-        try { localStorage.setItem('gcs-reviews', JSON.stringify(next)); } catch (err) {}
-        const body = (this.state.lang === 'es' ? 'Reseña de ' : 'Review from ') + n + ' (' + r + '/5): ' + c;
-        window.open('https://wa.me/19083383160?text=' + encodeURIComponent(body), '_blank', 'noopener');
-        nameEl.value = '';
-        textEl.value = '';
-        this.rating = 5;
-        this.toggleModal(false);
       },
       setEn: () => this.setState({ lang: 'en' }),
       setEs: () => this.setState({ lang: 'es' }),

@@ -579,13 +579,17 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
     </div>
     <div style="display:grid;gap:8px">
       <label for="rev-text" style="font-size:13px;font-weight:700;color:#0B1E4E" data-i18n="rev.comment">Your review</label>
-      <textarea id="rev-text" name="comment" rows="4" maxlength="400" data-i18n-ph="rev.commentPh" placeholder="Tell us how the cleaning went." style="font-family:Manrope,sans-serif;font-size:15.5px;line-height:1.55;color:#12203F;padding:14px 16px;border:1.5px solid #6E93B4;border-radius:14px;background:#fff;width:100%;resize:vertical"></textarea>
+      <textarea id="rev-text" name="comment" rows="4" maxlength="500" data-i18n-ph="rev.commentPh" placeholder="Tell us how the cleaning went." style="font-family:Manrope,sans-serif;font-size:15.5px;line-height:1.55;color:#12203F;padding:14px 16px;border:1.5px solid #6E93B4;border-radius:14px;background:#fff;width:100%;resize:vertical"></textarea>
+    </div>
+    <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden">
+      <label for="rev-website">Website</label>
+      <input id="rev-website" name="website" type="text" tabindex="-1" autocomplete="off">
     </div>
     <p id="rev-msg" role="status" style="display:none;font-size:14px;line-height:1.5;margin:0;color:#B4225F"></p>
     <button type="submit" data-cta-solid="1" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;cursor:pointer;font-family:Manrope,sans-serif;background:#D42A80;color:#fff;font-weight:700;font-size:15.5px;padding:16px 26px;border-radius:999px;box-shadow:0 8px 22px rgba(212,42,128,.3)">
       <svg class="gi" aria-hidden="true" style="width:18px;height:18px"><use href="#i-bold-paper-plane-tilt"/></svg><span data-i18n="rev.submit">Send review</span>
     </button>
-    <p style="font-size:13px;line-height:1.5;color:#5A6A8C;margin:0" data-i18n="rev.note">Your review is added here and sent to Genesis on WhatsApp.</p>
+    <p style="font-size:13px;line-height:1.5;color:#5A6A8C;margin:0" data-i18n="rev.note">Reviews are published after Genesis approves them. 8 to 80 words.</p>
   </form>
 </div>
 

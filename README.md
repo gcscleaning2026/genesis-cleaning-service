@@ -61,8 +61,9 @@ editing.
 
 ## Before final public launch
 
-- **Testimonials are placeholders.** Replace them with approved real customer reviews
-  before publishing, and do not add `Review`/`AggregateRating` schema until they are real.
+- **Testimonials come from the moderation queue.** The placeholder samples were removed; the
+  strip is empty until the first real review is approved on /admin. Do not add
+  `Review`/`AggregateRating` schema until several real reviews are published.
 - **Location data is generic.** The site says "New Jersey" because no city, street address
   or business hours were supplied. Add the real service area, address and hours to the copy
   and the JSON-LD; a local cleaning business cannot rank locally without them. Claiming and

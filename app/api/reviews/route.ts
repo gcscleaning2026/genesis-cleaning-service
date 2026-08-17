@@ -5,6 +5,21 @@ import { notifyOwnerOfPendingReview } from '@/lib/notify';
 import { countRecentByIp, hashIp, insertPending } from '@/lib/reviews-repo';
 import { submissionVerdict } from './verdict';
 
+/**
+ * BotID needs Vercel's OIDC header, so `checkBotId()` throws on a local `next start` and
+ * whenever the service itself is unavailable. Blocking every review in that case is worse
+ * than letting it through: the honeypot, the timing check, the per-IP rate limit and the
+ * moderation rules all still apply, and nothing is published without the owner's approval.
+ */
+async function detectBot() {
+  try {
+    return (await checkBotId()).isBot;
+  } catch (error) {
+    console.error('[reviews] BotID check unavailable, falling through to the other checks', error);
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
   try {
@@ -13,7 +28,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: false, reason: 'length' }, { status: 400 });
   }
 
-  const verification = await checkBotId();
+  const isBot = await detectBot();
 
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
   const ipHash = hashIp(ip);
@@ -26,7 +41,7 @@ export async function POST(request: NextRequest) {
     console.error('[reviews] rate-limit lookup failed', error);
   }
 
-  const verdict = submissionVerdict({ body, isBot: verification.isBot, recentFromIp });
+  const verdict = submissionVerdict({ body, isBot, recentFromIp });
   if (verdict.status !== 201) return NextResponse.json(verdict.body, { status: verdict.status });
 
   let id: number;
