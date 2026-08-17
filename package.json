@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "images": "node scripts/images.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "email:test": "node --env-file=.env.local scripts/test-email.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
