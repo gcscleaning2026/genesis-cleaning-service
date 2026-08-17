@@ -179,7 +179,8 @@ class GenesisSite extends React.Component {
       const lift = soft ? -5 : -3;
       const grow = soft ? 1.008 : 1.022;
       const kids = Array.from(el.children);
-      const icon = kids.find(k => k.tagName === 'I');
+      // Same icon migration as paintStars(): the button's icon is an <svg> sprite now.
+      const icon = kids.find(k => k.tagName === 'svg' || k.tagName === 'SVG' || k.tagName === 'I');
       const rest = kids.filter(k => k !== icon);
       const D = { duration: 0.55, ease: 'power3.out' };
 
@@ -335,7 +336,10 @@ class GenesisSite extends React.Component {
     const r = this.rating || 5;
     document.querySelectorAll('[data-star]').forEach(btn => {
       const v = parseInt(btn.getAttribute('data-star'), 10);
-      const icon = btn.querySelector('i');
+      // Icons are inline <svg><use> sprites, not the <i> webfont elements this used to
+      // read. Looking for <i> found nothing, so every click set this.rating correctly and
+      // then repainted nothing — the widget looked frozen.
+      const icon = btn.querySelector('svg, i');
       if (icon) icon.style.color = v <= r ? '#F5A623' : '#DAE4EC';
       btn.setAttribute('aria-pressed', String(v === r));
     });
@@ -1011,7 +1015,7 @@ class GenesisSite extends React.Component {
     }
 
     const parts = blocks.map((b) => {
-      const icon = b.querySelector('i');
+      const icon = b.querySelector('svg, i');
       const head = b.querySelector('h3');
       const body = b.querySelector('p');
 
