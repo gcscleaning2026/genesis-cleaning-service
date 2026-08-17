@@ -1,0 +1,95 @@
+/* Fonts and icons are self-hosted on purpose. The page previously pulled a Google
+   Fonts stylesheet and two @phosphor-icons stylesheets from unpkg — three
+   render-blocking requests to two third-party origins, plus two icon webfonts for
+   23 glyphs. Fonts are now two variable woff2 files (latin subset) served from our
+   own origin, and the icons are an inline <symbol> sprite at the top of SITE_HTML. */
+@font-face{font-family:'Outfit';font-style:normal;font-weight:400 800;font-display:swap;src:url('/assets/fonts/outfit-latin-var.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Manrope';font-style:normal;font-weight:400 700;font-display:swap;src:url('/assets/fonts/manrope-latin-var.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* Icon glyphs come from <use href="#i-..."> against that sprite. currentColor keeps
+   the old `color:` inline styles working unchanged. */
+.gi{display:inline-block;flex:0 0 auto;vertical-align:-.135em;fill:currentColor}
+/* Section headings that the layout does not show but the document outline needs, so
+   headings stay in sequential order for screen readers and crawlers. */
+.gcs-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+html.lenis,html.lenis body{height:auto}
+html.lenis{scroll-behavior:auto}
+html.gcs-anim [data-reveal],html.gcs-anim [data-val]{opacity:0}
+html.gcs-anim [data-clip]{clip-path:inset(0 0 100% 0)}
+
+/* The hero entrance is CSS, not GSAP, and deliberately so: `[data-anim]` used to be
+   pre-hidden by the `gcs-anim` class and only revealed once the motion bundle had
+   downloaded, parsed and built its timeline. That put the largest text block in the
+   viewport behind JavaScript and pinned LCP at ~2.8s on mobile. These animations start
+   the moment the stylesheet is parsed, so the hero paints with the first frame.
+   Keep the hero's delays short — an element at opacity 0 is not eligible for LCP, so
+   every 100ms of delay on [data-anim="sub"] is 100ms straight onto the metric. */
+@keyframes gcs-rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes gcs-word{from{transform:translateY(120%)}to{transform:none}}
+@keyframes gcs-zoom{from{transform:scale(1.045)}to{transform:none}}
+[data-anim="eyebrow"]{animation:gcs-rise .7s cubic-bezier(.22,1,.36,1) both}
+[data-anim="sub"]{animation:gcs-rise .8s cubic-bezier(.22,1,.36,1) .05s both}
+[data-anim="cta"]{animation:gcs-rise .8s cubic-bezier(.22,1,.36,1) .2s both}
+[data-anim="img"]{animation:gcs-zoom 1.1s cubic-bezier(.16,1,.3,1) both}
+/* Words are split at build time (scripts/prerender.mjs) and carry their own index, so
+   the stagger needs no JavaScript either. */
+[data-anim="h1"] [data-w] > span{animation:gcs-word .95s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(.06s + var(--i,0) * .055s)}
+@media (prefers-reduced-motion:reduce){
+  [data-anim="eyebrow"],[data-anim="sub"],[data-anim="cta"]{animation-duration:.45s;animation-delay:0s;animation-name:gcs-fade}
+  [data-anim="img"]{animation:none}
+  [data-anim="h1"] [data-w] > span{animation:none}
+}
+@keyframes gcs-fade{from{opacity:0}to{opacity:1}}
+/* Word/line masks: the text rises from behind these, so they must clip. Horizontal
+   padding with matching negative margin keeps glyph overhang from being sheared off. */
+[data-val-mask]{display:block;overflow:hidden;padding:0 .12em;margin:0 -.12em}
+input::placeholder,textarea::placeholder{color:#5A6A8C;opacity:1}
+[data-marq-wrap]{overflow:hidden}
+@media (prefers-reduced-motion:reduce){[data-marq-wrap]{overflow-x:auto}}
+[data-navlink]{position:relative}
+[data-navlink]::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;border-radius:2px;background:#007AA8;transform:scaleX(0);transform-origin:50% 50%;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+[data-navlink="dark"]::after{background:#4FD3F5;bottom:-5px}
+[data-navlink]:hover::after,[data-navlink]:focus-visible::after{transform:scaleX(1)}
+/* mix-blend-mode on a fixed full-viewport layer makes the compositor blend the whole
+   viewport against everything beneath it on every frame, and blocks straightforward
+   layer promotion for the content underneath. Plain alpha at a slightly lower opacity
+   reads the same at 128px tile size. */
+#gcs-grain{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:.035;background-image:url("/assets/grain.webp");background-size:128px 128px;transform:translateZ(0);will-change:transform;contain:strict}
+body{margin:0;background:#FBFDFE;color:#12203F;font-family:Manrope,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#0E4FA8;text-decoration:none}
+a:hover{color:#00A9E0}
+:focus-visible{outline:3px solid #007AA8;outline-offset:3px;border-radius:10px}
+footer :focus-visible,[style*="#0A1A45"] :focus-visible,[style*="#071336"] :focus-visible{outline-color:#4FD3F5}
+[data-mob]{display:none}
+[data-mobilebar]{display:none}
+@media (max-width:1024px){
+[data-desk]{display:none!important}
+[data-mob]{display:flex!important}
+[data-split]{grid-template-columns:1fr!important}
+[data-bento]{grid-template-columns:1fr!important}
+[data-bento]>*{grid-row:auto!important;grid-column:auto!important}
+[data-mobilebar]{display:grid!important}
+[data-pagepad]{padding-bottom:65px!important;background:#071336}
+}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* These three animate continuously while scrolling, so permanent layer promotion pays
+   for itself. Do NOT add will-change to [data-reveal]/[data-clip]: those animate once
+   on entry, and promoting every one of them wastes GPU memory for the whole session. */
+[data-depth-image]{display:block;width:100%;height:100%;object-fit:cover;will-change:transform}
+#gcs-track{will-change:transform}
+[data-blob]{will-change:transform}
+#root{min-height:100%}
+.gcs-shell{min-height:100%}
+
+[style-hover="background:rgba(255,255,255,.09);border-color:rgba(79,211,245,.5)"]:hover{background:rgba(255,255,255,.09);border-color:rgba(79,211,245,.5)}
+[style-hover="border-color:#00A9E0;transform:translateY(-2px)"]:hover{border-color:#00A9E0;transform:translateY(-2px)}
+[style-hover="border-color:#4FD3F5;transform:translateY(-2px)"]:hover{border-color:#4FD3F5;transform:translateY(-2px)}
+[style-hover="transform:translateY(-1px);box-shadow:0 10px 24px rgba(212,42,128,.4)"]:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(212,42,128,.4)}
+[style-hover="transform:translateY(-2px)"]:hover{transform:translateY(-2px)}
+[style-hover="transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.32)"]:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.32)}
+[style-hover="transform:translateY(-2px);box-shadow:0 14px 32px rgba(212,42,128,.42)"]:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(212,42,128,.42)}
+[style-hover="transform:translateY(-4px);box-shadow:0 20px 44px rgba(11,30,78,.12)"]:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(11,30,78,.12)}
+[style-active="transform:translateY(1px)"]:active{transform:translateY(1px)}
