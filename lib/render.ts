@@ -12,6 +12,7 @@
  */
 import { SITE_HTML } from './site-content';
 import { ES, WA_TEXT, type Lang } from './i18n';
+import { renderTrack, type CardReview } from './review-card';
 
 export type I18nSeed = {
   /** [data-i18n] text content, keyed by i18n key. */
@@ -106,7 +107,36 @@ const PAGES: Record<Lang, string> = {
   es: splitHeroWords(translate(SITE_HTML))
 };
 
-/** Full page markup for one language, ready for the shell's innerHTML. */
-export function pageHtml(lang: Lang) {
-  return PAGES[lang];
+// The marquee is the one part of SITE_HTML that is not static: it is written per render
+// from the approved reviews, so the cards are in the HTML crawlers receive rather than
+// being injected by JavaScript afterwards. The cards contain nested <div>s, so the close
+// tag is found by counting depth rather than with a lazy regex.
+const TRACK_OPEN = '<div id="gcs-track"';
+
+function injectTrack(html: string, reviews: CardReview[]) {
+  const start = html.indexOf(TRACK_OPEN);
+  if (start === -1) throw new Error('[render] #gcs-track not found');
+  const innerStart = html.indexOf('>', start) + 1;
+
+  let depth = 1;
+  let i = innerStart;
+  while (depth > 0) {
+    const nextOpen = html.indexOf('<div', i);
+    const nextClose = html.indexOf('</div>', i);
+    if (nextClose === -1) throw new Error('[render] #gcs-track is never closed');
+    if (nextOpen !== -1 && nextOpen < nextClose) {
+      depth++;
+      i = nextOpen + 4;
+    } else {
+      depth--;
+      i = nextClose + 6;
+    }
+  }
+  const innerEnd = i - 6;
+  return html.slice(0, innerStart) + renderTrack(reviews) + html.slice(innerEnd);
+}
+
+/** Full page markup for one language, with the approved reviews already in the strip. */
+export function pageHtml(lang: Lang, reviews: CardReview[]) {
+  return injectTrack(PAGES[lang], reviews);
 }
