@@ -32,6 +32,10 @@ export const config: VercelConfig = {
       maxAge: '1year',
       immutable: true
     }),
+    // The queue and the submission endpoint are per-request and per-session: nothing about
+    // them may be held in a shared cache.
+    routes.header('/admin/(.*)', [{ key: 'Cache-Control', value: 'private, no-store' }]),
+    routes.header('/api/reviews', [{ key: 'Cache-Control', value: 'private, no-store' }]),
     routes.header('/(.*)', [
       { key: 'X-Content-Type-Options', value: 'nosniff' },
       { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' }

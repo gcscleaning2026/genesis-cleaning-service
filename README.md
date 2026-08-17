@@ -55,9 +55,9 @@ vercel --prod # production
 
 ## How it is put together
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md). The page is a single HTML string rendered by the
-server; a client component drives that DOM. That is unusual enough to read about before
-editing.
+See [CLAUDE.md](./CLAUDE.md). The page is a single HTML string rendered by the server; a
+client component drives that DOM, and reviews go through a moderation queue. That is unusual
+enough to read about before editing.
 
 ## Before final public launch
 
