@@ -40,8 +40,12 @@ export function renderReviewCard(review: CardReview) {
     .replaceAll('{{ r.pct }}', escapeHtml((rating / 5) * 100 + '%'));
 }
 
-/** The marquee tween measures `scrollWidth / 2`, so the list must appear exactly twice. */
+/**
+ * One card per review, in order — no duplication. The marquee needs repeated copies to
+ * loop, but only enough to cover the viewport, and only the client knows how wide that is.
+ * buildMarquee() clones these nodes at runtime; emitting a second copy here just showed
+ * every review twice on a page with one or two of them.
+ */
 export function renderTrack(reviews: CardReview[]) {
-  const once = reviews.map(renderReviewCard).join('');
-  return once + once;
+  return reviews.map(renderReviewCard).join('');
 }

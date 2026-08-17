@@ -6,7 +6,8 @@ describe('pageHtml', () => {
     const html = pageHtml('en', [{ name: 'Ana R.', comment: 'Spotless work throughout the house.', rating: 5 }]);
     const track = html.slice(html.indexOf('id="gcs-track"'));
     expect(track).toContain('Ana R.');
-    expect(track.split('<article').length - 1).toBe(2);
+    // One card per approved review; the marquee clones at runtime.
+    expect(track.split('<article').length - 1).toBe(1);
   });
 
   it('leaves the track empty when there are no approved reviews', () => {

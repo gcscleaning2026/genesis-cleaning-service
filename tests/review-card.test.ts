@@ -21,8 +21,16 @@ describe('renderReviewCard', () => {
 });
 
 describe('renderTrack', () => {
-  it('duplicates the card list so the marquee can loop seamlessly', () => {
-    const track = renderTrack([{ name: 'Ana', comment: 'Great', rating: 5 }]);
+  it('renders each review exactly once — buildMarquee() clones for the loop', () => {
+    const track = renderTrack([
+      { name: 'Ana', comment: 'Great', rating: 5 },
+      { name: 'Beto', comment: 'Also great', rating: 4 }
+    ]);
     expect(track.split('<article').length - 1).toBe(2);
+    expect(track.split('Ana').length - 1).toBe(1);
+  });
+
+  it('is empty with no reviews', () => {
+    expect(renderTrack([])).toBe('');
   });
 });

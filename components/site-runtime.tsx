@@ -220,11 +220,73 @@ class GenesisSite extends React.Component {
     const track = document.getElementById('gcs-track');
     if (!track) return;
     if (this.marq) { this.marq.kill(); this.marq = null; }
+    if (this.marqIntro) { this.marqIntro.kill(); this.marqIntro = null; }
+    if (this.marqST) { this.marqST.kill(); this.marqST = null; }
+
+    // Clones from a previous build would be measured as if they were reviews.
+    track.querySelectorAll('[data-marq-clone]').forEach(node => node.remove());
     gsap.set(track, { x: 0 });
+
+    const wrap = track.parentElement;
+    const view = wrap ? wrap.clientWidth : window.innerWidth;
+    const one = track.scrollWidth;
+    if (one < 40) return;
+
+    // Fewer reviews than fill the strip: a loop would either show the same card twice or
+    // leave half the row empty. Centre them and leave them still — a two-card carousel is
+    // a worse answer than two cards sitting where they can be read.
+    if (one <= view) {
+      track.style.justifyContent = 'center';
+      track.style.width = '100%';
+      return;
+    }
+    track.style.justifyContent = '';
+    track.style.width = 'max-content';
     if (this.lite) return;
-    const half = track.scrollWidth / 2;
-    if (half < 40) return;
-    this.marq = gsap.to(track, { x: -half, duration: half / 55, ease: 'none', repeat: -1 });
+
+    // Enough copies to cover the viewport plus one full list, so there is always a card
+    // entering from the right and the wrap point is never on screen.
+    const copies = Math.ceil((view + one) / one);
+    const originals = Array.from(track.children);
+    for (let copy = 1; copy < copies; copy++) {
+      originals.forEach(node => {
+        const clone = node.cloneNode(true);
+        clone.setAttribute('data-marq-clone', '1');
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+      });
+    }
+
+    // Content repeats every `one` pixels, so wrapping there is seamless.
+    const loop = gsap.utils.wrap(-one, 0);
+    const start = () => {
+      this.marq = gsap.to(track, {
+        x: `-=${one}`,
+        duration: one / 55,
+        ease: 'none',
+        repeat: -1,
+        modifiers: { x: (value) => loop(parseFloat(value)) + 'px' }
+      });
+    };
+
+    // The strip travels in from the right the first time it is reached, so the reader sees
+    // the cards arrive rather than finding them already parked mid-scroll.
+    if (this.marqIntroDone) { start(); return; }
+    gsap.set(track, { x: view });
+    this.marqST = this.ST.create({
+      trigger: wrap || track,
+      start: 'top 88%',
+      once: true,
+      onEnter: () => {
+        this.marqIntroDone = true;
+        this.marqIntro = gsap.to(track, {
+          x: 0,
+          duration: 1.4,
+          ease: 'power2.out',
+          onComplete: start
+        });
+      }
+    });
   }
 
   toggleModal(open) {
