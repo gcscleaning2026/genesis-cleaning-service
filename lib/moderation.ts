@@ -44,13 +44,26 @@ function isShouting(text: string) {
   return upper / letters.length > 0.7;
 }
 
+/** Drops C0/C1 controls but keeps the newlines and tabs a comment may legitimately use. */
+function stripControlChars(text: string) {
+  return text.replace(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F]/g, '');
+}
+
+/** Every run of whitespace — newlines included — becomes one space. */
+function collapseWhitespace(text: string) {
+  return stripControlChars(text).replace(/\s+/g, ' ').trim();
+}
+
 export function moderateReview(input: RawReview): ModerationResult {
   const lang = input.lang === 'es' ? 'es' : input.lang === 'en' ? 'en' : null;
   const rating = typeof input.rating === 'number' ? input.rating : NaN;
   if (!lang || !Number.isInteger(rating) || rating < 1 || rating > 5) return { ok: false, reason: 'rating' };
 
-  const name = typeof input.name === 'string' ? input.name.trim() : '';
-  const comment = typeof input.comment === 'string' ? input.comment.trim() : '';
+  // A trim only cleans the ends. The name travels on into the notification email's subject
+  // line, so any interior newline or control character has to go before it can turn into a
+  // second header; collapsing runs of whitespace also keeps the review card on one line.
+  const name = typeof input.name === 'string' ? collapseWhitespace(input.name) : '';
+  const comment = typeof input.comment === 'string' ? stripControlChars(input.comment).trim() : '';
 
   if (name.length < LIMITS.nameMin || name.length > LIMITS.nameMax || LINK.test(name)) {
     return { ok: false, reason: 'name' };

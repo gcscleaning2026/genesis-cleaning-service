@@ -76,4 +76,20 @@ describe('moderateReview', () => {
   it('rejects a wrong language tag', () => {
     expect(moderateReview({ ...base, lang: 'fr' })).toEqual({ ok: false, reason: 'rating' });
   });
+  it('folds newlines and control characters out of the name', () => {
+    // The name is interpolated into the notification email subject, where a bare CRLF is
+    // the start of a second header.
+    const result = moderateReview({ ...base, name: 'Ana\r\nBcc: victim@example.com' });
+    expect(result).toEqual({ ok: false, reason: 'name' });
+
+    const folded = moderateReview({ ...base, name: 'Ana\r\n\u0000R.' });
+    expect(folded).toEqual({ ok: true, review: { ...base, name: 'Ana R.' } });
+  });
+
+  it('drops control characters from the comment but keeps its newlines', () => {
+    const comment = 'They arrived on time\r\n\u0000and left the kitchen and both bathrooms spotless.';
+    const result = moderateReview({ ...base, comment });
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.review.comment).toBe('They arrived on time\nand left the kitchen and both bathrooms spotless.');
+  });
 });

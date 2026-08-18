@@ -508,8 +508,40 @@ rule wins per key** — so `/assets/fonts/(.*)` (immutable, 1 year) must stay *a
 > Never point the immutable rule at `/assets/*`. Filenames there are stable, so replacing an
 > image would strand clients on a year-old copy.
 
-`/admin/(.*)` and `/api/reviews` are `private, no-store`. Everything gets `nosniff` and
-`strict-origin-when-cross-origin`.
+`/admin`, `/admin/(.*)` and `/api/reviews` are `private, no-store` — `/admin` needs its own
+rule because `/admin/(.*)` does not match the queue page itself.
+
+Every response also carries:
+
+| Header | Value | Why |
+|---|---|---|
+| `X-Content-Type-Options` | `nosniff` | No MIME sniffing |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | No path leakage off-site |
+| `X-Frame-Options` | `DENY` | `/admin` approves reviews with one click; nothing here is meant to be framed |
+| `Content-Security-Policy` | `base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'` | Deliberately partial — see below |
+| `Permissions-Policy` | camera, microphone, geolocation, payment all `()` | None of them are used |
+| `Strict-Transport-Security` | `max-age=31536000` | One year of HTTPS-only |
+
+> **Why the CSP has no `script-src`.** The page is prerendered, so a nonce is not available
+> without turning both routes dynamic, and BotID's challenge plus Next's inline bootstrap
+> would both have to be allowed by hash. A `script-src` that silently blocked the BotID
+> challenge would weaken the review endpoint while looking like hardening. The four
+> directives that are set cannot break either one. If a strict `script-src` is ever wanted,
+> measure it in `Content-Security-Policy-Report-Only` first.
+
+> **HSTS has no `includeSubDomains` and no `preload`.** Both are hard to walk back and the
+> move to `gcscleaning.net` has not happened yet. Revisit once that domain's subdomains are
+> known.
+
+### Dependency advisories
+
+`pnpm audit --prod` is clean. The full audit reports one high advisory,
+[GHSA-9wv6-86v2-598j](https://github.com/advisories/GHSA-9wv6-86v2-598j) (ReDoS in
+`path-to-regexp`), reached only as `@vercel/config > @vercel/routing-utils > path-to-regexp`.
+It is a dev dependency, `@vercel/config` is already at its latest release (0.6.1), and the
+only patterns that library ever compiles are the route strings written by hand in
+`vercel.ts` — no attacker-supplied input reaches it at build or at runtime. Not fixable and
+not reachable, so it is accepted; re-check when `@vercel/config` publishes an update.
 
 ### Rendering
 
@@ -562,8 +594,11 @@ deployments. Redeploy after changing any of them.
   and the JSON-LD; a local cleaning business cannot rank locally without them. Claiming and
   filling in a Google Business Profile with exactly the same name/phone/address matters at
   least as much as anything on the site.
-- **Social profiles are text, not links.** `@gcs.genesis` is shown with icons but no URLs
-  were provided. Once they exist, link them and add them to `sameAs` in the JSON-LD.
+- **Social profiles are linked and declared.** Instagram, Facebook and TikTok live in
+  `lib/social.ts`; the icons in the contact card and the footer link to them, and the same
+  URLs are the `sameAs` array in the JSON-LD. Add a profile there and all three places pick
+  it up. Facebook has no vanity handle yet — `profile.php?id=…` is the canonical URL until
+  the page gets one, and it should be updated here when it does.
 - **Domain.** Canonical, `hreflang`, OpenGraph, `sitemap.xml`, `robots.txt` and the JSON-LD
   all point at `https://genesis-cleaning-service.vercel.app`. When the site moves to
   `gcscleaning.net`, update `SITE_ORIGIN` in `lib/i18n.ts`, `public/robots.txt` and

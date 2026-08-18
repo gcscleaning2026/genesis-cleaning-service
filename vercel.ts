@@ -33,12 +33,37 @@ export const config: VercelConfig = {
       immutable: true
     }),
     // The queue and the submission endpoint are per-request and per-session: nothing about
-    // them may be held in a shared cache.
+    // them may be held in a shared cache. Two rules rather than one: `/admin/(.*)` matches
+    // every page under the queue but not `/admin` itself, which is the queue.
+    routes.header('/admin', [{ key: 'Cache-Control', value: 'private, no-store' }]),
     routes.header('/admin/(.*)', [{ key: 'Cache-Control', value: 'private, no-store' }]),
     routes.header('/api/reviews', [{ key: 'Cache-Control', value: 'private, no-store' }]),
     routes.header('/(.*)', [
       { key: 'X-Content-Type-Options', value: 'nosniff' },
-      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' }
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      // Nothing here has any reason to be framed, and /admin approves reviews with
+      // single-click buttons — exactly what a clickjacking overlay is for. frame-ancestors
+      // is the modern control; X-Frame-Options covers the browsers that predate it.
+      { key: 'X-Frame-Options', value: 'DENY' },
+      // No camera, microphone, geolocation or payment API is used, so no embedded frame or
+      // injected script gets to ask for one either.
+      {
+        key: 'Permissions-Policy',
+        value: 'camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()'
+      },
+      // A year of HTTPS-only. Deliberately no `includeSubDomains` and no `preload`: both are
+      // commitments that outlive a mistake, and the domain move to gcscleaning.net has not
+      // happened yet. Revisit once the subdomains of the real domain are known.
+      { key: 'Strict-Transport-Security', value: 'max-age=31536000' },
+      // A deliberately partial CSP. `script-src` and `connect-src` are absent, and so is
+      // `default-src`, because BotID's challenge and Next's own inline bootstrap would both
+      // be caught by them: a CSP that silently disables bot detection is worse than none.
+      // What is here cannot break either — it blocks base-tag hijacking, plugin embeds,
+      // form posts to another origin, and framing.
+      {
+        key: 'Content-Security-Policy',
+        value: "base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'"
+      }
     ])
   ]
 };
