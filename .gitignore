@@ -91,3 +91,6 @@ GEMINI.md
 # Generated plans, transcripts and notes from AI sessions
 docs/
 !docs/.gitkeep
+
+.vercel
+.env*
