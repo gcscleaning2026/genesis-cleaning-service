@@ -87,6 +87,7 @@ footer :focus-visible,[style*="#0A1A45"] :focus-visible,[style*="#071336"] :focu
 
 [style-hover="background:rgba(255,255,255,.09);border-color:rgba(79,211,245,.5)"]:hover{background:rgba(255,255,255,.09);border-color:rgba(79,211,245,.5)}
 [style-hover="border-color:#00A9E0;transform:translateY(-2px)"]:hover{border-color:#00A9E0;transform:translateY(-2px)}
+[style-hover="opacity:.7"]:hover{opacity:.7}
 [style-hover="border-color:#4FD3F5;transform:translateY(-2px)"]:hover{border-color:#4FD3F5;transform:translateY(-2px)}
 [style-hover="transform:translateY(-1px);box-shadow:0 10px 24px rgba(212,42,128,.4)"]:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(212,42,128,.4)}
 [style-hover="transform:translateY(-2px)"]:hover{transform:translateY(-2px)}

@@ -17,6 +17,7 @@ import {
   HERO_WEBP_SRCSET,
   HERO_WIDTH
 } from './hero-image';
+import { socialIconLinks } from './social';
 
 export const SITE_HTML = `<div id="top" data-pagepad="1">
 <div id="gcs-grain" aria-hidden="true"></div>
@@ -518,9 +519,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
       </a>
       <div data-reveal="0" data-tilt="1" data-tilt-soft="1" style="padding:24px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)">
         <div style="display:flex;gap:10px;color:#4FD3F5">
-          <svg class="gi" aria-hidden="true" style="width:22px;height:22px"><use href="#i-bold-instagram-logo"/></svg>
-          <svg class="gi" aria-hidden="true" style="width:22px;height:22px"><use href="#i-bold-facebook-logo"/></svg>
-          <svg class="gi" aria-hidden="true" style="width:22px;height:22px"><use href="#i-bold-tiktok-logo"/></svg>
+          ${socialIconLinks(22, 10)}
         </div>
         <p style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8FA5CC;margin:14px 0 7px" data-i18n="contact.social">Social</p>
         <p style="font-family:Outfit,sans-serif;font-size:18px;font-weight:700;color:#fff;margin:0">@gcs.genesis</p>
@@ -558,9 +557,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
       <a href="mailto:service@gcscleaning.net" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">service@gcscleaning.net</a>
       <a href="https://www.gcscleaning.net" target="_blank" rel="noopener" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">www.gcscleaning.net</a>
       <p style="display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:600;color:#C7D6EE;margin:0">
-        <svg class="gi" aria-hidden="true" style="width:17px;height:17px"><use href="#i-bold-instagram-logo"/></svg>
-        <svg class="gi" aria-hidden="true" style="width:17px;height:17px"><use href="#i-bold-facebook-logo"/></svg>
-        <svg class="gi" aria-hidden="true" style="width:17px;height:17px"><use href="#i-bold-tiktok-logo"/></svg>
+        ${socialIconLinks(17, 9)}
         @gcs.genesis
       </p>
     </div>

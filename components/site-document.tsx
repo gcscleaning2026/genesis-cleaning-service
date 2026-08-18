@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { preload } from 'react-dom';
 import { HEAD, SITE_ORIGIN, type Lang } from '@/lib/i18n';
 import { HERO_AVIF_SRCSET, HERO_PRELOAD_HREF, HERO_SIZES } from '@/lib/hero-image';
+import { SAME_AS } from '@/lib/social';
 
 // English lives at /, Spanish at /es. They are separate root layouts (app/(en) and
 // app/(es)) rather than one shared layout because the two pages must ship different
@@ -68,6 +69,9 @@ const JSON_LD = {
     'Residential, commercial, construction and window cleaning for homes and businesses in New Jersey. Bilingual English and Spanish service.',
   telephone: '+1-908-338-3160',
   email: 'service@gcscleaning.net',
+  // The profiles Google and the AI crawlers already have; sameAs is what ties them to this
+  // entity, and the same URLs are linked from the contact card and the footer.
+  sameAs: SAME_AS,
   areaServed: { '@type': 'State', name: 'New Jersey' },
   availableLanguage: [
     { '@type': 'Language', name: 'English', alternateName: 'en' },
@@ -84,6 +88,11 @@ const JSON_LD = {
     ]
   }
 };
+
+// Every value above is a constant in this file, but the escape is what keeps that true
+// under edits: a `<` inside any string would otherwise close the script tag early. The two
+// JSON seeds in site-page.tsx do the same.
+const JSON_LD_JSON = JSON.stringify(JSON_LD).replace(/</g, '\\u003c');
 
 // Below-the-fold content is hidden by `html.gcs-anim` until the motion chunk has built
 // its timelines. If that chunk never arrives, the class has to come off anyway — the
@@ -118,7 +127,7 @@ export function SiteDocument({ lang, children }: { lang: Lang; children: React.R
   return (
     <html lang={lang} className="gcs-anim">
       <body>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON_LD_JSON }} />
         <script dangerouslySetInnerHTML={{ __html: MOTION_BAIL }} />
         {children}
       </body>
