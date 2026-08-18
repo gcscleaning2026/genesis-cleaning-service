@@ -4,7 +4,19 @@
 // attributes inside SITE_HTML.
 //
 // This module is server-only: it must never be imported from a client component, or the
-// ~96 KB string below ships in the browser bundle as well as in the HTML.
+// ~96 KB string below ships in the browser bundle as well as in the HTML. Nothing here uses
+// a Node builtin, so without this marker that mistake builds cleanly and only shows up as a
+// heavier bundle; the import turns it into a build error instead.
+import 'server-only';
+
+import {
+  HERO_AVIF_SRCSET,
+  HERO_FALLBACK_SRC,
+  HERO_HEIGHT,
+  HERO_SIZES,
+  HERO_WEBP_SRCSET,
+  HERO_WIDTH
+} from './hero-image';
 
 export const SITE_HTML = `<div id="top" data-pagepad="1">
 <div id="gcs-grain" aria-hidden="true"></div>
@@ -14,7 +26,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
   <div id="gcs-progress" aria-hidden="true" style="position:absolute;left:0;bottom:-1px;height:2px;width:100%;transform:scaleX(0);transform-origin:0 50%;background:linear-gradient(90deg,#00A9E0,#D42A80)"></div>
   <div style="max-width:1240px;margin:0 auto;padding:0 24px;height:74px;display:flex;align-items:center;gap:28px">
     <a href="#top" style="display:flex;align-items:center;gap:12px;text-decoration:none;flex:0 0 auto">
-      <img src="/assets/gcs-badge-96.webp" alt="Genesis Cleaning Service LLC logo" width="46" height="46" fetchpriority="high" decoding="async" style="width:46px;height:46px;border-radius:50%;box-shadow:0 3px 12px rgba(11,30,78,.2)">
+      <img src="/assets/gcs-badge-96.webp" alt="Genesis Cleaning Service LLC logo" width="46" height="46" decoding="async" style="width:46px;height:46px;border-radius:50%;box-shadow:0 3px 12px rgba(11,30,78,.2)">
       <span style="display:flex;flex-direction:column;gap:3px">
         <span style="font-family:Outfit,sans-serif;font-weight:700;font-size:15px;line-height:1;color:#0B1E4E;letter-spacing:.01em">Genesis Cleaning Service</span>
         <span style="font-size:9.5px;font-weight:700;letter-spacing:.22em;color:#007AA8;line-height:1">LLC</span>
@@ -91,8 +103,11 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
 
     <div style="position:relative">
       <div aria-hidden="true" style="position:absolute;inset:26px -22px -26px 26px;border-radius:32px;background:linear-gradient(140deg,#00A9E0,#7FE0F5 55%,#E8368F);opacity:.16"></div>
-      <div data-anim="img" data-vel="1" style="position:relative;border-radius:26px;overflow:hidden;background:#EAF4FA;box-shadow:0 26px 60px rgba(11,30,78,.16);border:1px solid #DCEBF4;aspect-ratio:4/3.35;min-height:300px">
-        <img src="/assets/gcs-hero-1034.webp" srcset="/assets/gcs-hero-480.webp 480w, /assets/gcs-hero-768.webp 768w, /assets/gcs-hero-1034.webp 1034w" sizes="(max-width:1024px) 92vw, 46vw" alt="Bright, freshly cleaned home interior in New Jersey" width="1034" height="776" fetchpriority="high" decoding="async" data-depth-image="1" style="width:100%;height:100%;object-fit:cover;display:block">
+      <div data-anim="img" data-vel="1" data-depth-mask="1" style="position:relative;border-radius:26px;overflow:hidden;background:#EAF4FA;box-shadow:0 26px 60px rgba(11,30,78,.16);border:1px solid #DCEBF4;aspect-ratio:4/3.35;min-height:300px">
+        <picture style="display:block;width:100%;height:100%">
+          <source type="image/avif" srcset="${HERO_AVIF_SRCSET}" sizes="${HERO_SIZES}">
+          <img src="${HERO_FALLBACK_SRC}" srcset="${HERO_WEBP_SRCSET}" sizes="${HERO_SIZES}" alt="Bright, freshly cleaned home interior in New Jersey" width="${HERO_WIDTH}" height="${HERO_HEIGHT}" fetchpriority="high" decoding="async" data-depth-image="1" style="width:100%;height:100%;object-fit:cover;display:block">
+        </picture>
       </div>
     </div>
   </div>
@@ -170,8 +185,11 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
     <div>
       <h2 id="why-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(30px,3.6vw,46px);line-height:1.08;letter-spacing:-.02em;color:#0B1E4E;margin:0 0 20px;text-wrap:balance" data-i18n="why.h2">Why people call Genesis back</h2>
       <p style="font-size:16.5px;line-height:1.62;color:#4A5A7D;margin:0 0 28px;max-width:40ch" data-i18n="why.sub">GCS is built around one idea, the one written on our logo: los detalles hacen la diferencia.</p>
-      <div data-clip="1" data-vel="1" style="position:relative;border-radius:22px;overflow:hidden;border:1px solid #DCEBF4;background:#EAF4FA;aspect-ratio:4/3;box-shadow:0 18px 44px rgba(11,30,78,.1)">
-        <img src="/assets/gcs-why-948.webp" srcset="/assets/gcs-why-480.webp 480w, /assets/gcs-why-768.webp 768w, /assets/gcs-why-948.webp 948w" sizes="(max-width:1024px) 92vw, 46vw" alt="Genesis Cleaning Service team at work on a residential job" width="948" height="711" loading="lazy" decoding="async" data-depth-image="1" style="width:100%;height:100%;object-fit:cover;display:block">
+      <div data-clip="1" data-vel="1" data-depth-mask="1" style="position:relative;border-radius:22px;overflow:hidden;border:1px solid #DCEBF4;background:#EAF4FA;aspect-ratio:4/3;box-shadow:0 18px 44px rgba(11,30,78,.1)">
+        <picture style="display:block;width:100%;height:100%">
+          <source type="image/avif" srcset="/assets/gcs-why-480.avif 480w, /assets/gcs-why-768.avif 768w, /assets/gcs-why-948.avif 948w" sizes="(max-width:1024px) 92vw, 46vw">
+          <img src="/assets/gcs-why-948.webp" srcset="/assets/gcs-why-480.webp 480w, /assets/gcs-why-768.webp 768w, /assets/gcs-why-948.webp 948w" sizes="(max-width:1024px) 92vw, 46vw" alt="Genesis Cleaning Service team at work on a residential job" width="948" height="711" loading="lazy" decoding="async" data-depth-image="1" style="width:100%;height:100%;object-fit:cover;display:block">
+        </picture>
       </div>
     </div>
 

@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import 'server-only';
 import type { CleanReview } from './moderation';
 
 const escape = (value: string) =>
@@ -22,6 +22,9 @@ export async function notifyOwnerOfPendingReview(review: CleanReview & { id: num
   const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
 
   try {
+    // Imported here rather than at the top of the file: the SDK costs ~15ms to load and a
+    // cold start that only ever rejects submissions never needs it.
+    const { Resend } = await import('resend');
     await new Resend(apiKey).emails.send({
       from,
       to: [to],

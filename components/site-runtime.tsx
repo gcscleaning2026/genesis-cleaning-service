@@ -377,7 +377,11 @@ class GenesisSite extends React.Component {
     if (window.__gcsMotionOwner !== this) return;
     window.__gcsMotionOwner = null;
     window.__gcsMotionReady = false;
-    if (this.ST) this.ST.getAll().forEach(s => s.kill());
+    if (this.ST) {
+      this.ST.removeEventListener('refreshInit', this.clearVp);
+      this.ST.getAll().forEach(s => s.kill());
+    }
+    this.clearVp();
     if (this.gsap) {
       if (this.tick) this.gsap.ticker.remove(this.tick);
       if (this.velTick) this.gsap.ticker.remove(this.velTick);
@@ -509,12 +513,35 @@ class GenesisSite extends React.Component {
   // Hold the physical distance roughly constant instead, and let travel grow with the
   // screen so larger type still moves proportionally.
   // 540px -> 40% (216px), 800px -> 27% (216px), 1249px -> 24% (300px).
+  // window.innerHeight and ScrollTrigger.maxScroll() are layout reads, and both are called
+  // once per trigger per refresh from inside end/from callbacks — interleaved with GSAP's
+  // own style writes, which makes every one of them a forced synchronous layout. Measured
+  // at 4x CPU throttle: 257ms of forced reflow across startMotion, 123ms of it in vp()
+  // alone. Neither value can change within a single refresh pass, so read once and clear
+  // the cache when ScrollTrigger announces the next pass (`refreshInit`, wired up in
+  // startMotion) or when the window resizes.
+  vpCache = null;
+  maxCache = null;
+
   vp() {
-    const vh = window.innerHeight || 800;
-    return {
-      range: Math.round(Math.min(40, Math.max(24, 21600 / vh))),
-      travel: Math.round(Math.min(88, Math.max(52, vh * 0.085)))
-    };
+    if (!this.vpCache) {
+      const vh = window.innerHeight || 800;
+      this.vpCache = {
+        vh,
+        range: Math.round(Math.min(40, Math.max(24, 21600 / vh))),
+        travel: Math.round(Math.min(88, Math.max(52, vh * 0.085)))
+      };
+    }
+    return this.vpCache;
+  }
+
+  // Document height is fixed for the duration of a refresh — nothing here pins, so no
+  // trigger can change it mid-pass. Route every reader through here: a stray
+  // `ScrollTrigger.maxScroll(window)` in an `end:` callback is a forced layout per trigger,
+  // which is what this cache exists to prevent.
+  maxScroll() {
+    if (this.maxCache == null) this.maxCache = window.ScrollTrigger.maxScroll(window);
+    return this.maxCache;
   }
 
   // End positions must be an explicit pixel distance from the (already clamped) start,
@@ -528,9 +555,8 @@ class GenesisSite extends React.Component {
   // so footer content would strand half-revealed. Short-but-real beats unreachable.
   endPx(pct) {
     return (self) => {
-      const dist = Math.round(pct / 100 * (window.innerHeight || 800));
-      const max = window.ScrollTrigger.maxScroll(window);
-      return Math.min(self.start + dist, max);
+      const dist = Math.round(pct / 100 * this.vp().vh);
+      return Math.min(self.start + dist, this.maxScroll());
     };
   }
 
@@ -618,18 +644,21 @@ class GenesisSite extends React.Component {
     this.lite = this.mode === 'lite';
     window.__gcsMotionReady = true;
 
+    // Every measurement taken from here on belongs to one refresh pass. ScrollTrigger
+    // fires refreshInit before each new one, including the ones it schedules itself.
+    ST.addEventListener('refreshInit', this.clearVp);
+
     if (!this.lite) this.initSmoothScroll();
     this.buildHeadings(false);
     this.buildReveals();
     this.buildValues();
     if (!this.lite) this.buildDepth();
-    this.buildChrome();
-    this.buildMarquee();
     this.heroIntro();
 
     this.onResize = () => {
       clearTimeout(this.resizeId);
       this.resizeId = setTimeout(() => {
+        this.clearVp();
         this.buildMarquee();
         // Trigger ranges and travel distances are functions of window height now, so
         // they have to be re-measured after the marquee rebuild changes the layout.
@@ -640,8 +669,23 @@ class GenesisSite extends React.Component {
 
     document.documentElement.classList.remove('gcs-anim');
     ST.refresh();
-    requestAnimationFrame(() => this.ensureHeadings());
+
+    // Everything above either pre-hides content or is the reason `gcs-anim` was hiding it,
+    // so it has to finish before the class comes off. The progress bar, the header shadow
+    // and the marquee hide nothing — and the marquee is the expensive one, cloning every
+    // review card and measuring the strip. Running them on the next frame splits what was
+    // a single ~245ms task at 4x CPU throttle into two shorter ones. Worth doing because
+    // this whole sequence is normally triggered by the visitor's first scroll, so it lands
+    // on the main thread at the exact moment they are waiting for a frame.
+    requestAnimationFrame(() => {
+      if (this.unmounted) return;
+      this.buildChrome();
+      this.buildMarquee();
+      this.ensureHeadings();
+    });
   }
+
+  clearVp = () => { this.vpCache = null; this.maxCache = null; };
 
   // ---- In-page navigation --------------------------------------------------------
   // Every `#section` link glides instead of jumping. This is armed in componentDidMount,
@@ -876,7 +920,18 @@ class GenesisSite extends React.Component {
     const els = gsap.utils.toArray('[data-reveal]');
     const seen = new Map();
 
-    els.forEach(el => {
+    // One measurement pass, before a single style is written. offsetHeight and
+    // getBoundingClientRect() below used to be read inside the same loop that writes
+    // through gsap.set/gsap.to, so each element invalidated layout for the next one and
+    // the browser laid the document out again on every iteration.
+    // `deep` is desktop-only, so on a phone the height is measured and never read.
+    const { vh } = this.vp();
+    const wide = !this.small;
+    const metrics = this.lite
+      ? []
+      : els.map(el => ({ height: wide ? el.offsetHeight : 0, top: el.getBoundingClientRect().top }));
+
+    els.forEach((el, index) => {
       const parent = el.parentElement;
       const i = seen.get(parent) || 0;
       seen.set(parent, i + 1);
@@ -893,13 +948,13 @@ class GenesisSite extends React.Component {
       // from further back. This replaces an animated filter: blur(9px), which repainted
       // the whole element every frame and was the single biggest source of scroll jank
       // (p99 frame time 30.6ms -> 22.2ms at 6x CPU throttle once removed).
-      const deep = !this.small && el.offsetHeight > 150;
+      const deep = !this.small && metrics[index].height > 150;
 
       // Anything already on screen when the page loads has no scroll distance in front
       // of it — its trigger clamps to scroll 0, so it sits at progress 0 (invisible)
       // until the first wheel tick pops it in. Above the fold is a load-time entrance,
       // not a scroll-linked one; it plays once, on its own clock, after the hero.
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.96) {
+      if (metrics[index].top < vh * 0.96) {
         gsap.set(el, { opacity: 0, y: this.vp().travel });
         gsap.to(el, {
           opacity: 1, y: 0, duration: M.dur.l, ease: M.easeSoft,
@@ -964,11 +1019,16 @@ class GenesisSite extends React.Component {
 
     // Images drift inside their own masks.
     gsap.utils.toArray('[data-depth-image]').forEach(slot => {
+      // The image drifts inside the box that masks it, so that box is the trigger — not
+      // whatever element happens to be its immediate parent. `<picture>` already sits
+      // between the two, and any further wrapper would silently retarget a structural
+      // lookup, so the markup names the mask instead.
+      const mask = slot.closest('[data-depth-mask]') || slot.parentElement;
       gsap.fromTo(slot,
         { yPercent: -5, scale: 1.12 },
         {
           yPercent: 5, scale: 1.12, ease: 'none',
-          scrollTrigger: { trigger: slot.parentElement, start: 'top bottom', end: 'bottom top', scrub: true }
+          scrollTrigger: { trigger: mask, start: 'top bottom', end: 'bottom top', scrub: true }
         });
     });
 
@@ -1109,7 +1169,7 @@ class GenesisSite extends React.Component {
     if (bar) {
       gsap.to(bar, {
         scaleX: 1, ease: 'none',
-        scrollTrigger: { start: 0, end: () => ST.maxScroll(window), scrub: 0.35 }
+        scrollTrigger: { start: 0, end: () => this.maxScroll(), scrub: 0.35 }
       });
     }
     const header = document.querySelector('header');

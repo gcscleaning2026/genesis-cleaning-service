@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { preload } from 'react-dom';
 import { HEAD, SITE_ORIGIN, type Lang } from '@/lib/i18n';
+import { HERO_AVIF_SRCSET, HERO_PRELOAD_HREF, HERO_SIZES } from '@/lib/hero-image';
 
 // English lives at /, Spanish at /es. They are separate root layouts (app/(en) and
 // app/(es)) rather than one shared layout because the two pages must ship different
@@ -99,10 +100,15 @@ const MOTION_BAIL =
 function preloadCriticalAssets() {
   preload('/assets/fonts/outfit-latin-var.woff2', { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
   preload('/assets/fonts/manrope-latin-var.woff2', { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
-  preload('/assets/gcs-hero-1034.webp', {
+  // The hero is a <picture>: AVIF first, WebP behind it. `type` is what keeps the two
+  // in step — a browser without AVIF ignores a preload it cannot decode and falls
+  // through to the <img>, so it never downloads a format it will not use. Preloading
+  // the WebP as well would hand every modern browser both copies.
+  preload(HERO_PRELOAD_HREF, {
     as: 'image',
-    imageSrcSet: '/assets/gcs-hero-480.webp 480w, /assets/gcs-hero-768.webp 768w, /assets/gcs-hero-1034.webp 1034w',
-    imageSizes: '(max-width:1024px) 92vw, 46vw',
+    type: 'image/avif',
+    imageSrcSet: HERO_AVIF_SRCSET,
+    imageSizes: HERO_SIZES,
     fetchPriority: 'high'
   });
 }

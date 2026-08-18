@@ -18,19 +18,33 @@ const kb = (f) => Math.round(statSync(at(f)).size / 1024) + ' KB';
 
 // Widths each image is actually served at, so the browser can pick one instead of
 // downloading the full-resolution file for a 362px-wide slot on a phone.
+//
+// `avif: true` additionally emits AVIF cuts, which <picture> offers ahead of the WebP.
+// It is on for the two photographs and off for the flat-colour brand art: AVIF wins ~35%
+// on the hero photo (46.5 KB -> 30.2 KB at 1034w) but very little on a logo, and every
+// extra format is another file to keep in step with the markup.
 const responsive = [
-  { src: 'gcs-hero.webp', widths: [480, 768, 1034] },
-  { src: 'gcs-why.webp', widths: [480, 768, 948] },
+  { src: 'gcs-hero.webp', widths: [480, 768, 1034], avif: true },
+  { src: 'gcs-why.webp', widths: [480, 768, 948], avif: true },
   { src: 'gcs-badge.webp', widths: [96, 280, 560] },
   { src: 'gcs-logo-navy.webp', widths: [290, 580] }
 ];
 
-for (const { src, widths } of responsive) {
+for (const { src, widths, avif } of responsive) {
   const base = src.replace(/\.webp$/, '');
   for (const w of widths) {
+    // One decode and one resize spec per width; `clone()` forks the pipeline so each format
+    // encodes from the same decoded, resized image instead of restating the geometry.
+    const resized = sharp(at(src)).resize({ width: w, withoutEnlargement: true });
     const out = `${base}-${w}.webp`;
-    await sharp(at(src)).resize({ width: w, withoutEnlargement: true }).webp({ quality: 82 }).toFile(at(out));
+    await resized.clone().webp({ quality: 82 }).toFile(at(out));
     console.log(`${out.padEnd(26)} ${kb(out)}`);
+    if (!avif) continue;
+    // Quality 55 is where AVIF matches WebP 82 by eye on these photographs; `effort: 6`
+    // is slow to encode and this script is run by hand, so the encode time is free.
+    const avifOut = `${base}-${w}.avif`;
+    await resized.clone().avif({ quality: 55, effort: 6 }).toFile(at(avifOut));
+    console.log(`${avifOut.padEnd(26)} ${kb(avifOut)} (was ${kb(out)} as webp)`);
   }
 }
 
