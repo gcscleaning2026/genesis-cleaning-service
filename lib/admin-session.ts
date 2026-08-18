@@ -1,3 +1,5 @@
+import 'server-only';
+
 export const ADMIN_COOKIE = 'gcs_admin';
 const DEFAULT_TTL_MS = 8 * 60 * 60 * 1000;
 

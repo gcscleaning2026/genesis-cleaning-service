@@ -1,4 +1,5 @@
-import { createHash } from 'node:crypto';
+import 'server-only';
+import { createHmac } from 'node:crypto';
 import type { Client } from '@libsql/client';
 import type { CleanReview } from './moderation';
 
@@ -17,7 +18,9 @@ export type StoredReview = {
  * database — a salted hash answers "is this the same submitter?" without storing who.
  */
 export function hashIp(ip: string) {
-  return createHash('sha256').update(`${process.env.REVIEW_IP_SALT ?? ''}:${ip}`).digest('hex');
+  const salt = process.env.REVIEW_IP_SALT;
+  if (!salt) throw new Error('REVIEW_IP_SALT must be set');
+  return createHmac('sha256', salt).update(ip).digest('hex');
 }
 
 export async function insertPending(client: Client, review: CleanReview, ipHash: string) {
@@ -26,6 +29,36 @@ export async function insertPending(client: Client, review: CleanReview, ipHash:
     args: [review.name, review.comment, review.rating, review.lang, ipHash]
   });
   return Number(result.lastInsertRowid);
+}
+
+/** Inserts only while the rolling per-IP quota has room; the check and write are one statement. */
+export async function insertPendingWithinLimit(
+  client: Client,
+  review: CleanReview,
+  ipHash: string,
+  limit: number,
+  hours: number
+) {
+  const result = await client.execute({
+    sql: `INSERT INTO reviews (name, comment, rating, lang, ip_hash)
+          SELECT ?, ?, ?, ?, ?
+          WHERE ? = 0 OR (
+            SELECT COUNT(*) FROM reviews
+            WHERE ip_hash = ? AND created_at >= datetime('now', ?)
+          ) < ?`,
+    args: [
+      review.name,
+      review.comment,
+      review.rating,
+      review.lang,
+      ipHash,
+      limit,
+      ipHash,
+      `-${hours} hours`,
+      limit
+    ]
+  });
+  return result.rowsAffected === 0 ? null : Number(result.lastInsertRowid);
 }
 
 export async function countRecentByIp(client: Client, ipHash: string, hours: number) {

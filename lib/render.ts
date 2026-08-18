@@ -10,6 +10,7 @@
  * Every [data-i18n] element in SITE_HTML holds plain text with no nested markup —
  * `collect()` asserts that below and fails the build if it ever stops being true.
  */
+import 'server-only';
 import { SITE_HTML } from './site-content';
 import { ES, WA_TEXT, type Lang } from './i18n';
 import { renderTrack, type CardReview } from './review-card';
@@ -25,6 +26,8 @@ export type I18nSeed = {
 
 const attrEscape = (s: string) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const textEscape = (s: string) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 // --- read the English strings straight out of the markup -----------------------------
 function collect(html: string): I18nSeed {
@@ -48,7 +51,7 @@ function collect(html: string): I18nSeed {
 function translate(html: string) {
   let out = html.replace(/<(\w+)([^>]*\sdata-i18n="([^"]+)"[^>]*)>([\s\S]*?)<\/\1>/g, (whole, tag, attrs, key) => {
     const v = ES[key];
-    return v == null ? whole : `<${tag}${attrs}>${v}</${tag}>`;
+    return v == null ? whole : `<${tag}${attrs}>${textEscape(v)}</${tag}>`;
   });
   out = out.replace(/(data-i18n-aria="([^"]+)"[^>]*aria-label=")([^"]*)(")/g, (whole, head, key, _old, tail) => {
     const v = ES[key];

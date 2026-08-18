@@ -1,7 +1,14 @@
 import { createClient, type Client } from '@libsql/client';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { applySchema } from '../lib/db';
-import { countRecentByIp, hashIp, insertPending, listByStatus, setStatus } from '../lib/reviews-repo';
+import {
+  countRecentByIp,
+  hashIp,
+  insertPending,
+  insertPendingWithinLimit,
+  listByStatus,
+  setStatus
+} from '../lib/reviews-repo';
 
 const review = {
   name: 'Ana R.',
@@ -43,11 +50,26 @@ describe('reviews repo', () => {
     expect(await countRecentByIp(db, mine, 1)).toBe(2);
   });
 
+  it('enforces the per-ip limit atomically under concurrent inserts', async () => {
+    const mine = hashIp('1.2.3.4');
+    const ids = await Promise.all(
+      Array.from({ length: 8 }, () => insertPendingWithinLimit(db, review, mine, 3, 1))
+    );
+
+    expect(ids.filter((id) => id !== null)).toHaveLength(3);
+    expect(await countRecentByIp(db, mine, 1)).toBe(3);
+  });
+
   it('hashes ips instead of storing them', async () => {
     expect(hashIp('1.2.3.4')).toMatch(/^[a-f0-9]{64}$/);
     expect(hashIp('1.2.3.4')).not.toContain('1.2.3.4');
     expect(hashIp('1.2.3.4')).toBe(hashIp('1.2.3.4'));
     expect(hashIp('1.2.3.4')).not.toBe(hashIp('4.3.2.1'));
+  });
+
+  it('refuses to hash submitter addresses without the secret salt', () => {
+    delete process.env.REVIEW_IP_SALT;
+    expect(() => hashIp('1.2.3.4')).toThrow('REVIEW_IP_SALT must be set');
   });
 
   it('orders approved reviews newest first and respects the limit', async () => {

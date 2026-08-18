@@ -13,3 +13,9 @@ CREATE TABLE IF NOT EXISTS reviews (
 CREATE INDEX IF NOT EXISTS reviews_status_created ON reviews (status, created_at DESC);
 
 CREATE INDEX IF NOT EXISTS reviews_ip_created ON reviews (ip_hash, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS admin_login_attempts (
+  identity_hash     TEXT    PRIMARY KEY,
+  window_started_at INTEGER NOT NULL,
+  attempts          INTEGER NOT NULL
+);

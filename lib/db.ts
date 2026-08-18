@@ -1,3 +1,4 @@
+import 'server-only';
 import { createClient, type Client } from '@libsql/client';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';

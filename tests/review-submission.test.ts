@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { submissionVerdict } from '../app/api/reviews/verdict';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { botVerdict, failsLocalBotChecks, submissionVerdict } from '../app/api/reviews/verdict';
 
 const body = {
   name: 'Ana R.',
@@ -11,6 +11,7 @@ const body = {
 
 afterEach(() => {
   delete process.env.REVIEW_RATE_LIMIT_PER_HOUR;
+  vi.unstubAllEnvs();
 });
 
 describe('submissionVerdict', () => {
@@ -52,6 +53,13 @@ describe('submissionVerdict', () => {
     expect(submissionVerdict({ body, isBot: false, recentFromIp: 99 })).toMatchObject({ status: 201 });
   });
 
+  it('does not let a zero setting disable the production limit', () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    process.env.REVIEW_RATE_LIMIT_PER_HOUR = '0';
+    expect(submissionVerdict({ body, isBot: false, recentFromIp: 3 }))
+      .toMatchObject({ status: 429, body: { ok: false, reason: 'rate' } });
+  });
+
   it('ignores a nonsense limit and keeps the default', () => {
     process.env.REVIEW_RATE_LIMIT_PER_HOUR = 'lots';
     expect(submissionVerdict({ body, isBot: false, recentFromIp: 3 })).toMatchObject({ status: 429 });
@@ -60,5 +68,31 @@ describe('submissionVerdict', () => {
   it('passes the moderation reason through', () => {
     expect(submissionVerdict({ body: { ...body, comment: 'Too short.' }, isBot: false, recentFromIp: 0 }))
       .toMatchObject({ status: 400, body: { ok: false, reason: 'words' } });
+  });
+});
+
+// The route answers these two before it calls BotID or the database, so the early exit and
+// the full verdict have to agree on exactly the same submissions.
+describe('failsLocalBotChecks', () => {
+  it('catches a filled honeypot', () => {
+    expect(failsLocalBotChecks({ ...body, website: 'http://spam' })).toBe(true);
+  });
+
+  it('catches a form completed faster than a human can type', () => {
+    expect(failsLocalBotChecks({ ...body, elapsedMs: 900 })).toBe(true);
+  });
+
+  it('passes a genuine submission through to the network checks', () => {
+    expect(failsLocalBotChecks(body)).toBe(false);
+  });
+
+  it('passes a submission with no timer or honeypot field at all', () => {
+    expect(failsLocalBotChecks({ name: body.name, comment: body.comment, rating: 5, lang: 'en' })).toBe(false);
+  });
+
+  it('answers with the same 403 the full verdict would have given', () => {
+    const early = botVerdict();
+    const full = submissionVerdict({ body: { ...body, website: 'http://spam' }, isBot: false, recentFromIp: 0 });
+    expect(early).toEqual(full);
   });
 });
