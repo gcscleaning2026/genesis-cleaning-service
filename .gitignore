@@ -43,3 +43,51 @@ local-dev.db*
 # env files — the template is the only one that ships
 .env*
 !.env.example
+
+# secrets and credentials
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+credentials.json
+service-account*.json
+secrets.json
+*.secret
+.netrc
+.npmrc
+.htpasswd
+
+# AI assistant tooling — local to whoever is working, not part of the product
+.agents/
+.claude/
+.serena/
+.cursor/
+.cursorrules
+.cursorignore
+.windsurf/
+.windsurfrules
+.aider*
+.continue/
+.codeium/
+.github/copilot-instructions.md
+.gemini/
+.opencode/
+.roo/
+.cline*
+.kilocode/
+.zed/
+.mcp.json
+mcp.json
+skills-lock.json
+
+# AI assistant instruction files
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+GEMINI.md
+.clauderc
+
+# Generated plans, transcripts and notes from AI sessions
+docs/
+!docs/.gitkeep
