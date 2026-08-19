@@ -332,6 +332,85 @@ class GenesisSite extends React.Component {
     }
   }
 
+  toggleFaq(e) {
+    const trigger = e.target instanceof Element ? e.target.closest('[data-faq-trigger]') : null;
+    const item = trigger ? trigger.closest('[data-faq-item]') : null;
+    const answer = item ? item.querySelector('[data-faq-answer]') : null;
+    const content = item ? item.querySelector('[data-faq-content]') : null;
+    const icon = item ? item.querySelector('[data-faq-icon]') : null;
+    const gsap = this.gsap;
+    if (!item || !answer || !gsap || this.lite) return;
+
+    e.preventDefault();
+    const currentlyOpen = item.dataset.faqState
+      ? item.dataset.faqState === 'open'
+      : item.open;
+    const reopening = !currentlyOpen && item.open;
+    const shouldOpen = !currentlyOpen;
+    gsap.killTweensOf([answer, content, icon].filter(Boolean));
+    item.dataset.faqMotion = 'gsap';
+    item.dataset.faqState = shouldOpen ? 'open' : 'closed';
+
+    const answerDuration = this.M?.dur?.m || 0.95;
+    const iconDuration = this.M?.dur?.s || 0.6;
+
+    if (shouldOpen) {
+      item.open = true;
+      const height = answer.scrollHeight;
+      gsap.set(answer, { height: reopening ? answer.offsetHeight : 0 });
+      if (!reopening && content) gsap.set(content, { opacity: 0, y: 10 });
+      if (!reopening && icon) gsap.set(icon, { rotation: 0, scale: 1, transformOrigin: '50% 50%' });
+
+      const timeline = gsap.timeline({
+        onComplete: () => {
+          if (item.dataset.faqState !== 'open') return;
+          answer.style.height = 'auto';
+          if (content) gsap.set(content, { clearProps: 'opacity,transform' });
+          if (icon) gsap.set(icon, { clearProps: 'transform' });
+        }
+      });
+      timeline.to(answer, { height, duration: answerDuration, ease: this.M.ease }, 0);
+      if (content) {
+        timeline.to(content, {
+          opacity: 1,
+          y: 0,
+          duration: 0.48,
+          ease: this.M.easeSoft
+        }, answerDuration * 0.36);
+      }
+      if (icon) {
+        timeline
+          .to(icon, { rotation: 45, scale: 1.1, duration: 0.24, ease: 'power2.out' }, 0)
+          .to(icon, { scale: 1, duration: iconDuration * 0.63, ease: 'power2.out' }, 0.24);
+      }
+      return;
+    }
+
+    gsap.set(answer, { height: answer.offsetHeight });
+    const timeline = gsap.timeline({
+      onComplete: () => {
+        if (item.dataset.faqState !== 'closed') return;
+        item.open = false;
+        answer.style.height = '';
+        if (content) gsap.set(content, { clearProps: 'opacity,transform' });
+        if (icon) gsap.set(icon, { clearProps: 'transform' });
+      }
+    });
+    timeline.to(answer, {
+      height: 0,
+      duration: answerDuration * 0.62,
+      ease: 'power2.inOut'
+    }, 0);
+    if (content) {
+      timeline.to(content, { opacity: 0, y: 8, duration: 0.28, ease: 'power2.in' }, 0);
+    }
+    if (icon) {
+      timeline
+        .to(icon, { rotation: 0, scale: 0.92, duration: 0.24, ease: 'power2.in' }, 0)
+        .to(icon, { scale: 1, duration: iconDuration * 0.47, ease: 'power2.out' }, 0.24);
+    }
+  }
+
   paintStars() {
     const r = this.rating || 5;
     document.querySelectorAll('[data-star]').forEach(btn => {
@@ -385,6 +464,7 @@ class GenesisSite extends React.Component {
     if (this.gsap) {
       if (this.tick) this.gsap.ticker.remove(this.tick);
       if (this.velTick) this.gsap.ticker.remove(this.velTick);
+      this.gsap.killTweensOf('[data-faq-answer],[data-faq-content],[data-faq-icon]');
       // Never leave content stranded at opacity 0 / clipped.
       this.gsap.set('[data-reveal],[data-anim],[data-clip],[data-val],[data-val] *,[data-w] > span', { clearProps: 'all' });
     }
@@ -866,7 +946,7 @@ class GenesisSite extends React.Component {
     const gsap = this.gsap;
     const M = this.M;
     if (!this.headEls) {
-      this.headEls = ['hero-h', 'services-h', 'why-h', 'es-h', 'cta-h', 'contact-h']
+      this.headEls = ['hero-h', 'services-h', 'why-h', 'faq-h', 'es-h', 'cta-h', 'contact-h']
         .map(id => document.getElementById(id)).filter(Boolean);
     }
     if (this.headST) this.headST.forEach(s => { if (s) s.kill(); });
@@ -1240,6 +1320,7 @@ class GenesisSite extends React.Component {
     return {
       openModal: () => this.toggleModal(true),
       closeModal: () => this.toggleModal(false),
+      toggleFaq: (e) => this.toggleFaq(e),
       setStar: (e) => {
         this.rating = parseInt(e.currentTarget.getAttribute('data-star'), 10) || 5;
         this.paintStars();

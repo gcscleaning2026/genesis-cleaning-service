@@ -38,6 +38,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
       <a href="#top" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60" data-i18n="nav.home">Home</a>
       <a href="#services" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60" data-i18n="nav.services">Services</a>
       <a href="#why" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60" data-i18n="nav.why">Why GCS</a>
+      <a href="#faq" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60" data-i18n="nav.faq">FAQ</a>
       <a href="#contact" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60" data-i18n="nav.contact">Contact</a>
     </nav>
 
@@ -62,6 +63,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
       <a href="#top" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.home">Home</a>
       <a href="#services" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.services">Services</a>
       <a href="#why" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.why">Why GCS</a>
+      <a href="#faq" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.faq">FAQ</a>
       <a href="#contact" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.contact">Contact</a>
     </nav>
     <div style="display:flex;align-items:center;gap:12px;margin-top:20px">
@@ -216,6 +218,63 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
         <div><h3 style="font-family:Outfit,sans-serif;font-size:17px;font-weight:700;color:#0B1E4E;margin:0 0 6px" data-i18n="why.5.t">Professional presentation</h3><p style="font-size:15px;line-height:1.55;color:#5A6A8C;margin:0" data-i18n="why.5.b">We arrive prepared, work carefully around your things and leave the space ready to use.</p></div>
       </li>
     </ul>
+  </div>
+</section>
+
+<section id="faq" aria-labelledby="faq-h" style="background:#FBFDFE;border-top:1px solid #EBF2F7">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,8vw,110px) 24px">
+    <div style="max-width:680px;margin:0 0 clamp(32px,4vw,48px)">
+      <p data-reveal="0" style="font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#007AA8;margin:0 0 14px" data-i18n="faq.eyebrow">Frequently asked questions</p>
+      <h2 id="faq-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(30px,3.6vw,46px);line-height:1.08;letter-spacing:-.02em;color:#0B1E4E;margin:0 0 18px;max-width:18ch;text-wrap:balance" data-i18n="faq.h2">Questions people ask before booking</h2>
+      <p data-reveal="0" style="font-size:16.5px;line-height:1.62;color:#4A5A7D;margin:0;max-width:58ch" data-i18n="faq.sub">Clear answers about our supplies, access, pets, cancellations and quotes.</p>
+    </div>
+
+    <div data-faq-list="1" style="max-width:900px;display:grid;gap:12px">
+      <details data-faq-item="1" data-reveal="0" style="background:#fff;border:1px solid #E3ECF3;border-radius:18px;box-shadow:0 8px 24px rgba(11,30,78,.05)">
+        <summary id="faq-q-1" data-action="toggleFaq" data-faq-trigger="1" aria-controls="faq-a-1" style="display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;padding:22px 24px;font-family:Outfit,sans-serif;font-size:clamp(17px,1.8vw,20px);font-weight:700;line-height:1.3;color:#0B1E4E">
+          <span data-i18n="faq.1.q">Do you bring the supplies?</span><span data-faq-icon="1" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:#EAF6FC;color:#007AA8;font-family:Manrope,sans-serif;font-size:24px;font-weight:400;line-height:1">+</span>
+        </summary>
+        <div id="faq-a-1" data-faq-answer="1" role="region" aria-labelledby="faq-q-1" style="overflow:hidden">
+          <div data-faq-content="1" style="padding:0 24px 22px"><p style="font-size:15.5px;line-height:1.65;color:#5A6A8C;margin:0" data-i18n="faq.1.a">Of course, we supply all the necessary top-quality cleaning equipment.</p></div>
+        </div>
+      </details>
+
+      <details data-faq-item="2" data-reveal="60" style="background:#fff;border:1px solid #E3ECF3;border-radius:18px;box-shadow:0 8px 24px rgba(11,30,78,.05)">
+        <summary id="faq-q-2" data-action="toggleFaq" data-faq-trigger="2" aria-controls="faq-a-2" style="display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;padding:22px 24px;font-family:Outfit,sans-serif;font-size:clamp(17px,1.8vw,20px);font-weight:700;line-height:1.3;color:#0B1E4E">
+          <span data-i18n="faq.2.q">Do I need to be home?</span><span data-faq-icon="1" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:#EAF6FC;color:#007AA8;font-family:Manrope,sans-serif;font-size:24px;font-weight:400;line-height:1">+</span>
+        </summary>
+        <div id="faq-a-2" data-faq-answer="1" role="region" aria-labelledby="faq-q-2" style="overflow:hidden">
+          <div data-faq-content="1" style="padding:0 24px 22px"><p style="font-size:15.5px;line-height:1.65;color:#5A6A8C;margin:0" data-i18n="faq.2.a">You don't need to be home for us to do the job; we take care of the cleaning.</p></div>
+        </div>
+      </details>
+
+      <details data-faq-item="3" data-reveal="120" style="background:#fff;border:1px solid #E3ECF3;border-radius:18px;box-shadow:0 8px 24px rgba(11,30,78,.05)">
+        <summary id="faq-q-3" data-action="toggleFaq" data-faq-trigger="3" aria-controls="faq-a-3" style="display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;padding:22px 24px;font-family:Outfit,sans-serif;font-size:clamp(17px,1.8vw,20px);font-weight:700;line-height:1.3;color:#0B1E4E">
+          <span data-i18n="faq.3.q">Are pets allowed?</span><span data-faq-icon="1" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:#EAF6FC;color:#007AA8;font-family:Manrope,sans-serif;font-size:24px;font-weight:400;line-height:1">+</span>
+        </summary>
+        <div id="faq-a-3" data-faq-answer="1" role="region" aria-labelledby="faq-q-3" style="overflow:hidden">
+          <div data-faq-content="1" style="padding:0 24px 22px"><p style="font-size:15.5px;line-height:1.65;color:#5A6A8C;margin:0" data-i18n="faq.3.a">It doesn't matter if you have pets; we can still take care of the cleaning.</p></div>
+        </div>
+      </details>
+
+      <details data-faq-item="4" data-reveal="180" style="background:#fff;border:1px solid #E3ECF3;border-radius:18px;box-shadow:0 8px 24px rgba(11,30,78,.05)">
+        <summary id="faq-q-4" data-action="toggleFaq" data-faq-trigger="4" aria-controls="faq-a-4" style="display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;padding:22px 24px;font-family:Outfit,sans-serif;font-size:clamp(17px,1.8vw,20px);font-weight:700;line-height:1.3;color:#0B1E4E">
+          <span data-i18n="faq.4.q">Are there cancellations?</span><span data-faq-icon="1" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:#EAF6FC;color:#007AA8;font-family:Manrope,sans-serif;font-size:24px;font-weight:400;line-height:1">+</span>
+        </summary>
+        <div id="faq-a-4" data-faq-answer="1" role="region" aria-labelledby="faq-q-4" style="overflow:hidden">
+          <div data-faq-content="1" style="padding:0 24px 22px"><p style="font-size:15.5px;line-height:1.65;color:#5A6A8C;margin:0" data-i18n="faq.4.a">You can cancel up to 24 hours in advance.</p></div>
+        </div>
+      </details>
+
+      <details data-faq-item="5" data-reveal="240" style="background:#fff;border:1px solid #E3ECF3;border-radius:18px;box-shadow:0 8px 24px rgba(11,30,78,.05)">
+        <summary id="faq-q-5" data-action="toggleFaq" data-faq-trigger="5" aria-controls="faq-a-5" style="display:flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;padding:22px 24px;font-family:Outfit,sans-serif;font-size:clamp(17px,1.8vw,20px);font-weight:700;line-height:1.3;color:#0B1E4E">
+          <span data-i18n="faq.5.q">How does the pricing work?</span><span data-faq-icon="1" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:32px;height:32px;border-radius:50%;background:#EAF6FC;color:#007AA8;font-family:Manrope,sans-serif;font-size:24px;font-weight:400;line-height:1">+</span>
+        </summary>
+        <div id="faq-a-5" data-faq-answer="1" role="region" aria-labelledby="faq-q-5" style="overflow:hidden">
+          <div data-faq-content="1" style="padding:0 24px 22px"><p style="font-size:15.5px;line-height:1.65;color:#5A6A8C;margin:0" data-i18n="faq.5.a">Pricing depends on the details of each job, so the price is provided in your quote.</p></div>
+        </div>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -550,6 +609,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
       <a href="#top" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE" data-i18n="nav.home">Home</a>
       <a href="#services" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE" data-i18n="nav.services">Services</a>
       <a href="#why" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE" data-i18n="nav.why">Why GCS</a>
+      <a href="#faq" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE" data-i18n="nav.faq">FAQ</a>
       <a href="#contact" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE" data-i18n="nav.contact">Contact</a>
     </nav>
     <div data-reveal="0" style="display:flex;flex-direction:column;gap:11px">
