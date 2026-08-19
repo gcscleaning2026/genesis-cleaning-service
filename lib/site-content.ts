@@ -43,7 +43,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
     </nav>
 
     <div data-desk="1" style="display:flex;align-items:center;gap:14px">
-      <div role="group" data-i18n-aria="a11y.langgroup" aria-label="Language" style="position:relative;display:flex;align-items:center;background:#EFF5F9;border-radius:999px;padding:3px">
+      <div role="group" data-i18n-aria="a11y.langgroup" aria-label="Language" style="position:relative;display:flex;align-items:center;background:#EFF5F9;border-radius:999px;padding:3px;overflow:hidden">
         <span data-knob="1" aria-hidden="true" style="position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:999px;background:#0B1E4E"></span>
         <button type="button" data-lang-btn="en" data-action="setEn" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:7px 13px;border-radius:999px;background:transparent;color:#fff;transition:color .32s ease">EN</button>
         <button type="button" data-lang-btn="es" data-action="setEs" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:7px 13px;border-radius:999px;background:transparent;color:#56658A;transition:color .32s ease">ES</button>
@@ -67,7 +67,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
       <a href="#contact" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.contact">Contact</a>
     </nav>
     <div style="display:flex;align-items:center;gap:12px;margin-top:20px">
-      <div role="group" data-i18n-aria="a11y.langgroup" aria-label="Language" style="position:relative;display:flex;align-items:center;background:#EFF5F9;border-radius:999px;padding:4px">
+      <div role="group" data-i18n-aria="a11y.langgroup" aria-label="Language" style="position:relative;display:flex;align-items:center;background:#EFF5F9;border-radius:999px;padding:4px;overflow:hidden">
         <span data-knob="1" aria-hidden="true" style="position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:#0B1E4E"></span>
         <button type="button" data-lang-btn="en" data-action="setEn" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;padding:9px 16px;border-radius:999px;background:transparent;color:#fff;transition:color .32s ease">EN</button>
         <button type="button" data-lang-btn="es" data-action="setEs" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;padding:9px 16px;border-radius:999px;background:transparent;color:#56658A;transition:color .32s ease">ES</button>
@@ -623,7 +623,7 @@ export const SITE_HTML = `<div id="top" data-pagepad="1">
     </div>
     <div data-reveal="0">
       <p style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6C82AC;margin:0 0 12px" data-i18n="foot.lang">Language</p>
-      <div role="group" data-i18n-aria="a11y.langgroup" aria-label="Language" style="position:relative;display:inline-flex;align-items:center;background:rgba(255,255,255,.08);border-radius:999px;padding:4px">
+      <div role="group" data-i18n-aria="a11y.langgroup" aria-label="Language" style="position:relative;display:inline-flex;align-items:center;background:rgba(255,255,255,.08);border-radius:999px;padding:4px;overflow:hidden">
         <span data-knob="1" aria-hidden="true" style="position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:#ffffff"></span>
         <button type="button" data-lang-btn="en" data-action="setEn" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:8px 15px;border-radius:999px;background:transparent;color:#0B1E4E;transition:color .32s ease">EN</button>
         <button type="button" data-lang-btn="es" data-action="setEs" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:8px 15px;border-radius:999px;background:transparent;color:#A9BEDF;transition:color .32s ease">ES</button>
