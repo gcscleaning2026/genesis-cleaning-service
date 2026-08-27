@@ -93,7 +93,7 @@ footer [data-navlink]:hover:not(:focus-visible)::after{transform:scaleX(0);trans
    viewport against everything beneath it on every frame, and blocks straightforward
    layer promotion for the content underneath. Plain alpha at a slightly lower opacity
    reads the same at 128px tile size. */
-#gcs-grain{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:.035;background-image:url("/assets/grain.webp");background-size:128px 128px;transform:translateZ(0);will-change:transform;contain:strict}
+#gcs-grain{position:fixed;inset:0;z-index:95;pointer-events:none;opacity:.035;background-image:url("/assets/grain.webp");background-size:128px 128px;transform:translateZ(0);contain:strict}
 body{margin:0;background:#FBFDFE;color:#12203F;font-family:Manrope,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:#0E4FA8;text-decoration:none}
 a:hover{color:#00A9E0}

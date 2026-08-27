@@ -1,9 +1,9 @@
+import { preload } from 'react-dom';
 import { I18N_SEED, pageHtml } from '@/lib/render';
 import { faqJsonLd } from '@/lib/faq-schema';
 import type { Lang } from '@/lib/i18n';
-import type { CardReview } from '@/lib/review-card';
-import { getDb } from '@/lib/db';
-import { listByStatus } from '@/lib/reviews-repo';
+import { getApprovedReviews } from '@/lib/reviews-cache';
+import { HERO_AVIF_SRCSET, HERO_PRELOAD_HREF, HERO_SIZES } from '@/lib/hero-image';
 import SiteRuntime from './site-runtime';
 
 // The English strings have to survive onto the Spanish page: the runtime builds its
@@ -19,19 +19,20 @@ const SEED_JSON = JSON.stringify(I18N_SEED).replace(/</g, '\\u003c');
  * JavaScript runs. SiteRuntime renders nothing; it attaches to this DOM after
  * hydration and takes over the interactive parts.
  */
-// A build or a revalidation must never fail because Turso is unreachable: an empty strip
-// is a far better outcome than a 500 on the home page.
-async function getApprovedReviews(): Promise<CardReview[]> {
-  try {
-    const rows = await listByStatus(getDb(), 'approved', 24);
-    return rows.map(row => ({ name: row.name, comment: row.comment, rating: row.rating }));
-  } catch (error) {
-    console.error('[reviews] could not load approved reviews', error);
-    return [];
-  }
-}
-
 export async function SitePage({ lang }: { lang: Lang }) {
+  // The LCP element, and only on this route: the service and area pages have their own
+  // photograph, and preloading this one there would download an image they never show.
+  //
+  // The hero is a <picture>: AVIF first, WebP behind it. `type` is what keeps the two in
+  // step — a browser without AVIF ignores a preload it cannot decode and falls through to
+  // the <img>, so it never downloads a format it will not use.
+  preload(HERO_PRELOAD_HREF, {
+    as: 'image',
+    type: 'image/avif',
+    imageSrcSet: HERO_AVIF_SRCSET,
+    imageSizes: HERO_SIZES,
+    fetchPriority: 'high'
+  });
   const reviews = await getApprovedReviews();
   return (
     <>

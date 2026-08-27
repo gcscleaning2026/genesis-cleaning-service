@@ -67,6 +67,14 @@ function translate(html: string) {
   out = out.replace(/(<a[^>]*)\saria-current="true"([^>]*\sdata-lang-btn="en")/g, '$1$2');
   out = out.replace(/(<a[^>]*\sdata-lang-btn="es")/g, '$1 aria-current="true"');
 
+  // Links that leave the home page point at the English route in the source markup, so on
+  // the Spanish page they have to move to their /es counterpart. The Spanish href is carried
+  // on the element as `data-eshref` rather than derived here, because a rule that rewrote
+  // every internal href by prefixing /es would also rewrite the ones that must not move.
+  out = out.replace(/(<a[^>]*\shref=")[^"]*("[^>]*\sdata-eshref="([^"]*)")/g, (_w, head, tail, es) =>
+    head + attrEscape(es) + tail
+  );
+
   // Same deep link apply() builds at runtime, so the no-JS markup is already correct.
   const wa = 'https://wa.me/19083383160?text=' + encodeURIComponent(WA_TEXT.es);
   out = out.replace(/(<a[^>]*\sdata-wa="1"[^>]*href=")[^"]*(")/g, (_w, head, tail) => head + attrEscape(wa) + tail);
@@ -111,9 +119,26 @@ if (missing.length) {
   console.warn(`[render] ${missing.length} key(s) fall back to English: ${missing.join(', ')}`);
 }
 
+// A [data-i18n] element's text is read into I18N_SEED verbatim and written back with
+// `textContent` by the client runtime when the language is toggled, so a character
+// reference in that text would be shown literally the first time it is restored. Catching
+// it here rather than in review makes it a build failure instead of a `&amp;` on the page.
+for (const [key, value] of Object.entries(I18N_SEED.t)) {
+  if (/&[a-zA-Z]+;|&#\d+;/.test(value)) {
+    throw new Error(
+      `[render] data-i18n="${key}" contains a character reference (${value.trim()}); write the character itself.`
+    );
+  }
+}
+
+
+// The Spanish href has been applied by now on /es and is dead weight on /, so it comes back
+// out of both. It exists to be read by translate(), not by a browser.
+const stripEsHref = (html: string) => html.replace(/\sdata-eshref="[^"]*"/g, '');
+
 const PAGES: Record<Lang, string> = {
-  en: splitHeroWords(SITE_HTML),
-  es: splitHeroWords(translate(SITE_HTML))
+  en: stripEsHref(splitHeroWords(SITE_HTML)),
+  es: stripEsHref(splitHeroWords(translate(SITE_HTML)))
 };
 
 // The marquee is the one part of SITE_HTML that is not static: it is written per render

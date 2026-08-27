@@ -17,13 +17,17 @@ export const config: VercelConfig = {
   outputDirectory: '.next',
   trailingSlash: false,
   headers: [
-    // Images and other public assets keep short freshness: the filenames are stable, so
-    // replacing one has to be able to reach clients without stranding them on a year-old
-    // copy.
+    // Images and other public assets. The filenames are stable, so this cannot be
+    // `immutable` — replacing one has to be able to reach clients. A day of freshness was
+    // too cautious for that: these files change a few times a year and there are sixty-odd
+    // of them, so every returning visitor was revalidating an unchanged set daily. A month
+    // of freshness with a year of stale-while-revalidate keeps a replacement reachable
+    // — the stale copy is served once and the new one is fetched in the background — while
+    // the common case stops touching the network at all.
     routes.cacheControl('/assets/(.*)', {
       public: true,
-      maxAge: '1day',
-      staleWhileRevalidate: '1week'
+      maxAge: '30days',
+      staleWhileRevalidate: '1year'
     }),
     // The two variable fonts are content-addressed in practice — a new cut ships under a
     // new filename — so they can be cached for a year.

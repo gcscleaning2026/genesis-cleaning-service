@@ -733,7 +733,6 @@ class GenesisSite extends React.Component {
     this.buildHeadings(false);
     this.buildReveals();
     this.buildValues();
-    if (!this.lite) this.buildDepth();
     this.heroIntro();
 
     this.onResize = () => {
@@ -752,17 +751,24 @@ class GenesisSite extends React.Component {
     ST.refresh();
 
     // Everything above either pre-hides content or is the reason `gcs-anim` was hiding it,
-    // so it has to finish before the class comes off. The progress bar, the header shadow
-    // and the marquee hide nothing — and the marquee is the expensive one, cloning every
-    // review card and measuring the strip. Running them on the next frame splits what was
-    // a single ~245ms task at 4x CPU throttle into two shorter ones. Worth doing because
-    // this whole sequence is normally triggered by the visitor's first scroll, so it lands
-    // on the main thread at the exact moment they are waiting for a frame.
+    // so it has to finish before the class comes off. What follows hides nothing, so it is
+    // spread over the next two frames instead of extending the first one.
+    //
+    // This whole sequence is normally triggered by the visitor's first scroll, which means
+    // it lands on the main thread at the exact moment they are waiting for a frame — a long
+    // frame here is measured as their interaction. Splitting it three ways rather than two
+    // takes the parallax setup and the marquee out of the same frame as the chrome: the
+    // marquee clones every review card and measures the strip, and buildDepth's triggers
+    // are the other half of the forced layout, so they are the two worth separating.
     requestAnimationFrame(() => {
       if (this.unmounted) return;
+      if (!this.lite) this.buildDepth();
       this.buildChrome();
-      this.buildMarquee();
-      this.ensureHeadings();
+      requestAnimationFrame(() => {
+        if (this.unmounted) return;
+        this.buildMarquee();
+        this.ensureHeadings();
+      });
     });
   }
 

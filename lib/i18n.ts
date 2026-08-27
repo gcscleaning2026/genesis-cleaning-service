@@ -8,9 +8,12 @@
  */
 
 export type Lang = 'en' | 'es';
-// Canonical origin for the deployment. app/robots.ts and app/sitemap.ts read it, so the
-// move to gcscleaning.net is this one line plus the domain itself.
-export const SITE_ORIGIN = 'https://genesis-cleaning-service.vercel.app';
+// Canonical origin for the deployment. app/robots.ts, app/sitemap.ts and the <head> and
+// JSON-LD in components/site-document.tsx all read it, so every self-referential URL the
+// site publishes comes from this one line. It is the www host rather than the apex because
+// that is what is actually served: gcscleaning.net answers with a 308 to www, and a
+// canonical pointing at a redirect is a canonical pointing away from the served page.
+export const SITE_ORIGIN = 'https://www.gcscleaning.net';
 
 // Per-language <head> copy, consumed by components/site-document.tsx.
 //
@@ -25,18 +28,18 @@ export const HEAD = {
     lang: 'en',
     locale: 'en_US',
     title: 'House & Commercial Cleaning in New Jersey | Genesis Cleaning',
-    desc: 'Residential, commercial, construction and window cleaning across New Jersey. Call or WhatsApp (908) 338-3160 for a free quote. Aquí se habla español.',
+    desc: 'Residential, commercial, construction and window cleaning in Essex, Union, Morris, Middlesex & Hudson County, NJ. Free quote: (908) 338-3160. Se habla español.',
     ogTitle: 'Genesis Cleaning Service LLC | Professional Cleaning You Can Trust',
-    ogDesc: 'Residential, commercial, construction and window cleaning in New Jersey. Los detalles hacen la diferencia. Aquí se habla español.'
+    ogDesc: 'Residential, commercial, construction and window cleaning across Essex, Union, Morris, Middlesex and Hudson County, NJ. Aquí se habla español.'
   },
   es: {
     path: '/es',
     lang: 'es',
     locale: 'es_US',
     title: 'Limpieza Residencial y Comercial en Nueva Jersey | Genesis',
-    desc: 'Limpieza residencial, comercial, post-construcción y de ventanas en Nueva Jersey. Cotización gratis al (908) 338-3160. Aquí se habla español.',
+    desc: 'Limpieza residencial, comercial, post-construcción y de ventanas en Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización gratis: (908) 338-3160.',
     ogTitle: 'Genesis Cleaning Service LLC | Limpieza profesional en la que puedes confiar',
-    ogDesc: 'Limpieza residencial, comercial, post-construcción y de ventanas en Nueva Jersey. Los detalles hacen la diferencia. Aquí se habla español.'
+    ogDesc: 'Limpieza residencial, comercial, post-construcción y de ventanas en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Aquí se habla español.'
   }
 };
 
@@ -50,6 +53,7 @@ export const WA_TEXT = {
 export const ES: Record<string, string> = {
   'nav.home': 'Inicio',
   'nav.services': 'Servicios',
+  'nav.areas': 'Áreas de servicio',
   'nav.why': 'Por qué GCS',
   'nav.faq': 'Preguntas frecuentes',
   'nav.contact': 'Contacto',
@@ -58,9 +62,9 @@ export const ES: Record<string, string> = {
   'cta.call': 'Llama al (908) 338-3160',
   'cta.callshort': 'Llamar',
   'cta.email': 'Correo',
-  'hero.h1a': 'Limpieza profesional',
-  'hero.h1b': 'en la que puedes confiar',
-  'hero.sub': 'Limpieza residencial y comercial confiable para casas y negocios en Nueva Jersey, con la atención a los detalles que hacen la diferencia.',
+  'hero.h1a': 'Limpieza de casas y negocios',
+  'hero.h1b': 'en Nueva Jersey',
+  'hero.sub': 'Limpieza de casas, limpieza de oficinas y limpieza post-construcción en los condados de Essex, Union, Morris, Middlesex y Hudson, con la atención a los detalles que hacen la diferencia.',
   'val.h2': 'Lo que nos define',
   'val.1.t': 'Profesionalismo',
   'val.1.b': 'Un proceso cuidadoso y consistente en cada trabajo, residencial o comercial.',
@@ -132,8 +136,9 @@ export const ES: Record<string, string> = {
   'contact.email': 'Correo',
   'contact.social': 'Redes',
   'contact.web': 'Sitio web',
+  'contact.base': 'Con base en',
   'contact.area': 'Área de servicio',
-  'contact.areaval': 'Nueva Jersey',
+  'contact.areaval': 'Condados de Essex, Union, Morris, Middlesex y Hudson, NJ',
   'rev.eyebrow': 'Testimonios',
   'rev.h2': 'Lo que dicen de nosotros',
   'rev.sub': 'Casas, oficinas y obras que hemos limpiado.',
@@ -155,7 +160,7 @@ export const ES: Record<string, string> = {
   'rev.err.bot': 'No pudimos verificar este envío. Inténtalo de nuevo.',
   'rev.err.network': 'No pudimos enviar tu reseña. Inténtalo de nuevo.',
   'rev.thanks': 'Gracias. Tu reseña aparecerá cuando el dueño la apruebe.',
-  'foot.tag': 'Limpieza profesional, confianza y calidad para casas y negocios en Nueva Jersey. Los detalles hacen la diferencia.',
+  'foot.tag': 'Limpieza profesional, confianza y calidad para casas y negocios en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Los detalles hacen la diferencia.',
   'foot.lang': 'Idioma',
   'foot.copy': '© 2026 Genesis Cleaning Service LLC. Todos los derechos reservados.',
   'a11y.skip': 'Saltar al contenido',

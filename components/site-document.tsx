@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { preload } from 'react-dom';
 import { HEAD, SITE_ORIGIN, type Lang } from '@/lib/i18n';
-import { HERO_AVIF_SRCSET, HERO_PRELOAD_HREF, HERO_SIZES } from '@/lib/hero-image';
+import { SERVICE_PAGES } from '@/lib/service-pages';
+import { AREA_SERVED, BUSINESS_ADDRESS } from '@/lib/service-area';
+import { servicePath } from '@/lib/routes';
 import { SAME_AS } from '@/lib/social';
+import { aggregateRating, getApprovedReviews } from '@/lib/reviews-cache';
 
 // English lives at /, Spanish at /es. They are separate root layouts (app/(en) and
 // app/(es)) rather than one shared layout because the two pages must ship different
@@ -10,28 +12,6 @@ import { SAME_AS } from '@/lib/social';
 // toggle has to see the right one.
 
 const BUSINESS_ID = `${SITE_ORIGIN}/#business`;
-
-const SERVICES = [
-  {
-    name: 'Residential Cleaning',
-    description:
-      'Homes and apartments cleaned room by room — kitchens, bathrooms, floors and living areas — on the schedule that suits the household.'
-  },
-  {
-    name: 'Commercial Cleaning',
-    description:
-      'Offices, storefronts and shared spaces kept presentable for staff and customers, on hours that fit around the business.'
-  },
-  {
-    name: 'Construction Cleaning',
-    description:
-      'Post-build and post-remodel cleaning: dust, debris and leftover material removed so the space is ready to hand over.'
-  },
-  {
-    name: 'Window Cleaning',
-    description: 'Interior and exterior glass cleaned streak-free so daylight reaches the room.'
-  }
-];
 
 const OG_IMAGE = '/assets/gcs-og.jpg';
 const OG_IMAGE_ALT = 'Genesis Cleaning Service LLC — professional cleaning you can trust';
@@ -83,8 +63,8 @@ export const viewport: Viewport = {
 // business is language-neutral, so only this and `inLanguage` differ between the two
 // pages — `@id` and `url` deliberately do not: there is one business, described twice.
 const BUSINESS_DESCRIPTION: Record<Lang, string> = {
-  en: 'Residential, commercial, construction and window cleaning for homes and businesses in New Jersey. Bilingual English and Spanish service.',
-  es: 'Limpieza residencial, comercial, post-construcción y de ventanas para casas y negocios en Nueva Jersey. Servicio bilingüe en inglés y español.'
+  en: 'Residential, commercial, construction and window cleaning for homes and businesses in Essex, Union, Morris, Middlesex and Hudson County, New Jersey. Bilingual English and Spanish service.',
+  es: 'Limpieza residencial, comercial, post-construcción y de ventanas para casas y negocios en los condados de Essex, Union, Morris, Middlesex y Hudson, Nueva Jersey. Servicio bilingüe en inglés y español.'
 };
 
 const BUSINESS = {
@@ -99,43 +79,55 @@ const BUSINESS = {
   slogan: 'Los detalles hacen la diferencia',
   telephone: '+1-908-338-3160',
   email: 'service@gcscleaning.net',
+  address: BUSINESS_ADDRESS,
   // The profiles Google and the AI crawlers already have; sameAs is what ties them to this
   // entity, and the same URLs are linked from the contact card and the footer.
   sameAs: SAME_AS,
-  areaServed: { '@type': 'State', name: 'New Jersey' },
+  areaServed: AREA_SERVED,
   availableLanguage: [
     { '@type': 'Language', name: 'English', alternateName: 'en' },
     { '@type': 'Language', name: 'Spanish', alternateName: 'es' }
-  ],
-  hasOfferCatalog: {
+  ]
+};
+
+/**
+ * All twelve services, from the same data the twelve service pages are built from.
+ *
+ * A bare name tells a parser nothing it could not guess, so each Offer carries what the
+ * service covers, who provides it, where, and the URL of the page that says the same thing
+ * in prose. It is derived rather than hand-listed because a hand-listed copy is how this
+ * ended up claiming four services while the page showed twelve.
+ */
+function offerCatalog(lang: Lang) {
+  return {
     '@type': 'OfferCatalog',
-    name: 'Cleaning services',
-    // A bare name tells a parser nothing it could not guess. Each service carries what it
-    // covers, who provides it and where, so the four are distinguishable as entities
-    // rather than as four strings. The wording tracks the service cards on the page —
-    // structured data that describes something the page does not say is worth nothing.
-    itemListElement: SERVICES.map(service => ({
+    name: lang === 'es' ? 'Servicios de limpieza' : 'Cleaning services',
+    itemListElement: SERVICE_PAGES.map(page => ({
       '@type': 'Offer',
       itemOffered: {
         '@type': 'Service',
-        name: service.name,
-        serviceType: service.name,
-        description: service.description,
+        '@id': `${SITE_ORIGIN}${servicePath(lang, page.slug)}#service`,
+        name: page.copy[lang].name,
+        serviceType: page.copy[lang].name,
+        description: page.copy[lang].intro,
+        url: `${SITE_ORIGIN}${servicePath(lang, page.slug)}`,
         provider: { '@id': BUSINESS_ID },
-        areaServed: { '@type': 'State', name: 'New Jersey' }
+        areaServed: AREA_SERVED
       }
     }))
-  }
-};
+  };
+}
 
 // Every value above is a constant in this file, but the escape is what keeps that true
 // under edits: a `<` inside any string would otherwise close the script tag early. The two
 // JSON seeds and the FAQ node in site-page.tsx do the same.
-function businessJson(lang: Lang) {
+function businessJson(lang: Lang, rating: object | null) {
   const node = {
     ...BUSINESS,
     description: BUSINESS_DESCRIPTION[lang],
-    inLanguage: HEAD[lang].lang
+    inLanguage: HEAD[lang].lang,
+    hasOfferCatalog: offerCatalog(lang),
+    ...(rating ? { aggregateRating: rating } : {})
   };
   return JSON.stringify(node).replace(/</g, '\\u003c');
 }
@@ -147,33 +139,58 @@ function businessJson(lang: Lang) {
 const MOTION_BAIL =
   'setTimeout(function(){if(!window.__gcsMotionReady)document.documentElement.classList.remove("gcs-anim")},4500)';
 
-// Fonts and icons are same-origin (see app/globals.css), so nothing third-party is on
-// the critical path. Preloading both variable fonts and the LCP image starts them
-// before the inlined CSS and the JS bundle are parsed. ReactDOM.preload rather than a
-// <link> element: React hoists both into <head>, but the element also stays in the tree
-// and ends up emitted twice.
-function preloadCriticalAssets() {
-  preload('/assets/fonts/outfit-latin-var.woff2', { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
-  preload('/assets/fonts/manrope-latin-var.woff2', { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
-  // The hero is a <picture>: AVIF first, WebP behind it. `type` is what keeps the two
-  // in step — a browser without AVIF ignores a preload it cannot decode and falls
-  // through to the <img>, so it never downloads a format it will not use. Preloading
-  // the WebP as well would hand every modern browser both copies.
-  preload(HERO_PRELOAD_HREF, {
-    as: 'image',
-    type: 'image/avif',
-    imageSrcSet: HERO_AVIF_SRCSET,
-    imageSizes: HERO_SIZES,
-    fetchPriority: 'high'
-  });
-}
+// Nothing is preloaded from here any more.
+//
+// The two variable fonts used to be, and they were 57 KB queued ahead of the LCP image on a
+// connection that had roughly 275 KB to move before it could paint. The LCP element is a
+// photograph, not text: `font-display: swap` already paints the headline in the fallback
+// face and swaps it when the file lands, and the measured CLS has an order of magnitude of
+// headroom to absorb that swap. The hero preload moved to components/site-page.tsx, which is
+// the only route that shows the hero — leaving it here would have downloaded it on all
+// thirty-four pages that do not.
 
-export function SiteDocument({ lang, children }: { lang: Lang; children: React.ReactNode }) {
-  preloadCriticalAssets();
+/**
+ * Prerender the next page on hover.
+ *
+ * The site is a hub with seventeen spokes, so most visits now involve at least one internal
+ * navigation. `moderate` starts the prerender on hover rather than for every link in the
+ * viewport, which is the difference between helping and prefetching thirty pages nobody
+ * asked for. /admin and /api are excluded: one is behind a session check, the other is a
+ * POST endpoint, and neither is somewhere a link on this site leads.
+ */
+const SPECULATION_RULES = JSON.stringify({
+  prerender: [
+    {
+      where: {
+        and: [
+          { href_matches: '/*' },
+          { not: { href_matches: '/admin/*' } },
+          { not: { href_matches: '/api/*' } }
+        ]
+      },
+      eagerness: 'moderate'
+    }
+  ]
+});
+
+export async function SiteDocument({ lang, children }: { lang: Lang; children: React.ReactNode }) {
+  // The rating belongs to the business rather than to one page, so it is computed here and
+  // rides along on every route. `cache()` in lib/reviews-cache.ts keeps this and the
+  // marquee's own fetch to a single query per render.
+  const rating = aggregateRating(await getApprovedReviews());
   return (
     <html lang={lang} className="gcs-anim">
       <body>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: businessJson(lang) }} />
+        {/* The gcs-anim class pre-hides revealed content until a script takes it off. With
+            scripts blocked entirely nothing ever does, so that pre-hide has to undo itself
+            rather than leave the page half empty. Covers the home page too. */}
+        <noscript>
+          <style>
+            {'html.gcs-anim [data-reveal],html.gcs-anim [data-val]{opacity:1}html.gcs-anim [data-clip]{clip-path:none}'}
+          </style>
+        </noscript>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: businessJson(lang, rating) }} />
+        <script type="speculationrules" dangerouslySetInnerHTML={{ __html: SPECULATION_RULES }} />
         <script dangerouslySetInnerHTML={{ __html: MOTION_BAIL }} />
         {children}
       </body>
