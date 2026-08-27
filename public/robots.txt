@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://genesis-cleaning-service.vercel.app/sitemap.xml
-Disallow: /admin

@@ -1,4 +1,5 @@
 import { I18N_SEED, pageHtml } from '@/lib/render';
+import { faqJsonLd } from '@/lib/faq-schema';
 import type { Lang } from '@/lib/i18n';
 import type { CardReview } from '@/lib/review-card';
 import { getDb } from '@/lib/db';
@@ -35,6 +36,12 @@ export async function SitePage({ lang }: { lang: Lang }) {
   return (
     <>
       <div className="gcs-shell" dangerouslySetInnerHTML={{ __html: pageHtml(lang, reviews) }} />
+      {/* The FAQ node belongs to the page rather than the layout: it is the one piece of
+          structured data that describes this document instead of the business. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(lang)).replace(/</g, '\\u003c') }}
+      />
       <script id="gcs-i18n-en" type="application/json" dangerouslySetInnerHTML={{ __html: SEED_JSON }} />
       {/* The client rebuilds the strip from this list after a language switch. */}
       <script

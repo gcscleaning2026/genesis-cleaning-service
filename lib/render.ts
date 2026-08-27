@@ -61,6 +61,12 @@ function translate(html: string) {
     const v = ES[key];
     return v == null ? whole : head + attrEscape(v) + tail;
   });
+  // The language toggle links both ways on both pages, so the one that is the current
+  // page moves with the translation. Without this a visitor on /es with no JavaScript is
+  // told, correctly for the source markup and wrongly for the page, that English is current.
+  out = out.replace(/(<a[^>]*)\saria-current="true"([^>]*\sdata-lang-btn="en")/g, '$1$2');
+  out = out.replace(/(<a[^>]*\sdata-lang-btn="es")/g, '$1 aria-current="true"');
+
   // Same deep link apply() builds at runtime, so the no-JS markup is already correct.
   const wa = 'https://wa.me/19083383160?text=' + encodeURIComponent(WA_TEXT.es);
   out = out.replace(/(<a[^>]*\sdata-wa="1"[^>]*href=")[^"]*(")/g, (_w, head, tail) => head + attrEscape(wa) + tail);

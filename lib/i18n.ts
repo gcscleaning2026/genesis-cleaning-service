@@ -8,19 +8,24 @@
  */
 
 export type Lang = 'en' | 'es';
-// Canonical origin for the deployment. Change this and the sitemap/robots files
-// together when the site moves to its own domain.
+// Canonical origin for the deployment. app/robots.ts and app/sitemap.ts read it, so the
+// move to gcscleaning.net is this one line plus the domain itself.
 export const SITE_ORIGIN = 'https://genesis-cleaning-service.vercel.app';
 
-// Per-language <head> copy. Consumed by scripts/prerender.mjs when it writes the
-// static / and /es pages, and by App.tsx when the visitor flips language in place.
+// Per-language <head> copy, consumed by components/site-document.tsx.
+//
+// `title` and `desc` are what a search result shows, and both are cut to fit: roughly 60
+// characters of title and 160 of description. That budget is why the brand is last rather
+// than first — nobody finds this business by typing its name, they type the service and
+// the state, so the words that have to survive the truncation are those. `ogTitle` and
+// `ogDesc` are the shared-link card instead, which has room, so they lead with the name.
 export const HEAD = {
   en: {
     path: '/',
     lang: 'en',
     locale: 'en_US',
-    title: 'Genesis Cleaning Service LLC | Professional Residential & Commercial Cleaning in New Jersey',
-    desc: 'Genesis Cleaning Service LLC (GCS): residential, commercial, construction and window cleaning across New Jersey. Aquí se habla español. Call or WhatsApp +1 (908) 338-3160.',
+    title: 'House & Commercial Cleaning in New Jersey | Genesis Cleaning',
+    desc: 'Residential, commercial, construction and window cleaning across New Jersey. Call or WhatsApp (908) 338-3160 for a free quote. Aquí se habla español.',
     ogTitle: 'Genesis Cleaning Service LLC | Professional Cleaning You Can Trust',
     ogDesc: 'Residential, commercial, construction and window cleaning in New Jersey. Los detalles hacen la diferencia. Aquí se habla español.'
   },
@@ -28,8 +33,8 @@ export const HEAD = {
     path: '/es',
     lang: 'es',
     locale: 'es_US',
-    title: 'Genesis Cleaning Service LLC | Limpieza Profesional Residencial y Comercial en Nueva Jersey',
-    desc: 'Genesis Cleaning Service LLC (GCS): limpieza residencial, comercial, post-construcción y de ventanas en Nueva Jersey. Aquí se habla español. Llama o escribe por WhatsApp al +1 (908) 338-3160.',
+    title: 'Limpieza Residencial y Comercial en Nueva Jersey | Genesis',
+    desc: 'Limpieza residencial, comercial, post-construcción y de ventanas en Nueva Jersey. Cotización gratis al (908) 338-3160. Aquí se habla español.',
     ogTitle: 'Genesis Cleaning Service LLC | Limpieza profesional en la que puedes confiar',
     ogDesc: 'Limpieza residencial, comercial, post-construcción y de ventanas en Nueva Jersey. Los detalles hacen la diferencia. Aquí se habla español.'
   }
@@ -66,15 +71,32 @@ export const ES: Record<string, string> = {
   'val.4.t': 'Atención al detalle',
   'val.4.b': 'Los detalles hacen la diferencia: las esquinas, los bordes y las superficies que casi siempre se pasan por alto.',
   'svc.eyebrow': 'Nuestros servicios',
-  'svc.h2': 'Cuatro formas de mantener limpio tu espacio',
-  'svc.1.t': 'Limpieza Residencial',
-  'svc.1.b': 'Casas y apartamentos limpiados cuarto por cuarto: cocinas, baños, pisos y áreas comunes, en el horario que mejor te funcione.',
-  'svc.2.t': 'Limpieza Comercial',
-  'svc.2.b': 'Oficinas, locales y espacios compartidos siempre presentables para tu equipo y tus clientes, con horarios que se ajustan a tu operación.',
-  'svc.3.t': 'Limpieza de Construcción',
-  'svc.3.b': 'Limpieza después de obra o remodelación: retiramos polvo, escombros y residuos para que el espacio quede listo para entregar.',
-  'svc.4.t': 'Limpieza de Ventanas',
-  'svc.4.b': 'Vidrios interiores y exteriores sin marcas ni rayas, para que la luz natural entre como debe ser.',
+  'svc.h2': 'Doce formas de mantener limpio tu espacio',
+  'svc.sub': 'Doce servicios en Nueva Jersey, cada uno cotizado contra el espacio que tenemos enfrente y no contra un paquete al que tengas que ajustarte.',
+  'svc.1.t': 'Limpieza Comercial y Residencial',
+  'svc.1.b': 'El mismo equipo para tu casa y para tu negocio, contratado como visita fija o como una sola cita, y trabajado cuarto por cuarto en ambos casos.',
+  'svc.2.t': 'Limpieza de Ventanas Interiores y Exteriores',
+  'svc.2.b': 'Vidrios lavados por las dos caras, con marcos y repisas incluidos, hasta que nada se interponga entre el cuarto y la luz del día.',
+  'svc.3.t': 'Limpieza Estándar',
+  'svc.3.b': 'El paso semanal o mensual constante que sostiene un lugar entre los trabajos más pesados.',
+  'svc.4.t': 'Limpieza de Mudanza, Entrada y Salida',
+  'svc.4.b': 'Una unidad vacía devuelta a condiciones de habitarse antes de que las llaves pasen a quien sigue.',
+  'svc.5.t': 'Limpieza de Oficinas',
+  'svc.5.b': 'Escritorios, cocinas y pisos atendidos temprano, tarde o de noche, para que nadie tenga que trabajar a nuestro alrededor.',
+  'svc.6.t': 'Limpieza de Apartamentos y Condominios',
+  'svc.6.b': 'Trabajo cuidadoso a la escala de un espacio pequeño, donde cada rincón queda lo bastante cerca para notarse.',
+  'svc.7.t': 'Limpieza Profunda',
+  'svc.7.b': 'Para un lugar que se dejó pasar, o uno que recibe mucho tránsito a diario: lechada, rieles de ventana, el interior de los electrodomésticos, zócalos y lo que se haya juntado detrás.',
+  'svc.8.t': 'Limpieza de Construcción y Casas Modelo',
+  'svc.8.b': 'Polvo de yeso, marcas de adhesivo y escombros sobrantes retirados para que la unidad se pueda mostrar o dar por terminada.',
+  'svc.9.t': 'Limpieza de Clubhouse',
+  'svc.9.b': 'Salones, salas de eventos y áreas de amenidades listos para quien entre después.',
+  'svc.10.t': 'Limpieza de Gimnasios y Centros de Acondicionamiento',
+  'svc.10.b': 'Máquinas, colchonetas, espejos y vestidores repasados donde caen las manos y la piel.',
+  'svc.11.t': 'Sanitización y Desinfección',
+  'svc.11.b': 'Desinfección apuntada a donde cuenta: manijas de puerta, interruptores, llaves de agua, teclados y todo lo demás por donde pasan las manos en un día.',
+  'svc.12.t': 'Limpieza de Rentas Vacacionales',
+  'svc.12.b': 'Cambios el mismo día entre reservas, ropa de cama incluida, para que quien llegue encuentre un cuarto terminado.',
   'why.h2': 'Por qué nos vuelven a llamar',
   'why.sub': 'GCS se construyó sobre una sola idea, la que está en nuestro logo: los detalles hacen la diferencia.',
   'why.1.t': 'Atención al detalle',
@@ -136,6 +158,7 @@ export const ES: Record<string, string> = {
   'foot.tag': 'Limpieza profesional, confianza y calidad para casas y negocios en Nueva Jersey. Los detalles hacen la diferencia.',
   'foot.lang': 'Idioma',
   'foot.copy': '© 2026 Genesis Cleaning Service LLC. Todos los derechos reservados.',
+  'a11y.skip': 'Saltar al contenido',
   'a11y.langgroup': 'Idioma',
   'a11y.menu': 'Abrir menú',
   'a11y.quickcontact': 'Contacto rápido'

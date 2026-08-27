@@ -548,7 +548,8 @@ class GenesisSite extends React.Component {
       const on = btn.getAttribute('data-lang-btn') === lang;
       const dark = btn.closest('footer');
       btn.style.color = on ? (dark ? '#0B1E4E' : '#ffffff') : (dark ? '#A9BEDF' : '#56658A');
-      btn.setAttribute('aria-pressed', String(on));
+      if (on) btn.setAttribute('aria-current', 'true');
+      else btn.removeAttribute('aria-current');
     });
 
     const slide = this.knobLang !== undefined && this.knobLang !== lang;
@@ -791,6 +792,7 @@ class GenesisSite extends React.Component {
       if (!target) return;
       e.preventDefault();
       this.scrollToTarget(target);
+      if (target.hasAttribute('tabindex')) target.focus({ preventScroll: true });
     };
     document.addEventListener('click', this.onAnchorClick);
   }
@@ -1378,8 +1380,12 @@ class GenesisSite extends React.Component {
           if (button) button.disabled = false;
         }
       },
-      setEn: () => this.setState({ lang: 'en' }),
-      setEs: () => this.setState({ lang: 'es' }),
+      // The toggle is an <a href="/"> / <a href="/es"> so the two languages are linked
+      // in the markup itself. Swapping in place is the enhancement; the navigation the
+      // href describes is the fallback, which is why the default is cancelled here
+      // rather than never offered.
+      setEn: e => { if (e && e.preventDefault) e.preventDefault(); this.setState({ lang: 'en' }); },
+      setEs: e => { if (e && e.preventDefault) e.preventDefault(); this.setState({ lang: 'es' }); },
       toggleNav: () => {
         const el = document.getElementById('gcs-mobnav');
         const btn = document.getElementById('gcs-burger');

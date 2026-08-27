@@ -23,11 +23,27 @@ const kb = (f) => Math.round(statSync(at(f)).size / 1024) + ' KB';
 // It is on for the two photographs and off for the flat-colour brand art: AVIF wins ~35%
 // on the hero photo (46.5 KB -> 30.2 KB at 1034w) but very little on a logo, and every
 // extra format is another file to keep in step with the markup.
+//
+// The twelve service photographs share one geometry (800x500, the master is already the
+// largest width served), so they are listed by slug rather than repeated one line each.
+const SERVICE_SLUGS = [
+  'commercial-residential', 'window', 'standard', 'move',
+  'office', 'apartment', 'deep', 'construction',
+  'clubhouse', 'gym', 'sanitizing', 'vacation-rental'
+];
+
 const responsive = [
   { src: 'gcs-hero.webp', widths: [480, 768, 1034], avif: true },
   { src: 'gcs-why.webp', widths: [480, 768, 948], avif: true },
   { src: 'gcs-badge.webp', widths: [96, 280, 560] },
-  { src: 'gcs-logo-navy.webp', widths: [290, 580] }
+  { src: 'gcs-logo-navy.webp', widths: [290, 580] },
+  // A service card is at most ~400 CSS px wide, so 480 covers a phone and 800 covers a
+  // 2x desktop card. AVIF is on: these are photographs, and there are twelve of them.
+  ...SERVICE_SLUGS.map((slug) => ({
+    src: `services/gcs-svc-${slug}.webp`,
+    widths: [480, 800],
+    avif: true
+  }))
 ];
 
 for (const { src, widths, avif } of responsive) {

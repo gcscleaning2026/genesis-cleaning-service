@@ -10,6 +10,15 @@
 .gi{display:inline-block;flex:0 0 auto;vertical-align:-.135em;fill:currentColor}
 /* Section headings that the layout does not show but the document outline needs, so
    headings stay in sequential order for screen readers and crawlers. */
+/* WCAG 2.4.1. The sticky header puts five nav links, a language toggle and a CTA in
+   front of the content on every page, so a keyboard visitor needs a way past them. Held
+   off-screen by position rather than by display or visibility, which would take it out of
+   the focus order and defeat the point. */
+.gcs-skip{position:fixed;left:12px;top:-120px;z-index:100;background:#fff;color:#0B1E4E;font-family:Outfit,sans-serif;font-weight:700;font-size:15px;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(11,30,78,.28);transition:top .16s ease}
+.gcs-skip:focus{top:12px}
+@media (prefers-reduced-motion:reduce){.gcs-skip{transition:none}}
+/* The skip target itself: focusable by script only, and never outlined for a mouse. */
+#main:focus{outline:none}
 .gcs-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:96px}
@@ -47,6 +56,26 @@ html.gcs-anim [data-clip]{clip-path:inset(0 0 100% 0)}
 input::placeholder,textarea::placeholder{color:#5A6A8C;opacity:1}
 [data-marq-wrap]{overflow:hidden}
 @media (prefers-reduced-motion:reduce){[data-marq-wrap]{overflow-x:auto}}
+/* Services grid. Twelve cards on a three-column bed, three of which span two columns and
+   set their photograph beside the copy instead of above it, so the rows alternate which
+   side the wide card sits on. The spans have to live here rather than inline: at two
+   columns a spanning card would leave a hole in every row a single card starts, so the
+   span is dropped and the wide cards collapse to the same shape as the rest. */
+[data-svcgrid]{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+[data-svc-feature]{display:grid;grid-column:span 2;grid-template-columns:1fr 1fr}
+/* The photograph answering the pointer is the card's hover feedback; the lift and the
+   shadow are inline, next to the rest of the card's own styles. */
+[data-svc-img]{transition:transform .5s cubic-bezier(.22,1,.36,1)}
+[data-svccard]:hover [data-svc-img]{transform:scale(1.045)}
+@media (max-width:1024px){
+  [data-svcgrid]{grid-template-columns:repeat(2,1fr)}
+  [data-svc-feature]{grid-column:auto;grid-template-columns:1fr}
+  [data-svc-feature] [data-svc-figure]{aspect-ratio:16/10;min-height:0}
+}
+@media (max-width:720px){[data-svcgrid]{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){
+  [data-svc-img],[data-svccard]:hover [data-svc-img]{transition:none;transform:none}
+}
 [data-navlink]{position:relative}
 [data-navlink]::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;border-radius:2px;background:#007AA8;transform:scaleX(0);transform-origin:50% 50%;transition:transform .45s cubic-bezier(.22,1,.36,1)}
 [data-navlink="dark"]::after{background:#4FD3F5;bottom:-5px}

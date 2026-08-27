@@ -9,6 +9,30 @@ import { SAME_AS } from '@/lib/social';
 // `<html lang>` attributes in the static HTML — a crawler that never runs the language
 // toggle has to see the right one.
 
+const BUSINESS_ID = `${SITE_ORIGIN}/#business`;
+
+const SERVICES = [
+  {
+    name: 'Residential Cleaning',
+    description:
+      'Homes and apartments cleaned room by room — kitchens, bathrooms, floors and living areas — on the schedule that suits the household.'
+  },
+  {
+    name: 'Commercial Cleaning',
+    description:
+      'Offices, storefronts and shared spaces kept presentable for staff and customers, on hours that fit around the business.'
+  },
+  {
+    name: 'Construction Cleaning',
+    description:
+      'Post-build and post-remodel cleaning: dust, debris and leftover material removed so the space is ready to hand over.'
+  },
+  {
+    name: 'Window Cleaning',
+    description: 'Interior and exterior glass cleaned streak-free so daylight reaches the room.'
+  }
+];
+
 const OG_IMAGE = '/assets/gcs-og.jpg';
 const OG_IMAGE_ALT = 'Genesis Cleaning Service LLC — professional cleaning you can trust';
 
@@ -55,18 +79,24 @@ export const viewport: Viewport = {
   themeColor: '#071336'
 };
 
-const JSON_LD = {
+// The one prose field of the business node, per language. Everything else about the
+// business is language-neutral, so only this and `inLanguage` differ between the two
+// pages — `@id` and `url` deliberately do not: there is one business, described twice.
+const BUSINESS_DESCRIPTION: Record<Lang, string> = {
+  en: 'Residential, commercial, construction and window cleaning for homes and businesses in New Jersey. Bilingual English and Spanish service.',
+  es: 'Limpieza residencial, comercial, post-construcción y de ventanas para casas y negocios en Nueva Jersey. Servicio bilingüe en inglés y español.'
+};
+
+const BUSINESS = {
   '@context': 'https://schema.org',
   '@type': 'CleaningService',
-  '@id': `${SITE_ORIGIN}/#business`,
+  '@id': BUSINESS_ID,
   name: 'Genesis Cleaning Service LLC',
   alternateName: 'GCS',
   url: `${SITE_ORIGIN}/`,
   image: `${SITE_ORIGIN}${OG_IMAGE}`,
   logo: `${SITE_ORIGIN}/assets/gcs-badge.webp`,
   slogan: 'Los detalles hacen la diferencia',
-  description:
-    'Residential, commercial, construction and window cleaning for homes and businesses in New Jersey. Bilingual English and Spanish service.',
   telephone: '+1-908-338-3160',
   email: 'service@gcscleaning.net',
   // The profiles Google and the AI crawlers already have; sameAs is what ties them to this
@@ -80,19 +110,35 @@ const JSON_LD = {
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Cleaning services',
-    itemListElement: [
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Residential Cleaning' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Commercial Cleaning' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Construction Cleaning' } },
-      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Window Cleaning' } }
-    ]
+    // A bare name tells a parser nothing it could not guess. Each service carries what it
+    // covers, who provides it and where, so the four are distinguishable as entities
+    // rather than as four strings. The wording tracks the service cards on the page —
+    // structured data that describes something the page does not say is worth nothing.
+    itemListElement: SERVICES.map(service => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: service.name,
+        serviceType: service.name,
+        description: service.description,
+        provider: { '@id': BUSINESS_ID },
+        areaServed: { '@type': 'State', name: 'New Jersey' }
+      }
+    }))
   }
 };
 
 // Every value above is a constant in this file, but the escape is what keeps that true
 // under edits: a `<` inside any string would otherwise close the script tag early. The two
-// JSON seeds in site-page.tsx do the same.
-const JSON_LD_JSON = JSON.stringify(JSON_LD).replace(/</g, '\\u003c');
+// JSON seeds and the FAQ node in site-page.tsx do the same.
+function businessJson(lang: Lang) {
+  const node = {
+    ...BUSINESS,
+    description: BUSINESS_DESCRIPTION[lang],
+    inLanguage: HEAD[lang].lang
+  };
+  return JSON.stringify(node).replace(/</g, '\\u003c');
+}
 
 // Below-the-fold content is hidden by `html.gcs-anim` until the motion chunk has built
 // its timelines. If that chunk never arrives, the class has to come off anyway — the
@@ -127,7 +173,7 @@ export function SiteDocument({ lang, children }: { lang: Lang; children: React.R
   return (
     <html lang={lang} className="gcs-anim">
       <body>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON_LD_JSON }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: businessJson(lang) }} />
         <script dangerouslySetInnerHTML={{ __html: MOTION_BAIL }} />
         {children}
       </body>
