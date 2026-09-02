@@ -18,17 +18,32 @@ import 'server-only';
 import { iconSprite, icon } from './icon-sprite';
 import { SOCIAL_PROFILES } from './social';
 import { WA_TEXT, type Lang } from './i18n';
-import { areasIndexPath, homePath, otherLang, servicesIndexPath } from './routes';
+import { areasIndexPath, homePath, otherLang, pricingPath, servicesIndexPath } from './routes';
 import type { Copy } from './page-types';
 import type { IndexCopy } from './index-pages';
 
 const PHONE_DISPLAY = '(882) 930-0319';
 const PHONE_HREF = 'tel:+18829300319';
 const EMAIL = 'service@gcscleaning.net';
-const WA_HREF = (lang: Lang) => `https://wa.me/18829300319?text=${encodeURIComponent(WA_TEXT[lang])}`;
+const waHref = (lang: Lang, text?: string) =>
+  `https://wa.me/18829300319?text=${encodeURIComponent(text ?? WA_TEXT[lang])}`;
 
 const esc = (s: string) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/** Inline markdown links plus newline bullets, so draft bodies can carry one hard link. */
+function rich(s: string) {
+  const linked = esc(s).replace(
+    /\[([^\]]+)\]\((\/[A-Za-z0-9\-\/#?]+)\)/g,
+    '<a href="$2" style="color:#007AA8;font-weight:700">$1</a>'
+  );
+  if (!s.includes('\n- ')) return linked.replace(/\n/g, '<br>');
+  const [lead, ...rest] = linked.split('\n- ');
+  const items = rest
+    .map(item => `<li style="margin:0 0 8px">${item}</li>`)
+    .join('');
+  return `${lead}<ul style="margin:12px 0 0;padding:0 0 0 18px;color:#4A5A7D">${items}</ul>`;
+}
 
 /**
  * Chrome copy. The home page keeps its strings in SITE_HTML and lib/i18n.ts because they
@@ -40,6 +55,7 @@ const UI: Record<Lang, Record<string, string>> = {
     home: 'Home',
     services: 'Services',
     areas: 'Service areas',
+    pricing: 'Pricing',
     quote: 'Get a Free Quote',
     call: `Call ${PHONE_DISPLAY}`,
     email: 'Email',
@@ -71,6 +87,7 @@ const UI: Record<Lang, Record<string, string>> = {
     home: 'Inicio',
     services: 'Servicios',
     areas: 'Áreas de servicio',
+    pricing: 'Precios',
     quote: 'Cotización gratis',
     call: `Llama al ${PHONE_DISPLAY}`,
     email: 'Correo',
@@ -103,6 +120,8 @@ export type RelatedLink = { href: string; label: string; icon: string };
 
 export type PageKind = 'service' | 'area';
 
+export type Crumb = { href?: string; label: string };
+
 export type SubpageInput = {
   lang: Lang;
   kind: PageKind;
@@ -114,8 +133,23 @@ export type SubpageInput = {
   imageAlt: string;
   /** Area pages only. */
   towns?: string[];
+  townsH2?: string;
+  townsHelper?: string;
   related: RelatedLink[];
   relatedH2: string;
+  relatedHelper?: string;
+  counties?: RelatedLink[];
+  countiesH2?: string;
+  crumbs?: Crumb[];
+  waText?: string;
+  eyebrow?: string;
+  ctaH2?: string;
+  ctaSub?: string;
+  coverageH2?: string;
+  coverageBody?: string;
+  coverageHref?: string;
+  showQuoteForm?: boolean;
+  mobileBar?: boolean;
   /** This page's own path, used by the header logo link and the breadcrumb. */
   path: string;
   /** The same page in the other language. */
@@ -146,6 +180,7 @@ function header(input: SubpageInput) {
       <a href="${homePath(lang)}" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60">${esc(t.home)}</a>
       <a href="${servicesIndexPath(lang)}" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60">${esc(t.services)}</a>
       <a href="${areasIndexPath(lang)}" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60">${esc(t.areas)}</a>
+      <a href="${pricingPath(lang)}" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60">${esc(t.pricing)}</a>
       <a href="${homePath(lang)}#contact" data-navlink="1" style="font-size:14.5px;font-weight:600;color:#2A3A60">${lang === 'es' ? 'Contacto' : 'Contact'}</a>
     </nav>
     <div style="display:flex;align-items:center;gap:14px;margin-left:auto" data-headend="1">
@@ -153,7 +188,7 @@ function header(input: SubpageInput) {
         <span aria-hidden="true" style="position:absolute;top:3px;bottom:3px;${knob};width:calc(50% - 3px);border-radius:999px;background:#0B1E4E"></span>
         ${pill('EN', enHref, lang === 'en')}${pill('ES', esHref, lang === 'es')}
       </div>
-      <a data-desk="1" href="${WA_HREF(lang)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#D42A80;color:#fff;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 18px rgba(212,42,128,.32)">
+      <a data-desk="1" href="${waHref(lang, input.waText)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;background:#D42A80;color:#fff;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 18px rgba(212,42,128,.32)">
         ${icon('i-bold-chat-circle-dots', 17)}<span>${esc(t.quote)}</span>
       </a>
     </div>
@@ -167,10 +202,26 @@ function breadcrumb(input: SubpageInput) {
   const sep = `<span aria-hidden="true" style="color:#9DB0CE">/</span>`;
   const crumb = (href: string, label: string) =>
     `<a href="${href}" style="color:#4A5A7D;font-weight:600">${esc(label)}</a>`;
-  const parent = kind === 'service' ? t.services : t.areas;
-  return `<nav aria-label="${esc(t.breadcrumb)}" style="max-width:1240px;margin:0 auto;padding:18px 24px 0;display:flex;flex-wrap:wrap;align-items:center;gap:9px;font-size:13.5px">
-  ${crumb(homePath(lang), t.home)}${sep}${crumb(`${homePath(lang)}#${kind === 'service' ? 'services' : 'contact'}`, parent)}${sep}<span style="color:#0B1E4E;font-weight:700">${esc(copy.name)}</span>
-</nav>`;
+  const items = input.crumbs?.length
+    ? input.crumbs
+    : [
+        { href: homePath(lang), label: t.home },
+        {
+          href: kind === 'service' ? servicesIndexPath(lang) : areasIndexPath(lang),
+          label: kind === 'service' ? t.services : t.areas
+        },
+        { label: copy.name }
+      ];
+  const html = items
+    .map((item, i) => {
+      const last = i === items.length - 1;
+      const node = last || !item.href
+        ? `<span style="color:#0B1E4E;font-weight:700">${esc(item.label)}</span>`
+        : crumb(item.href, item.label);
+      return i ? `${sep}${node}` : node;
+    })
+    .join('');
+  return `<nav aria-label="${esc(t.breadcrumb)}" style="max-width:1240px;margin:0 auto;padding:18px 24px 0;display:flex;flex-wrap:wrap;align-items:center;gap:9px;font-size:13.5px">${html}</nav>`;
 }
 
 function footer(input: SubpageInput) {
@@ -190,6 +241,7 @@ function footer(input: SubpageInput) {
       <a href="${homePath(lang)}" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">${esc(t.home)}</a>
       <a href="${servicesIndexPath(lang)}" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">${esc(t.services)}</a>
       <a href="${areasIndexPath(lang)}" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">${esc(t.areas)}</a>
+      <a href="${pricingPath(lang)}" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">${esc(t.pricing)}</a>
       <a href="${homePath(lang)}#contact" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">${lang === 'es' ? 'Contacto' : 'Contact'}</a>
     </nav>
     <div style="display:flex;flex-direction:column;gap:11px">
@@ -227,7 +279,7 @@ function heroFigure(input: SubpageInput) {
 function hero(input: SubpageInput) {
   const { lang, kind, copy } = input;
   const t = UI[lang];
-  const eyebrow = kind === 'service' ? t.serviceEyebrow : t.areaEyebrow;
+  const eyebrow = input.eyebrow ?? (kind === 'service' ? t.serviceEyebrow : t.areaEyebrow);
   return `<section aria-labelledby="page-h" style="position:relative;overflow:hidden;background:linear-gradient(178deg,#FFFFFF 0%,#F3FAFD 58%,#EAF6FC 100%)">
   <div aria-hidden="true" style="position:absolute;top:-180px;right:-140px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,169,224,.20),rgba(0,169,224,0) 68%)"></div>
   <div data-split="1" style="position:relative;max-width:1240px;margin:0 auto;padding:clamp(30px,4vw,52px) 24px clamp(56px,7vw,88px);display:grid;grid-template-columns:1.06fr .94fr;gap:clamp(32px,4vw,60px);align-items:center">
@@ -236,14 +288,16 @@ function hero(input: SubpageInput) {
         ${icon(input.icon, 16, 'color:#00A9E0')}${esc(eyebrow)}
       </p>
       <h1 id="page-h" data-anim="sub" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.06;letter-spacing:-.02em;color:#0B1E4E;margin:0 0 20px;text-wrap:balance">${esc(copy.h1)}</h1>
-      <p data-anim="cta" style="font-size:clamp(16.5px,1.5vw,18.5px);line-height:1.62;color:#4A5A7D;max-width:54ch;margin:0 0 32px">${esc(copy.intro)}</p>
+      <p data-anim="cta" style="font-size:clamp(16.5px,1.5vw,18.5px);line-height:1.62;color:#4A5A7D;max-width:54ch;margin:0 0 12px">${esc(copy.intro)}</p>
+      <p data-anim="cta" style="font-size:14px;font-weight:700;color:#0B4A63;margin:0 0 28px">${esc(t.spanish)}</p>
       <div data-anim="cta" style="display:flex;flex-wrap:wrap;gap:12px">
-        <a href="${WA_HREF(lang)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#D42A80;color:#fff;font-weight:700;font-size:15.5px;padding:15px 26px;border-radius:999px;box-shadow:0 8px 22px rgba(212,42,128,.32)">
+        <a href="${waHref(lang, input.waText)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#D42A80;color:#fff;font-weight:700;font-size:15.5px;padding:15px 26px;border-radius:999px;box-shadow:0 8px 22px rgba(212,42,128,.32)">
           ${icon('i-bold-chat-circle-dots', 18)}<span>${esc(t.quote)}</span>
         </a>
         <a href="${PHONE_HREF}" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#0B1E4E;border:1.5px solid #CFE0EC;font-weight:700;font-size:15.5px;padding:15px 26px;border-radius:999px">
           ${icon('i-bold-phone-call', 18, 'color:#007AA8')}<span>${esc(t.call)}</span>
         </a>
+        ${input.showQuoteForm ? `<a href="#quote" style="display:inline-flex;align-items:center;gap:10px;background:#fff;color:#007AA8;border:1.5px solid #CFE0EC;font-weight:700;font-size:15.5px;padding:15px 26px;border-radius:999px">${esc(lang === 'es' ? 'Formulario corto' : 'Short form')}</a>` : ''}
       </div>
     </div>
     <div style="border-radius:26px;overflow:hidden;aspect-ratio:${input.image ? '16/10' : '4/3'};box-shadow:0 26px 60px rgba(11,30,78,.16)" data-anim="img">${heroFigure(input)}</div>
@@ -256,7 +310,7 @@ function sections(input: SubpageInput) {
     .map(
       (s, i) => `<article data-reveal="0" style="padding:${i ? '30px' : '0'} 0 0">
       <h2 style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(22px,2.4vw,30px);line-height:1.16;letter-spacing:-.015em;color:#0B1E4E;margin:0 0 12px;text-wrap:balance">${esc(s.h2)}</h2>
-      <p style="font-size:16.5px;line-height:1.68;color:#4A5A7D;margin:0;max-width:64ch">${esc(s.body)}</p>
+      <div style="font-size:16.5px;line-height:1.68;color:#4A5A7D;margin:0;max-width:64ch">${rich(s.body)}</div>
     </article>`
     )
     .join('');
@@ -265,6 +319,7 @@ function sections(input: SubpageInput) {
 
 function includes(input: SubpageInput) {
   const { copy } = input;
+  if (!copy.includes.length) return '';
   const items = copy.includes
     .map(
       line => `<li style="display:flex;align-items:flex-start;gap:12px;padding:13px 0;border-bottom:1px solid #E7EFF6">
@@ -288,7 +343,8 @@ function townList(input: SubpageInput) {
     )
     .join('');
   return `<section aria-labelledby="towns-h" style="max-width:1240px;margin:0 auto;padding:clamp(36px,4vw,56px) 24px 0">
-    <h2 id="towns-h" data-reveal="0" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(24px,2.6vw,32px);line-height:1.14;color:#0B1E4E;margin:0 0 20px">${esc(t.townsH2)}</h2>
+    <h2 id="towns-h" data-reveal="0" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(24px,2.6vw,32px);line-height:1.14;color:#0B1E4E;margin:0 0 8px">${esc(input.townsH2 ?? t.townsH2)}</h2>
+    ${input.townsHelper ? `<p data-reveal="0" style="font-size:15px;color:#4A5A7D;margin:0 0 16px">${esc(input.townsHelper)}</p>` : ''}
     <ul data-reveal="0" style="list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin:0;padding:0">${chips}</ul>
   </section>`;
 }
@@ -296,10 +352,15 @@ function townList(input: SubpageInput) {
 function coverageNote(input: SubpageInput) {
   const t = UI[input.lang];
   const isService = input.kind === 'service';
+  const h2 = input.coverageH2 ?? (isService ? t.everywhereH2 : t.servedH2);
+  const body = input.coverageBody ?? (isService ? t.everywhereBody : t.servedBody);
+  const link = input.coverageHref
+    ? `<p style="margin:14px 0 0"><a href="${input.coverageHref}" style="color:#9FE6FF;font-weight:700">${esc(body)}</a></p>`
+    : `<p style="font-size:16px;line-height:1.62;margin:0;max-width:62ch">${esc(body)}</p>`;
   return `<section style="max-width:1240px;margin:0 auto;padding:clamp(36px,4vw,56px) 24px 0">
     <div data-reveal="0" style="background:linear-gradient(140deg,#0B1E4E,#071336);color:#C7D6EE;border-radius:24px;padding:clamp(26px,3vw,38px)">
-      <h2 style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(21px,2.2vw,27px);line-height:1.18;color:#fff;margin:0 0 10px">${esc(isService ? t.everywhereH2 : t.servedH2)}</h2>
-      <p style="font-size:16px;line-height:1.62;margin:0;max-width:62ch">${esc(isService ? t.everywhereBody : t.servedBody)}</p>
+      <h2 style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(21px,2.2vw,27px);line-height:1.18;color:#fff;margin:0 0 10px">${esc(h2)}</h2>
+      ${input.coverageHref ? '' : ''}${link}
     </div>
   </section>`;
 }
@@ -312,10 +373,25 @@ function related(input: SubpageInput) {
       </a>`
     )
     .join('');
+  const helper = input.relatedHelper
+    ? `<p style="font-size:15px;color:#4A5A7D;margin:12px 0 0">${esc(input.relatedHelper)}</p>`
+    : '';
+  const counties = input.counties?.length
+    ? `<section aria-labelledby="co-h" style="max-width:1240px;margin:0 auto;padding:clamp(28px,3vw,40px) 24px 0">
+    <h2 id="co-h" data-reveal="0" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(24px,2.6vw,32px);line-height:1.14;color:#0B1E4E;margin:0 0 20px">${esc(input.countiesH2 ?? UI[input.lang].relatedAreas)}</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px">${input.counties
+      .map(
+        link => `<a href="${link.href}" data-reveal="0" style="display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #DFEAF3;border-radius:16px;padding:16px 18px;font-size:15px;font-weight:700;color:#0B1E4E">${icon(link.icon, 20, 'color:#007AA8;flex:none')}<span>${esc(link.label)}</span></a>`
+      )
+      .join('')}</div>
+  </section>`
+    : '';
+  if (!input.related.length) return counties;
   return `<section aria-labelledby="rel-h" style="max-width:1240px;margin:0 auto;padding:clamp(36px,4vw,56px) 24px 0">
     <h2 id="rel-h" data-reveal="0" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(24px,2.6vw,32px);line-height:1.14;color:#0B1E4E;margin:0 0 20px">${esc(input.relatedH2)}</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px">${cards}</div>
-  </section>`;
+    ${helper}
+  </section>${counties}`;
 }
 
 /**
@@ -353,10 +429,10 @@ function cta(input: SubpageInput) {
   return `<section aria-labelledby="cta-h" id="contact" style="max-width:1240px;margin:clamp(48px,6vw,80px) auto 0;padding:0 24px clamp(56px,6vw,88px)">
     <div data-reveal="0" style="background:linear-gradient(140deg,#0B1E4E,#071336);border-radius:28px;padding:clamp(32px,4vw,54px);text-align:center">
       <p style="display:inline-flex;align-items:center;gap:9px;margin:0 0 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#9FE6FF;font-size:13px;font-weight:700;padding:8px 15px;border-radius:999px">${icon('i-bold-chats-circle', 15)}${esc(t.spanish)}</p>
-      <h2 id="cta-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(26px,3.2vw,40px);line-height:1.1;color:#fff;margin:0 0 14px;text-wrap:balance">${esc(t.ctaH2)}</h2>
-      <p style="font-size:16.5px;line-height:1.6;color:#C7D6EE;margin:0 auto 28px;max-width:52ch">${esc(t.ctaSub)}</p>
+      <h2 id="cta-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(26px,3.2vw,40px);line-height:1.1;color:#fff;margin:0 0 14px;text-wrap:balance">${esc(input.ctaH2 ?? t.ctaH2)}</h2>
+      <p style="font-size:16.5px;line-height:1.6;color:#C7D6EE;margin:0 auto 28px;max-width:52ch">${esc(input.ctaSub ?? t.ctaSub)}</p>
       <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
-        <a href="${WA_HREF(lang)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#D42A80;color:#fff;font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px;box-shadow:0 10px 26px rgba(212,42,128,.36)">${icon('i-bold-chat-circle-dots', 18)}<span>${esc(t.quote)}</span></a>
+        <a href="${waHref(lang, input.waText)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#D42A80;color:#fff;font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px;box-shadow:0 10px 26px rgba(212,42,128,.36)">${icon('i-bold-chat-circle-dots', 18)}<span>${esc(t.quote)}</span></a>
         <a href="${PHONE_HREF}" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.34);font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px">${icon('i-bold-phone-call', 18)}<span>${esc(t.call)}</span></a>
         <a href="mailto:${EMAIL}" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.34);font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px">${icon('i-bold-envelope-simple', 18)}<span>${esc(t.email)}</span></a>
       </div>
@@ -434,6 +510,68 @@ d.addEventListener('click',function(e){
 });
 })()`;
 
+
+const QUOTE_MOTION = `(function(){
+var form=document.getElementById('gcs-quote');
+if(!form)return;
+form.addEventListener('submit',function(ev){
+ ev.preventDefault();
+ var fd=new FormData(form);
+ var payload={name:fd.get('name'),phone:fd.get('phone'),zip:fd.get('zip'),propertyType:fd.get('propertyType'),need:fd.get('need'),website:fd.get('website')};
+ var status=form.querySelector('[data-quote-status]');
+ fetch('/api/quote',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}).then(function(res){
+  if(res.status===204||res.status===200){if(status)status.textContent=form.getAttribute('data-ok')||'';form.reset();return;}
+  if(status)status.textContent=form.getAttribute('data-err')||'';
+ }).catch(function(){if(status)status.textContent=form.getAttribute('data-err')||'';});
+});
+})()`;
+
+function quoteForm(input: SubpageInput) {
+  if (!input.showQuoteForm) return '';
+  const es = input.lang === 'es';
+  const label = (forId: string, text: string) =>
+    `<label for="${forId}" style="display:block;font-size:13.5px;font-weight:700;color:#0B1E4E;margin:0 0 6px">${esc(text)}</label>`;
+  const field = (id: string, name: string, type: string, lab: string, ph: string) =>
+    `${label(id, lab)}<input id="${id}" name="${name}" type="${type}" required placeholder="${esc(ph)}" style="width:100%;border:1.5px solid #CFE0EC;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 16px">`;
+  return `<section id="quote" aria-labelledby="quote-h" style="max-width:1240px;margin:0 auto;padding:clamp(36px,4vw,56px) 24px 0">
+    <div data-reveal="0" style="position:relative;background:#fff;border:1px solid #DFEAF3;border-radius:24px;padding:clamp(24px,3vw,36px);max-width:640px">
+      <h2 id="quote-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(24px,2.6vw,32px);line-height:1.14;color:#0B1E4E;margin:0 0 8px">${esc(es ? 'Pedir cotización' : 'Request a quote')}</h2>
+      <p style="font-size:15px;color:#4A5A7D;margin:0 0 22px">${esc(es ? 'Respondemos por teléfono o WhatsApp. No publicamos tarifas.' : 'We reply by phone or WhatsApp. We do not publish rates.')}</p>
+      <form id="gcs-quote" data-ok="${esc(es ? 'Gracias. Genesis te escribe por teléfono o WhatsApp.' : 'Thanks. Genesis will reach you by phone or WhatsApp.')}" data-err="${esc(es ? 'Revisa los campos obligatorios e inténtalo de nuevo.' : 'Check the required fields and try again.')}">
+        ${field('q-name', 'name', 'text', es ? 'Nombre' : 'Name', es ? 'Tu nombre' : 'Your name')}
+        ${field('q-phone', 'phone', 'tel', es ? 'Teléfono o número de WhatsApp' : 'Phone or WhatsApp number', '(882) 930-0319')}
+        ${field('q-zip', 'zip', 'text', es ? 'ZIP o pueblo' : 'ZIP or town', 'Orange 07050')}
+        ${label('q-type', es ? 'Casa / apartamento / negocio' : 'Home / apartment / business')}
+        <select id="q-type" name="propertyType" required style="width:100%;border:1.5px solid #CFE0EC;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 16px">
+          <option value="home">${esc(es ? 'Casa' : 'Home')}</option>
+          <option value="apartment">${esc(es ? 'Apartamento' : 'Apartment')}</option>
+          <option value="business">${esc(es ? 'Negocio' : 'Business')}</option>
+        </select>
+        ${label('q-need', es ? 'Qué necesitas' : 'What you need')}
+        <textarea id="q-need" name="need" rows="4" placeholder="${esc(es ? 'Pueblo, recámaras/baños o tipo de negocio' : 'Town, beds/baths, or business type')}" style="width:100%;border:1.5px solid #CFE0EC;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 16px"></textarea>
+        <div aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden">
+          <label for="q-website">Website</label>
+          <input id="q-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <button type="submit" style="display:inline-flex;background:#D42A80;color:#fff;font-weight:700;font-size:15.5px;padding:14px 24px;border:0;border-radius:999px;cursor:pointer">${esc(es ? 'Pedir cotización' : 'Request a quote')}</button>
+        <p data-quote-status="1" role="status" style="margin:14px 0 0;font-size:14.5px;color:#4A5A7D"></p>
+        <p style="margin:10px 0 0;font-size:13px;color:#7A8AAB">${esc(es ? 'Lo usamos para cotizar tu trabajo. No lo vendemos.' : 'We use this to quote your job. We do not sell it.')}</p>
+      </form>
+    </div>
+  </section>`;
+}
+
+function mobileBar(input: SubpageInput) {
+  if (!input.mobileBar) return '';
+  const { lang } = input;
+  const t = UI[lang];
+  return `<nav aria-label="${esc(t.quote)}" style="position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;background:#071336;padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:8px">
+  <a href="${waHref(lang, input.waText)}" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#D42A80;color:#fff;font-weight:700;font-size:14px;padding:12px 8px;border-radius:12px">${icon('i-bold-chat-circle-dots', 16)}<span>${esc(lang === 'es' ? 'Cotizar' : 'Quote')}</span></a>
+  <a href="${PHONE_HREF}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0B1E4E;font-weight:700;font-size:14px;padding:12px 8px;border-radius:12px">${icon('i-bold-phone-call', 16)}<span>${esc(lang === 'es' ? 'Llamar' : 'Call')}</span></a>
+  <a href="mailto:${EMAIL}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0B1E4E;font-weight:700;font-size:14px;padding:12px 8px;border-radius:12px">${icon('i-bold-envelope-simple', 16)}<span>${esc(t.email)}</span></a>
+</nav>`;
+}
+
 /** Every symbol these pages can reference, so the sprite carries no more than it needs. */
 function spriteFor(input: SubpageInput) {
   return iconSprite([
@@ -445,17 +583,15 @@ function spriteFor(input: SubpageInput) {
     'i-bold-seal-check',
     'i-bold-map-pin-area',
     ...input.related.map(link => link.icon),
+    ...(input.counties ?? []).map(link => link.icon),
     ...SOCIAL_PROFILES.map(profile => profile.icon)
   ]);
 }
 
 export function subpageHtml(input: SubpageInput) {
   const t = UI[input.lang];
-  // Deliberately no `data-pagepad`: on the home page that attribute reserves 65px at the
-  // bottom for the mobile quick-contact bar and paints the gap navy, and these pages have
-  // no such bar. Carrying it here put a dark background behind every section that does not
-  // paint its own.
-  return `<div id="top">
+  const pad = input.mobileBar ? ' data-pagepad="1"' : '';
+  return `<div id="top"${pad}>
 <a class="gcs-skip" href="#main">${esc(t.skip)}</a>
 ${spriteFor(input)}
 ${header(input)}
@@ -469,11 +605,14 @@ ${includes(input)}
 ${input.kind === 'area' ? townList(input) : ''}
 ${coverageNote(input)}
 ${related(input)}
+${quoteForm(input)}
 ${faq(input)}
 ${cta(input)}
 </main>
 ${footer(input)}
+${mobileBar(input)}
 <script>${FAQ_MOTION}</script>
+${input.showQuoteForm ? `<script>${QUOTE_MOTION}</script>` : ''}
 </div>`;
 }
 

@@ -164,8 +164,8 @@ ${ICON_SPRITE_ALL}
           <span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:17px;background:#fff;box-shadow:0 8px 20px rgba(0,169,224,.24)">
             <svg class="gi" style="width:27px;height:27px;color:#00A9E0"><use href="#i-bold-house-line"/></svg>
           </span>
-          <h3 style="font-family:Outfit,sans-serif;font-size:clamp(20px,2.1vw,25px);font-weight:700;line-height:1.2;color:#0B1E4E;margin:0"><a href="/services/residential-commercial-cleaning" data-eshref="/es/services/residential-commercial-cleaning" data-i18n="svc.1.t" style="color:inherit" data-navlink="1">Commercial & Residential Cleaning</a></h3>
-          <p style="font-size:15.5px;line-height:1.6;color:#4A5A7D;margin:0" data-i18n="svc.1.b">The same crew for your house and for your place of business, booked as a standing visit or as a one-off, and worked room by room either way.</p>
+          <h3 style="font-family:Outfit,sans-serif;font-size:clamp(20px,2.1vw,25px);font-weight:700;line-height:1.2;color:#0B1E4E;margin:0"><a href="/services/house-cleaning" data-eshref="/es/services/house-cleaning" data-i18n="svc.1.t" style="color:inherit" data-navlink="1">House cleaning</a></h3>
+          <p style="font-size:15.5px;line-height:1.6;color:#4A5A7D;margin:0" data-i18n="svc.1.b">Genesis cleans houses across five New Jersey counties — kitchens, baths, floors, and living rooms, quoted from the house you have.</p>
         </div>
       </article>
 

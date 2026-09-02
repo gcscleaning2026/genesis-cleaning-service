@@ -1,0 +1,187 @@
+'use client';
+
+import { useState, type FormEvent } from 'react';
+import type { Lang } from '@/lib/i18n';
+import { PRICING_COPY } from '@/lib/wave1-services';
+
+const COPY = {
+  en: {
+    name: 'Name',
+    namePh: 'Your name',
+    phone: 'Phone or WhatsApp number',
+    zip: 'ZIP or town',
+    zipPh: 'Orange 07050',
+    property: 'Home / apartment / business',
+    home: 'Home',
+    apartment: 'Apartment',
+    business: 'Business',
+    need: 'What you need',
+    needPh: 'Town, beds/baths, or business type',
+    submit: 'Request a quote',
+    helper: PRICING_COPY.en.quoteHelper,
+    success: 'Thanks. Genesis will reach you by phone or WhatsApp.',
+    error: 'Check the required fields and try again.',
+    privacy: 'We use this to quote your job. We do not sell it.'
+  },
+  es: {
+    name: 'Nombre',
+    namePh: 'Tu nombre',
+    phone: 'Teléfono o número de WhatsApp',
+    zip: 'ZIP o pueblo',
+    zipPh: 'Orange 07050',
+    property: 'Casa / apartamento / negocio',
+    home: 'Casa',
+    apartment: 'Apartamento',
+    business: 'Negocio',
+    need: 'Qué necesitas',
+    needPh: 'Pueblo, recámaras/baños o tipo de negocio',
+    submit: 'Pedir cotización',
+    helper: PRICING_COPY.es.quoteHelper,
+    success: 'Gracias. Genesis te escribe por teléfono o WhatsApp.',
+    error: 'Revisa los campos obligatorios e inténtalo de nuevo.',
+    privacy: 'Lo usamos para cotizar tu trabajo. No lo vendemos.'
+  }
+} as const;
+
+export function QuoteForm({ lang }: { lang: Lang }) {
+  const t = COPY[lang];
+  const [status, setStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [pending, setPending] = useState(false);
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const place = String(data.get('zip') ?? '').trim();
+    const zipLike = /^\d{5}(?:-\d{4})?$/.test(place);
+    const payload: Record<string, string> = {
+      name: String(data.get('name') ?? ''),
+      phone: String(data.get('phone') ?? ''),
+      propertyType: String(data.get('propertyType') ?? ''),
+      website: String(data.get('website') ?? '')
+    };
+    if (zipLike) payload.zip = place;
+    else payload.town = place;
+    const need = String(data.get('need') ?? '').trim();
+    if (need) payload.need = need;
+
+    setPending(true);
+    setStatus('idle');
+    try {
+      const res = await fetch('/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.status === 204 || res.status === 200) {
+        setStatus('ok');
+        form.reset();
+      } else setStatus('err');
+    } catch {
+      setStatus('err');
+    } finally {
+      setPending(false);
+    }
+  }
+
+  const field = { display: 'flex', flexDirection: 'column' as const, gap: 6 };
+  const input = {
+    fontFamily: 'Manrope,sans-serif',
+    fontSize: 16,
+    padding: '12px 14px',
+    borderRadius: 12,
+    border: '1.5px solid #CFE0EC',
+    color: '#0B1E4E'
+  };
+
+  return (
+    <section
+      id="quote"
+      aria-labelledby="quote-h"
+      style={{ maxWidth: 1240, margin: '0 auto', padding: 'clamp(36px,4vw,56px) 24px 0' }}
+    >
+      <div
+        style={{
+          background: '#fff',
+          border: '1px solid #DFEAF3',
+          borderRadius: 24,
+          padding: 'clamp(24px,3vw,36px)',
+          boxShadow: '0 14px 38px rgba(11,30,78,.06)',
+          maxWidth: 640
+        }}
+      >
+        <h2 id="quote-h" style={{ fontFamily: 'Outfit,sans-serif', fontWeight: 800, fontSize: 24, color: '#0B1E4E', margin: '0 0 8px' }}>
+          {t.submit === 'Request a quote' ? 'Request a quote' : 'Pedir cotización'}
+        </h2>
+        <p style={{ fontSize: 15, lineHeight: 1.6, color: '#4A5A7D', margin: '0 0 20px' }}>{t.helper}</p>
+        <form onSubmit={onSubmit} style={{ display: 'grid', gap: 16, position: 'relative' }} noValidate>
+          <div aria-hidden="true" style={{ position: 'absolute', left: -10000, width: 1, height: 1, overflow: 'hidden' }}>
+            <label>
+              Website
+              <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+          <label style={field}>
+            <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.name}</span>
+            <input name="name" required autoComplete="name" placeholder={t.namePh} style={input} />
+          </label>
+          <label style={field}>
+            <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.phone}</span>
+            <input name="phone" type="tel" required autoComplete="tel" placeholder="(882) 930-0319" style={input} />
+          </label>
+          <label style={field}>
+            <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.zip}</span>
+            <input name="zip" required autoComplete="postal-code" placeholder={t.zipPh} style={input} />
+          </label>
+          <label style={field}>
+            <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.property}</span>
+            <select name="propertyType" required defaultValue="" style={input}>
+              <option value="" disabled>
+                {t.property}
+              </option>
+              <option value="home">{t.home}</option>
+              <option value="apartment">{t.apartment}</option>
+              <option value="business">{t.business}</option>
+            </select>
+          </label>
+          <label style={field}>
+            <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.need}</span>
+            <textarea name="need" rows={4} placeholder={t.needPh} style={input} />
+          </label>
+          <button
+            type="submit"
+            disabled={pending}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 0,
+              cursor: 'pointer',
+              fontFamily: 'Manrope,sans-serif',
+              background: '#D42A80',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: 15.5,
+              padding: '16px 26px',
+              borderRadius: 999,
+              boxShadow: '0 8px 22px rgba(212,42,128,.3)'
+            }}
+          >
+            {t.submit}
+          </button>
+          <p style={{ fontSize: 13, lineHeight: 1.5, color: '#5A6A8C', margin: 0 }}>{t.privacy}</p>
+          {status === 'ok' ? (
+            <p role="status" style={{ fontSize: 15, fontWeight: 700, color: '#0B4A63', margin: 0 }}>
+              {t.success}
+            </p>
+          ) : null}
+          {status === 'err' ? (
+            <p role="status" style={{ fontSize: 15, fontWeight: 700, color: '#B4225F', margin: 0 }}>
+              {t.error}
+            </p>
+          ) : null}
+        </form>
+      </div>
+    </section>
+  );
+}

@@ -1,5 +1,6 @@
 import 'server-only';
 import type { CleanReview } from './moderation';
+import type { QuoteFields } from './quote';
 
 const escape = (value: string) =>
   value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
@@ -47,5 +48,38 @@ export async function notifyOwnerOfPendingReview(review: CleanReview & { id: num
     });
   } catch (error) {
     console.error('[notify] could not send the owner notification', error);
+  }
+}
+
+
+
+export async function notifyOwnerOfQuote(quote: QuoteFields) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.OWNER_EMAIL;
+  const from = process.env.REVIEW_FROM_EMAIL;
+  if (!apiKey || !to || !from) {
+    console.error('[notify] missing mail env; skipping quote email');
+    return;
+  }
+  try {
+    const { Resend } = await import('resend');
+    const place = quote.zip ?? quote.town ?? '';
+    await new Resend(apiKey).emails.send({
+      from,
+      to: [to],
+      subject: 'New cleaning quote request',
+      html: `
+        <div style="font-family:system-ui,sans-serif;line-height:1.5;color:#12203F">
+          <h2 style="margin:0 0 8px">New quote request</h2>
+          <p style="margin:0 0 4px"><strong>${escape(quote.name)}</strong></p>
+          <p style="margin:0 0 4px">Phone: ${escape(quote.phone)}</p>
+          <p style="margin:0 0 4px">Place: ${escape(place)}</p>
+          <p style="margin:0 0 4px">Property: ${escape(quote.propertyType)}</p>
+          ${quote.need ? `<p style="margin:12px 0 0">${escape(quote.need)}</p>` : ''}
+        </div>
+      `
+    });
+  } catch {
+    console.error('[notify] could not send the quote notification');
   }
 }

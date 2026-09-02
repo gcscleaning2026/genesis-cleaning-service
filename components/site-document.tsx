@@ -3,7 +3,7 @@ import { HEAD, SITE_ORIGIN, type Lang } from '@/lib/i18n';
 import { SERVICE_PAGES } from '@/lib/service-pages';
 import { AREA_SERVED, BUSINESS_ADDRESS } from '@/lib/service-area';
 import { OPENING_HOURS_SPECIFICATION } from '@/lib/business-hours';
-import { servicePath } from '@/lib/routes';
+import { absoluteUrl, servicePath } from '@/lib/routes';
 import { SAME_AS } from '@/lib/social';
 import { aggregateRating, getApprovedReviews } from '@/lib/reviews-cache';
 
@@ -26,11 +26,11 @@ export function metadataFor(lang: Lang): Metadata {
     title: h.title,
     description: h.desc,
     alternates: {
-      canonical: h.path,
+      canonical: absoluteUrl(h.path),
       languages: {
-        en: HEAD.en.path,
-        es: HEAD.es.path,
-        'x-default': HEAD.en.path
+        en: absoluteUrl(HEAD.en.path),
+        es: absoluteUrl(HEAD.es.path),
+        'x-default': absoluteUrl(HEAD.en.path)
       }
     },
     openGraph: {
@@ -40,7 +40,7 @@ export function metadataFor(lang: Lang): Metadata {
       alternateLocale: other.locale,
       title: h.ogTitle,
       description: h.ogDesc,
-      url: h.path,
+      url: absoluteUrl(h.path),
       images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: OG_IMAGE_ALT }]
     },
     twitter: {
