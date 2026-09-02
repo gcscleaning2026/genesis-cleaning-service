@@ -21,7 +21,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Residential & Commercial Cleaning',
         title: 'Residential & Commercial Cleaning in NJ | Genesis',
-        desc: 'House cleaning and business cleaning across Essex, Union, Morris, Middlesex and Hudson County, NJ. Free quote: (908) 338-3160. Se habla español.',
+        desc: 'House cleaning and business cleaning across Essex, Union, Morris, Middlesex and Hudson County, NJ. Free quote: (882) 930-0319. Se habla español.',
         h1: 'Residential and commercial cleaning in New Jersey',
         intro:
           'The same crew cleans your house and your place of business. Booked as a standing weekly or monthly visit, or as a one-off when a space has gotten ahead of you, and worked room by room either way.',
@@ -66,7 +66,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza Residencial y Comercial',
         title: 'Limpieza Residencial y Comercial en NJ | Genesis',
-        desc: 'Limpieza de casas y de negocios en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización gratis: (908) 338-3160.',
+        desc: 'Limpieza de casas y de negocios en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización gratis: (882) 930-0319.',
         h1: 'Limpieza residencial y comercial en Nueva Jersey',
         intro:
           'El mismo equipo limpia tu casa y tu negocio. Contratado como visita fija semanal o mensual, o como una sola cita cuando un espacio se te adelantó, y trabajado cuarto por cuarto en ambos casos.',
@@ -122,7 +122,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Window Cleaning',
         title: 'Window Cleaning in New Jersey | Genesis Cleaning',
-        desc: 'Interior and exterior window cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Frames and sills included. Quote: (908) 338-3160.',
+        desc: 'Interior and exterior window cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Frames and sills included. Quote: (882) 930-0319.',
         h1: 'Interior and exterior window cleaning in New Jersey',
         intro:
           'Glass washed on both faces, frames and sills included, until nothing stands between the room and the daylight. Homes, storefronts and offices, on ground floors and upper storeys reachable from the inside.',
@@ -167,7 +167,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Ventanas',
         title: 'Limpieza de Ventanas en Nueva Jersey | Genesis',
-        desc: 'Limpieza de ventanas por dentro y por fuera en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (908) 338-3160.',
+        desc: 'Limpieza de ventanas por dentro y por fuera en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (882) 930-0319.',
         h1: 'Limpieza de ventanas interiores y exteriores en Nueva Jersey',
         intro:
           'Vidrios lavados por las dos caras, con marcos y repisas incluidos, hasta que nada se interponga entre el cuarto y la luz del día. Casas, locales y oficinas, en planta baja y en pisos altos alcanzables desde adentro.',
@@ -223,7 +223,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Standard Cleaning',
         title: 'Standard House Cleaning in New Jersey | Genesis',
-        desc: 'Weekly, biweekly and monthly house cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Free quote: (908) 338-3160. Se habla español.',
+        desc: 'Weekly, biweekly and monthly house cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Free quote: (882) 930-0319. Se habla español.',
         h1: 'Standard house cleaning in New Jersey',
         intro:
           'The steady weekly, biweekly or monthly pass that holds a place together between the heavier jobs. Same rooms, same checklist, same crew, so the house never gets far enough behind to need a deep clean.',
@@ -268,7 +268,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza Estándar',
         title: 'Limpieza de Casas en Nueva Jersey | Genesis',
-        desc: 'Limpieza de casas semanal, quincenal y mensual en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (908) 338-3160.',
+        desc: 'Limpieza de casas semanal, quincenal y mensual en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (882) 930-0319.',
         h1: 'Limpieza estándar de casas en Nueva Jersey',
         intro:
           'El paso constante semanal, quincenal o mensual que sostiene un lugar entre los trabajos más pesados. Los mismos cuartos, la misma lista, el mismo equipo, para que la casa nunca se atrase lo suficiente como para necesitar una limpieza profunda.',
@@ -324,7 +324,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Move-In & Move-Out Cleaning',
         title: 'Move-Out Cleaning in New Jersey | Genesis Cleaning',
-        desc: 'Move-in and move-out cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Empty units returned to move-in condition. (908) 338-3160.',
+        desc: 'Move-in and move-out cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Empty units returned to move-in condition. (882) 930-0319.',
         h1: 'Move-in and move-out cleaning in New Jersey',
         intro:
           'An empty unit brought back to move-in condition before the keys go to whoever is next. Booked by tenants at the end of a lease, by landlords between tenancies, and by buyers who would rather not inherit the last owner’s kitchen.',
@@ -369,7 +369,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Mudanza',
         title: 'Limpieza de Mudanza en Nueva Jersey | Genesis',
-        desc: 'Limpieza de entrada y salida de mudanza en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (908) 338-3160.',
+        desc: 'Limpieza de entrada y salida de mudanza en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (882) 930-0319.',
         h1: 'Limpieza de entrada y salida de mudanza en Nueva Jersey',
         intro:
           'Una unidad vacía devuelta a condiciones de habitarse antes de que las llaves pasen a quien sigue. La contratan inquilinos al terminar un contrato, dueños entre un inquilino y otro, y compradores que prefieren no heredar la cocina del anterior.',
@@ -425,7 +425,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Office Workplace Cleaning',
         title: 'Office Cleaning in New Jersey | Genesis Cleaning',
-        desc: 'Office and workplace cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Early, late or overnight visits. Quote: (908) 338-3160.',
+        desc: 'Office and workplace cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Early, late or overnight visits. Quote: (882) 930-0319.',
         h1: 'Office and workplace cleaning in New Jersey',
         intro:
           'Desks, kitchens and floors handled early, late or overnight, so nobody has to work around us. Standing visits for offices, agencies, clinics and shared workspaces across five New Jersey counties.',
@@ -470,7 +470,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Oficinas',
         title: 'Limpieza de Oficinas en Nueva Jersey | Genesis',
-        desc: 'Limpieza de oficinas y lugares de trabajo en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (908) 338-3160.',
+        desc: 'Limpieza de oficinas y lugares de trabajo en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (882) 930-0319.',
         h1: 'Limpieza de oficinas y lugares de trabajo en Nueva Jersey',
         intro:
           'Escritorios, cocinas y pisos atendidos temprano, tarde o de noche, para que nadie tenga que trabajar a nuestro alrededor. Visitas fijas para oficinas, agencias, consultorios y espacios compartidos en cinco condados de Nueva Jersey.',
@@ -526,7 +526,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Apartment & Condo Cleaning',
         title: 'Apartment & Condo Cleaning in New Jersey | Genesis',
-        desc: 'Apartment and condo cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Careful work at a smaller scale. (908) 338-3160.',
+        desc: 'Apartment and condo cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Careful work at a smaller scale. (882) 930-0319.',
         h1: 'Apartment and condo cleaning in New Jersey',
         intro:
           'Careful work scaled to a smaller footprint, where every corner is close enough to notice. Studios, one-bedrooms and condos across Hudson, Essex and the rest of the five counties we cover.',
@@ -571,7 +571,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Apartamentos y Condominios',
         title: 'Limpieza de Apartamentos en Nueva Jersey | Genesis',
-        desc: 'Limpieza de apartamentos y condominios en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (908) 338-3160.',
+        desc: 'Limpieza de apartamentos y condominios en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización: (882) 930-0319.',
         h1: 'Limpieza de apartamentos y condominios en Nueva Jersey',
         intro:
           'Trabajo cuidadoso a la escala de un espacio pequeño, donde cada rincón queda lo bastante cerca para notarse. Estudios, unidades de una recámara y condominios en Hudson, Essex y el resto de los cinco condados que cubrimos.',
@@ -627,7 +627,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Deep Cleaning',
         title: 'Deep Cleaning Service in New Jersey | Genesis Cleaning',
-        desc: 'Deep cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Grout, appliance interiors, baseboards, window tracks. (908) 338-3160.',
+        desc: 'Deep cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Grout, appliance interiors, baseboards, window tracks. (882) 930-0319.',
         h1: 'Deep cleaning in New Jersey',
         intro:
           'For a place that has been let go, or one that takes heavy traffic every day: grout, window tracks, appliance interiors, baseboards and whatever has gathered behind them. The visit that resets a house rather than maintaining it.',
@@ -672,7 +672,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza Profunda',
         title: 'Limpieza Profunda en Nueva Jersey | Genesis',
-        desc: 'Limpieza profunda en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Lechada, electrodomésticos, zócalos. (908) 338-3160.',
+        desc: 'Limpieza profunda en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Lechada, electrodomésticos, zócalos. (882) 930-0319.',
         h1: 'Limpieza profunda en Nueva Jersey',
         intro:
           'Para un lugar que se dejó pasar, o uno que recibe mucho tránsito a diario: lechada, rieles de ventana, el interior de los electrodomésticos, zócalos y lo que se haya juntado detrás. La visita que reinicia una casa en vez de mantenerla.',
@@ -728,7 +728,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Construction & Model Home Cleaning',
         title: 'Post-Construction Cleaning in New Jersey | Genesis',
-        desc: 'Post-construction and model home cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Drywall dust and debris. (908) 338-3160.',
+        desc: 'Post-construction and model home cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Drywall dust and debris. (882) 930-0319.',
         h1: 'Post-construction and model home cleaning in New Jersey',
         intro:
           'Drywall dust, adhesive marks and leftover debris cleared out so the unit can be shown or signed off. Booked by builders, general contractors and remodellers who need a site to stop looking like one.',
@@ -773,7 +773,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Construcción y Casas Modelo',
         title: 'Limpieza Post-Construcción en Nueva Jersey | Genesis',
-        desc: 'Limpieza post-construcción y de casas modelo en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. (908) 338-3160.',
+        desc: 'Limpieza post-construcción y de casas modelo en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. (882) 930-0319.',
         h1: 'Limpieza post-construcción y de casas modelo en Nueva Jersey',
         intro:
           'Polvo de yeso, marcas de adhesivo y escombros sobrantes retirados para que la unidad se pueda mostrar o dar por terminada. La contratan constructoras, contratistas generales y remodeladores que necesitan que una obra deje de parecerlo.',
@@ -829,7 +829,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Clubhouse Cleaning',
         title: 'Clubhouse & Amenity Cleaning in New Jersey | Genesis',
-        desc: 'Clubhouse, lounge and amenity cleaning for NJ communities in Essex, Union, Morris, Middlesex and Hudson County. (908) 338-3160.',
+        desc: 'Clubhouse, lounge and amenity cleaning for NJ communities in Essex, Union, Morris, Middlesex and Hudson County. (882) 930-0319.',
         h1: 'Clubhouse and amenity cleaning in New Jersey',
         intro:
           'Lounges, party rooms and amenity floors kept ready for whoever walks in next. Booked by HOAs, property managers and residential communities where the clubhouse is the room every resident judges the building by.',
@@ -874,7 +874,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Clubhouse',
         title: 'Limpieza de Clubhouse en Nueva Jersey | Genesis',
-        desc: 'Limpieza de clubhouse, salones y amenidades para comunidades en Essex, Union, Morris, Middlesex y Hudson, NJ. (908) 338-3160.',
+        desc: 'Limpieza de clubhouse, salones y amenidades para comunidades en Essex, Union, Morris, Middlesex y Hudson, NJ. (882) 930-0319.',
         h1: 'Limpieza de clubhouse y amenidades en Nueva Jersey',
         intro:
           'Salones, salas de eventos y áreas de amenidades listos para quien entre después. Los contratan asociaciones de vecinos, administradores y comunidades residenciales donde el clubhouse es el cuarto por el que cada residente juzga el edificio.',
@@ -930,7 +930,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Gyms & Fitness Center Cleaning',
         title: 'Gym & Fitness Center Cleaning in New Jersey | Genesis',
-        desc: 'Gym and fitness center cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Equipment, mats, mirrors, locker rooms. (908) 338-3160.',
+        desc: 'Gym and fitness center cleaning in Essex, Union, Morris, Middlesex and Hudson County, NJ. Equipment, mats, mirrors, locker rooms. (882) 930-0319.',
         h1: 'Gym and fitness center cleaning in New Jersey',
         intro:
           'Machines, mats, mirrors and locker rooms wiped down wherever hands and skin land. Independent studios, building fitness rooms and full facilities, cleaned outside class hours.',
@@ -975,7 +975,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Gimnasios',
         title: 'Limpieza de Gimnasios en Nueva Jersey | Genesis',
-        desc: 'Limpieza de gimnasios y centros de acondicionamiento en Essex, Union, Morris, Middlesex y Hudson, NJ. (908) 338-3160.',
+        desc: 'Limpieza de gimnasios y centros de acondicionamiento en Essex, Union, Morris, Middlesex y Hudson, NJ. (882) 930-0319.',
         h1: 'Limpieza de gimnasios y centros de acondicionamiento en Nueva Jersey',
         intro:
           'Máquinas, colchonetas, espejos y vestidores repasados donde caen las manos y la piel. Estudios independientes, salas de acondicionamiento de edificio e instalaciones completas, limpiados fuera del horario de clases.',
@@ -1031,7 +1031,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Sanitizing & Disinfecting',
         title: 'Sanitizing & Disinfecting Service in NJ | Genesis',
-        desc: 'Sanitizing and disinfecting for homes and businesses in Essex, Union, Morris, Middlesex and Hudson County, NJ. (908) 338-3160.',
+        desc: 'Sanitizing and disinfecting for homes and businesses in Essex, Union, Morris, Middlesex and Hudson County, NJ. (882) 930-0319.',
         h1: 'Sanitizing and disinfecting in New Jersey',
         intro:
           'Disinfection aimed where it counts: door handles, light switches, faucets, keyboards and the rest of what a day’s worth of hands passes over. Added to a regular clean, or booked on its own after an illness runs through a household or an office.',
@@ -1076,7 +1076,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Sanitización y Desinfección',
         title: 'Sanitización y Desinfección en Nueva Jersey | Genesis',
-        desc: 'Sanitización y desinfección para casas y negocios en Essex, Union, Morris, Middlesex y Hudson, NJ. (908) 338-3160.',
+        desc: 'Sanitización y desinfección para casas y negocios en Essex, Union, Morris, Middlesex y Hudson, NJ. (882) 930-0319.',
         h1: 'Sanitización y desinfección en Nueva Jersey',
         intro:
           'Desinfección apuntada a donde cuenta: manijas de puerta, interruptores, llaves de agua, teclados y todo lo demás por donde pasan las manos en un día. Se agrega a una limpieza regular, o se contrata sola después de que una enfermedad pasa por una casa o una oficina.',
@@ -1132,7 +1132,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       en: {
         name: 'Vacation Rental Cleaning',
         title: 'Airbnb & Vacation Rental Cleaning in NJ | Genesis',
-        desc: 'Turnover cleaning for Airbnb and short-term rentals in Essex, Union, Morris, Middlesex and Hudson County, NJ. (908) 338-3160.',
+        desc: 'Turnover cleaning for Airbnb and short-term rentals in Essex, Union, Morris, Middlesex and Hudson County, NJ. (882) 930-0319.',
         h1: 'Vacation rental turnover cleaning in New Jersey',
         intro:
           'Same-day turnarounds between bookings, linens and all, so the next arrival finds a finished room. Built for short-term rental hosts working against a checkout at eleven and a check-in at three.',
@@ -1177,7 +1177,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       es: {
         name: 'Limpieza de Rentas Vacacionales',
         title: 'Limpieza de Airbnb y Rentas Vacacionales en NJ | Genesis',
-        desc: 'Limpieza entre reservas para Airbnb y rentas de corto plazo en Essex, Union, Morris, Middlesex y Hudson, NJ. (908) 338-3160.',
+        desc: 'Limpieza entre reservas para Airbnb y rentas de corto plazo en Essex, Union, Morris, Middlesex y Hudson, NJ. (882) 930-0319.',
         h1: 'Limpieza entre reservas para rentas vacacionales en Nueva Jersey',
         intro:
           'Cambios el mismo día entre reservas, ropa de cama incluida, para que quien llegue encuentre un cuarto terminado. Hecho para anfitriones de renta corta que trabajan contra una salida a las once y una entrada a las tres.',

@@ -35,7 +35,7 @@ export const AREA_PAGES: AreaPage[] = [
       en: {
         name: 'Essex County',
         title: 'House Cleaning in Essex County, NJ | Genesis Cleaning',
-        desc: 'House and commercial cleaning in Newark, Montclair, Bloomfield, Livingston and across Essex County, NJ. Free quote: (908) 338-3160. Se habla español.',
+        desc: 'House and commercial cleaning in Newark, Montclair, Bloomfield, Livingston and across Essex County, NJ. Free quote: (882) 930-0319. Se habla español.',
         h1: 'Cleaning services in Essex County, New Jersey',
         intro:
           'Residential and commercial cleaning across Essex County, from the apartment buildings and storefronts of Newark and East Orange to the older single-family homes of Montclair, Maplewood and the Caldwells.',
@@ -80,7 +80,7 @@ export const AREA_PAGES: AreaPage[] = [
       es: {
         name: 'Condado de Essex',
         title: 'Limpieza de Casas en el Condado de Essex, NJ | Genesis',
-        desc: 'Limpieza residencial y comercial en Newark, Montclair, Bloomfield, Livingston y todo el condado de Essex, NJ. Cotización: (908) 338-3160.',
+        desc: 'Limpieza residencial y comercial en Newark, Montclair, Bloomfield, Livingston y todo el condado de Essex, NJ. Cotización: (882) 930-0319.',
         h1: 'Servicios de limpieza en el condado de Essex, Nueva Jersey',
         intro:
           'Limpieza residencial y comercial en todo el condado de Essex, desde los edificios de apartamentos y los locales de Newark y East Orange hasta las casas unifamiliares antiguas de Montclair, Maplewood y las Caldwells.',
@@ -148,7 +148,7 @@ export const AREA_PAGES: AreaPage[] = [
       en: {
         name: 'Union County',
         title: 'House Cleaning in Union County, NJ | Genesis Cleaning',
-        desc: 'House and commercial cleaning in Elizabeth, Union, Westfield, Cranford, Summit and across Union County, NJ. Quote: (908) 338-3160. Se habla español.',
+        desc: 'House and commercial cleaning in Elizabeth, Union, Westfield, Cranford, Summit and across Union County, NJ. Quote: (882) 930-0319. Se habla español.',
         h1: 'Cleaning services in Union County, New Jersey',
         intro:
           'Residential and commercial cleaning across Union County — Elizabeth, Union, Linden and Plainfield through to Westfield, Cranford, Summit and the Watchung foothills. This is the county the (908) number belongs to.',
@@ -193,7 +193,7 @@ export const AREA_PAGES: AreaPage[] = [
       es: {
         name: 'Condado de Union',
         title: 'Limpieza de Casas en el Condado de Union, NJ | Genesis',
-        desc: 'Limpieza residencial y comercial en Elizabeth, Union, Westfield, Cranford, Summit y todo el condado de Union, NJ. (908) 338-3160.',
+        desc: 'Limpieza residencial y comercial en Elizabeth, Union, Westfield, Cranford, Summit y todo el condado de Union, NJ. (882) 930-0319.',
         h1: 'Servicios de limpieza en el condado de Union, Nueva Jersey',
         intro:
           'Limpieza residencial y comercial en todo el condado de Union: Elizabeth, Union, Linden y Plainfield hasta Westfield, Cranford, Summit y las faldas de Watchung. Este es el condado al que pertenece el número (908).',
@@ -261,7 +261,7 @@ export const AREA_PAGES: AreaPage[] = [
       en: {
         name: 'Morris County',
         title: 'House Cleaning in Morris County, NJ | Genesis Cleaning',
-        desc: 'House and commercial cleaning in Morristown, Parsippany, Randolph, Madison and across Morris County, NJ. Quote: (908) 338-3160. Se habla español.',
+        desc: 'House and commercial cleaning in Morristown, Parsippany, Randolph, Madison and across Morris County, NJ. Quote: (882) 930-0319. Se habla español.',
         h1: 'Cleaning services in Morris County, New Jersey',
         intro:
           'Residential and commercial cleaning across Morris County, from the corporate parks of Parsippany and Florham Park to the larger family homes of Randolph, Denville, Montville and Mendham.',
@@ -306,7 +306,7 @@ export const AREA_PAGES: AreaPage[] = [
       es: {
         name: 'Condado de Morris',
         title: 'Limpieza de Casas en el Condado de Morris, NJ | Genesis',
-        desc: 'Limpieza residencial y comercial en Morristown, Parsippany, Randolph, Madison y todo el condado de Morris, NJ. (908) 338-3160.',
+        desc: 'Limpieza residencial y comercial en Morristown, Parsippany, Randolph, Madison y todo el condado de Morris, NJ. (882) 930-0319.',
         h1: 'Servicios de limpieza en el condado de Morris, Nueva Jersey',
         intro:
           'Limpieza residencial y comercial en todo el condado de Morris, desde los parques corporativos de Parsippany y Florham Park hasta las casas familiares grandes de Randolph, Denville, Montville y Mendham.',
@@ -374,7 +374,7 @@ export const AREA_PAGES: AreaPage[] = [
       en: {
         name: 'Middlesex County',
         title: 'House Cleaning in Middlesex County, NJ | Genesis',
-        desc: 'House and commercial cleaning in Edison, Woodbridge, New Brunswick, Piscataway and across Middlesex County, NJ. (908) 338-3160. Se habla español.',
+        desc: 'House and commercial cleaning in Edison, Woodbridge, New Brunswick, Piscataway and across Middlesex County, NJ. (882) 930-0319. Se habla español.',
         h1: 'Cleaning services in Middlesex County, New Jersey',
         intro:
           'Residential and commercial cleaning across Middlesex County — Edison, Woodbridge and Piscataway through New Brunswick, Perth Amboy and the townships along Route 1.',
@@ -419,7 +419,7 @@ export const AREA_PAGES: AreaPage[] = [
       es: {
         name: 'Condado de Middlesex',
         title: 'Limpieza de Casas en el Condado de Middlesex, NJ | Genesis',
-        desc: 'Limpieza residencial y comercial en Edison, Woodbridge, New Brunswick, Piscataway y todo el condado de Middlesex, NJ. (908) 338-3160.',
+        desc: 'Limpieza residencial y comercial en Edison, Woodbridge, New Brunswick, Piscataway y todo el condado de Middlesex, NJ. (882) 930-0319.',
         h1: 'Servicios de limpieza en el condado de Middlesex, Nueva Jersey',
         intro:
           'Limpieza residencial y comercial en todo el condado de Middlesex: Edison, Woodbridge y Piscataway pasando por New Brunswick, Perth Amboy y los municipios a lo largo de la Ruta 1.',
@@ -484,7 +484,7 @@ export const AREA_PAGES: AreaPage[] = [
       en: {
         name: 'Hudson County',
         title: 'Apartment Cleaning in Hudson County, NJ | Genesis',
-        desc: 'Apartment, condo and commercial cleaning in Jersey City, Hoboken, Bayonne, Union City and across Hudson County, NJ. (908) 338-3160. Se habla español.',
+        desc: 'Apartment, condo and commercial cleaning in Jersey City, Hoboken, Bayonne, Union City and across Hudson County, NJ. (882) 930-0319. Se habla español.',
         h1: 'Cleaning services in Hudson County, New Jersey',
         intro:
           'Apartment, condo and commercial cleaning across Hudson County — the towers of Jersey City and Hoboken, the brownstones and walk-ups of Union City and West New York, and the short-term rentals in between.',
@@ -529,7 +529,7 @@ export const AREA_PAGES: AreaPage[] = [
       es: {
         name: 'Condado de Hudson',
         title: 'Limpieza de Apartamentos en el Condado de Hudson, NJ | Genesis',
-        desc: 'Limpieza de apartamentos, condominios y comercios en Jersey City, Hoboken, Bayonne, Union City y todo el condado de Hudson, NJ. (908) 338-3160.',
+        desc: 'Limpieza de apartamentos, condominios y comercios en Jersey City, Hoboken, Bayonne, Union City y todo el condado de Hudson, NJ. (882) 930-0319.',
         h1: 'Servicios de limpieza en el condado de Hudson, Nueva Jersey',
         intro:
           'Limpieza de apartamentos, condominios y comercios en todo el condado de Hudson: las torres de Jersey City y Hoboken, los brownstones y walk-ups de Union City y West New York, y las rentas de corto plazo que hay en medio.',

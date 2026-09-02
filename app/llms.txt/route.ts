@@ -27,7 +27,7 @@ function body() {
 > Residential and commercial cleaning company serving Essex, Union, Morris, Middlesex and Hudson County, New Jersey. Bilingual English and Spanish service. Los detalles hacen la diferencia.
 
 - Based in: Orange, NJ 07050 (service-area business, no public storefront)
-- Phone: (908) 338-3160 (call or WhatsApp)
+- Phone: (882) 930-0319 (call or WhatsApp)
 - Email: service@gcscleaning.net
 - Website: ${SITE_ORIGIN}
 - Languages: English and Spanish, end to end

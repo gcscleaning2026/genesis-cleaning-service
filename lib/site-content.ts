@@ -52,7 +52,7 @@ ${ICON_SPRITE_ALL}
         <a href="/" hreflang="en" aria-current="true" data-lang-btn="en" data-action="setEn" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:7px 13px;border-radius:999px;background:transparent;color:#fff;transition:color .32s ease">EN</a>
         <a href="/es" hreflang="es" data-lang-btn="es" data-action="setEs" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:7px 13px;border-radius:999px;background:transparent;color:#56658A;transition:color .32s ease">ES</a>
       </div>
-      <a data-wa="1" data-cta-solid="1" href="https://wa.me/19083383160" target="_blank" rel="noopener" data-tilt="1" style="display:inline-flex;align-items:center;gap:9px;background:#D42A80;color:#fff;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 18px rgba(212,42,128,.32);transition:transform .18s ease, box-shadow .18s ease" style-hover="transform:translateY(-1px);box-shadow:0 10px 24px rgba(212,42,128,.4)" style-active="transform:translateY(1px)">
+      <a data-wa="1" data-cta-solid="1" href="https://wa.me/18829300319" target="_blank" rel="noopener" data-tilt="1" style="display:inline-flex;align-items:center;gap:9px;background:#D42A80;color:#fff;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 18px rgba(212,42,128,.32);transition:transform .18s ease, box-shadow .18s ease" style-hover="transform:translateY(-1px);box-shadow:0 10px 24px rgba(212,42,128,.4)" style-active="transform:translateY(1px)">
         <svg class="gi" aria-hidden="true" style="width:17px;height:17px"><use href="#i-bold-chat-circle-dots"/></svg><span data-i18n="cta.quote">Get a Free Quote</span>
       </a>
     </div>
@@ -76,7 +76,7 @@ ${ICON_SPRITE_ALL}
         <a href="/" hreflang="en" aria-current="true" data-lang-btn="en" data-action="setEn" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;padding:9px 16px;border-radius:999px;background:transparent;color:#fff;transition:color .32s ease">EN</a>
         <a href="/es" hreflang="es" data-lang-btn="es" data-action="setEs" style="position:relative;z-index:1;border:0;cursor:pointer;font-family:Manrope,sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;padding:9px 16px;border-radius:999px;background:transparent;color:#56658A;transition:color .32s ease">ES</a>
       </div>
-      <a data-wa="1" data-cta-solid="1" href="https://wa.me/19083383160" target="_blank" rel="noopener" data-action="closeNav" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#D42A80;color:#fff;font-weight:700;font-size:15px;padding:14px 18px;border-radius:999px">
+      <a data-wa="1" data-cta-solid="1" href="https://wa.me/18829300319" target="_blank" rel="noopener" data-action="closeNav" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;background:#D42A80;color:#fff;font-weight:700;font-size:15px;padding:14px 18px;border-radius:999px">
         <svg class="gi" aria-hidden="true" style="width:18px;height:18px"><use href="#i-bold-chat-circle-dots"/></svg><span data-i18n="cta.quote">Get a Free Quote</span>
       </a>
     </div>
@@ -99,11 +99,11 @@ ${ICON_SPRITE_ALL}
       </h1>
       <p data-anim="sub" style="font-size:clamp(16.5px,1.5vw,19px);line-height:1.6;color:#4A5A7D;max-width:52ch;margin:0 0 32px" data-i18n="hero.sub">Professional house cleaning, office cleaning and post-construction cleaning across Essex, Union, Morris, Middlesex and Hudson County, with attention to the details that make the difference.</p>
       <div data-anim="cta" style="display:flex;flex-wrap:wrap;gap:14px">
-        <a data-wa="1" data-cta-solid="1" href="https://wa.me/19083383160" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:11px;background:#D42A80;color:#fff;font-weight:700;font-size:16px;padding:17px 28px;border-radius:999px;white-space:nowrap;box-shadow:0 10px 26px rgba(212,42,128,.34);transition:box-shadow .18s ease" data-tilt="1" style-hover="transform:translateY(-2px);box-shadow:0 14px 32px rgba(212,42,128,.42)" style-active="transform:translateY(1px)">
+        <a data-wa="1" data-cta-solid="1" href="https://wa.me/18829300319" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:11px;background:#D42A80;color:#fff;font-weight:700;font-size:16px;padding:17px 28px;border-radius:999px;white-space:nowrap;box-shadow:0 10px 26px rgba(212,42,128,.34);transition:box-shadow .18s ease" data-tilt="1" style-hover="transform:translateY(-2px);box-shadow:0 14px 32px rgba(212,42,128,.42)" style-active="transform:translateY(1px)">
           <svg class="gi" aria-hidden="true" style="width:20px;height:20px"><use href="#i-bold-whatsapp-logo"/></svg><span data-i18n="cta.quote">Get a Free Quote</span>
         </a>
-        <a href="tel:+19083383160" style="display:inline-flex;align-items:center;gap:11px;background:#fff;color:#0B1E4E;border:1.5px solid #C9DCEA;font-weight:700;font-size:16px;padding:16px 26px;border-radius:999px;white-space:nowrap;transition:border-color .18s ease" data-tilt="1" style-hover="border-color:#00A9E0;transform:translateY(-2px)" style-active="transform:translateY(1px)">
-          <svg class="gi" aria-hidden="true" style="width:19px;height:19px;color:#00A9E0"><use href="#i-bold-phone-call"/></svg><span data-i18n="cta.call">Call (908) 338-3160</span>
+        <a href="tel:+18829300319" style="display:inline-flex;align-items:center;gap:11px;background:#fff;color:#0B1E4E;border:1.5px solid #C9DCEA;font-weight:700;font-size:16px;padding:16px 26px;border-radius:999px;white-space:nowrap;transition:border-color .18s ease" data-tilt="1" style-hover="border-color:#00A9E0;transform:translateY(-2px)" style-active="transform:translateY(1px)">
+          <svg class="gi" aria-hidden="true" style="width:19px;height:19px;color:#00A9E0"><use href="#i-bold-phone-call"/></svg><span data-i18n="cta.call">Call (882) 930-0319</span>
         </a>
       </div>
     </div>
@@ -702,7 +702,7 @@ ${ICON_SPRITE_ALL}
       <h2 id="es-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(32px,4.2vw,54px);line-height:1.05;letter-spacing:-.02em;color:#fff;margin:0 0 20px">Aquí se habla <span style="color:#4FD3F5">español</span></h2>
       <p style="font-size:clamp(16px,1.5vw,18.5px);line-height:1.65;color:#C7D6EE;margin:0 0 16px;max-width:56ch" data-i18n="es.p1">Llámanos o escríbenos por WhatsApp en español. Te atendemos en español desde la primera pregunta hasta el último detalle del trabajo.</p>
       <p style="font-size:15.5px;line-height:1.65;color:#8FA5CC;margin:0 0 30px;max-width:56ch" data-i18n="es.p2">Ask for a quote in Spanish, explain what your space needs in Spanish, and get your answer in Spanish. No translation app in the middle.</p>
-      <a data-wa="1" href="https://wa.me/19083383160" target="_blank" rel="noopener" data-tilt="1" style="display:inline-flex;align-items:center;gap:11px;background:#fff;color:#0B1E4E;font-weight:700;font-size:16px;padding:16px 26px;border-radius:999px" style-hover="transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.32)" style-active="transform:translateY(1px)">
+      <a data-wa="1" href="https://wa.me/18829300319" target="_blank" rel="noopener" data-tilt="1" style="display:inline-flex;align-items:center;gap:11px;background:#fff;color:#0B1E4E;font-weight:700;font-size:16px;padding:16px 26px;border-radius:999px" style-hover="transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.32)" style-active="transform:translateY(1px)">
         <svg class="gi" aria-hidden="true" style="width:20px;height:20px;color:#0B9E5B"><use href="#i-bold-whatsapp-logo"/></svg><span data-i18n="es.cta">Escríbenos por WhatsApp</span>
       </a>
     </div>
@@ -714,10 +714,10 @@ ${ICON_SPRITE_ALL}
     <h2 id="cta-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(30px,3.8vw,48px);line-height:1.08;letter-spacing:-.02em;color:#fff;margin:0 0 14px" data-i18n="cta.h2">Ready for a cleaner space?</h2>
     <p data-reveal="0" style="font-size:16.5px;line-height:1.6;color:#A9BEDF;margin:0 auto 34px;max-width:48ch" data-i18n="cta.sub">Tell us about your home, office or job site and we will get you a quote.</p>
     <div data-reveal="0" style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center">
-      <a href="tel:+19083383160" data-tilt="1" style="display:inline-flex;align-items:center;gap:11px;background:#fff;color:#0B1E4E;font-weight:700;font-size:16px;padding:17px 28px;border-radius:999px" style-hover="transform:translateY(-2px)" style-active="transform:translateY(1px)">
+      <a href="tel:+18829300319" data-tilt="1" style="display:inline-flex;align-items:center;gap:11px;background:#fff;color:#0B1E4E;font-weight:700;font-size:16px;padding:17px 28px;border-radius:999px" style-hover="transform:translateY(-2px)" style-active="transform:translateY(1px)">
         <svg class="gi" aria-hidden="true" style="width:19px;height:19px;color:#00A9E0"><use href="#i-bold-phone-call"/></svg><span data-i18n="cta.callshort">Call</span>
       </a>
-      <a data-wa="1" data-cta-solid="1" href="https://wa.me/19083383160" target="_blank" rel="noopener" data-tilt="1" style="display:inline-flex;align-items:center;gap:11px;background:#D42A80;color:#fff;font-weight:700;font-size:16px;padding:17px 28px;border-radius:999px;box-shadow:0 10px 26px rgba(212,42,128,.36)" style-hover="transform:translateY(-2px)" style-active="transform:translateY(1px)">
+      <a data-wa="1" data-cta-solid="1" href="https://wa.me/18829300319" target="_blank" rel="noopener" data-tilt="1" style="display:inline-flex;align-items:center;gap:11px;background:#D42A80;color:#fff;font-weight:700;font-size:16px;padding:17px 28px;border-radius:999px;box-shadow:0 10px 26px rgba(212,42,128,.36)" style-hover="transform:translateY(-2px)" style-active="transform:translateY(1px)">
         <svg class="gi" aria-hidden="true" style="width:20px;height:20px"><use href="#i-bold-whatsapp-logo"/></svg>WhatsApp
       </a>
       <a href="mailto:service@gcscleaning.net" data-tilt="1" style="display:inline-flex;align-items:center;gap:11px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.34);font-weight:700;font-size:16px;padding:16px 26px;border-radius:999px;transition:border-color .18s ease" style-hover="border-color:#4FD3F5;transform:translateY(-2px)" style-active="transform:translateY(1px)">
@@ -731,10 +731,10 @@ ${ICON_SPRITE_ALL}
   <div style="max-width:1240px;margin:0 auto;padding:0 24px clamp(60px,7vw,96px)">
     <h2 id="contact-h" style="font-family:Outfit,sans-serif;font-weight:700;font-size:clamp(22px,2.4vw,28px);color:#fff;margin:0 0 28px;padding-top:12px" data-i18n="contact.h2">Contact Genesis Cleaning Service</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:16px">
-      <a href="tel:+19083383160" data-reveal="0" data-tilt="1" data-tilt-soft="1" style="display:block;padding:24px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s ease,border-color .2s ease" style-hover="background:rgba(255,255,255,.09);border-color:rgba(79,211,245,.5)">
+      <a href="tel:+18829300319" data-reveal="0" data-tilt="1" data-tilt-soft="1" style="display:block;padding:24px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s ease,border-color .2s ease" style-hover="background:rgba(255,255,255,.09);border-color:rgba(79,211,245,.5)">
         <svg class="gi" aria-hidden="true" style="width:22px;height:22px;color:#4FD3F5"><use href="#i-bold-phone-call"/></svg>
         <p style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8FA5CC;margin:14px 0 7px" data-i18n="contact.phone">Phone</p>
-        <p style="font-family:Outfit,sans-serif;font-size:18px;font-weight:700;color:#fff;margin:0">+1 (908) 338-3160</p>
+        <p style="font-family:Outfit,sans-serif;font-size:18px;font-weight:700;color:#fff;margin:0">+1 (882) 930-0319</p>
       </a>
       <a href="mailto:service@gcscleaning.net" data-reveal="0" data-tilt="1" data-tilt-soft="1" style="display:block;padding:24px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);transition:background .2s ease,border-color .2s ease" style-hover="background:rgba(255,255,255,.09);border-color:rgba(79,211,245,.5)">
         <svg class="gi" aria-hidden="true" style="width:22px;height:22px;color:#4FD3F5"><use href="#i-bold-envelope-simple"/></svg>
@@ -782,7 +782,7 @@ ${ICON_SPRITE_ALL}
       <a href="#contact" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE" data-i18n="nav.contact">Contact</a>
     </nav>
     <div data-reveal="0" style="display:flex;flex-direction:column;gap:11px">
-      <a href="tel:+19083383160" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">+1 (908) 338-3160</a>
+      <a href="tel:+18829300319" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">+1 (882) 930-0319</a>
       <a href="mailto:service@gcscleaning.net" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">service@gcscleaning.net</a>
       <a href="https://www.gcscleaning.net" target="_blank" rel="noopener" data-navlink="dark" style="font-size:14.5px;font-weight:600;color:#C7D6EE">www.gcscleaning.net</a>
       <p style="display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:600;color:#C7D6EE;margin:0">
@@ -838,13 +838,13 @@ ${ICON_SPRITE_ALL}
 </div>
 
 <div data-mobilebar="1" role="navigation" data-i18n-aria="a11y.quickcontact" aria-label="Quick contact" style="position:fixed;left:0;right:0;bottom:0;z-index:70;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#DCE7F0;border-top:1px solid #DCE7F0;box-shadow:0 -6px 22px rgba(11,30,78,.12)">
-  <a href="tel:+19083383160" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#fff;color:#0B1E4E;padding:11px 6px;min-height:64px;font-size:12.5px;font-weight:700">
+  <a href="tel:+18829300319" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#fff;color:#0B1E4E;padding:11px 6px;min-height:64px;font-size:12.5px;font-weight:700">
     <svg class="gi" aria-hidden="true" style="width:20px;height:20px;color:#00A9E0"><use href="#i-bold-phone-call"/></svg><span data-i18n="cta.callshort">Call</span>
   </a>
-  <a data-wa="1" href="https://wa.me/19083383160" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#fff;color:#0B1E4E;padding:11px 6px;min-height:64px;font-size:12.5px;font-weight:700">
+  <a data-wa="1" href="https://wa.me/18829300319" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#fff;color:#0B1E4E;padding:11px 6px;min-height:64px;font-size:12.5px;font-weight:700">
     <svg class="gi" aria-hidden="true" style="width:20px;height:20px;color:#0B9E5B"><use href="#i-bold-whatsapp-logo"/></svg>WhatsApp
   </a>
-  <a data-wa="1" data-cta-solid="1" href="https://wa.me/19083383160" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#D42A80;color:#fff;padding:11px 6px;min-height:64px;font-size:12.5px;font-weight:700">
+  <a data-wa="1" data-cta-solid="1" href="https://wa.me/18829300319" target="_blank" rel="noopener" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#D42A80;color:#fff;padding:11px 6px;min-height:64px;font-size:12.5px;font-weight:700">
     <svg class="gi" aria-hidden="true" style="width:20px;height:20px"><use href="#i-bold-chat-circle-dots"/></svg><span data-i18n="cta.quoteshort">Quote</span>
   </a>
 </div>

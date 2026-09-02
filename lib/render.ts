@@ -76,7 +76,7 @@ function translate(html: string) {
   );
 
   // Same deep link apply() builds at runtime, so the no-JS markup is already correct.
-  const wa = 'https://wa.me/19083383160?text=' + encodeURIComponent(WA_TEXT.es);
+  const wa = 'https://wa.me/18829300319?text=' + encodeURIComponent(WA_TEXT.es);
   out = out.replace(/(<a[^>]*\sdata-wa="1"[^>]*href=")[^"]*(")/g, (_w, head, tail) => head + attrEscape(wa) + tail);
   return out;
 }

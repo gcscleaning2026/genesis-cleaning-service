@@ -77,7 +77,7 @@ const BUSINESS = {
   image: `${SITE_ORIGIN}${OG_IMAGE}`,
   logo: `${SITE_ORIGIN}/assets/gcs-badge.webp`,
   slogan: 'Los detalles hacen la diferencia',
-  telephone: '+1-908-338-3160',
+  telephone: '+1-882-930-0319',
   email: 'service@gcscleaning.net',
   address: BUSINESS_ADDRESS,
   // The profiles Google and the AI crawlers already have; sameAs is what ties them to this

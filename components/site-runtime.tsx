@@ -541,7 +541,7 @@ class GenesisSite extends React.Component {
       if (v != null) el.setAttribute('aria-label', v);
     });
 
-    const href = 'https://wa.me/19083383160?text=' + encodeURIComponent(this.WA[lang] || this.WA.en);
+    const href = 'https://wa.me/18829300319?text=' + encodeURIComponent(this.WA[lang] || this.WA.en);
     document.querySelectorAll('[data-wa]').forEach(a => { a.setAttribute('href', href); });
 
     document.querySelectorAll('[data-lang-btn]').forEach(btn => {

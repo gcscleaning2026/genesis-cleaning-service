@@ -22,10 +22,10 @@ import { areasIndexPath, homePath, otherLang, servicesIndexPath } from './routes
 import type { Copy } from './page-types';
 import type { IndexCopy } from './index-pages';
 
-const PHONE_DISPLAY = '(908) 338-3160';
-const PHONE_HREF = 'tel:+19083383160';
+const PHONE_DISPLAY = '(882) 930-0319';
+const PHONE_HREF = 'tel:+18829300319';
 const EMAIL = 'service@gcscleaning.net';
-const WA_HREF = (lang: Lang) => `https://wa.me/19083383160?text=${encodeURIComponent(WA_TEXT[lang])}`;
+const WA_HREF = (lang: Lang) => `https://wa.me/18829300319?text=${encodeURIComponent(WA_TEXT[lang])}`;
 
 const esc = (s: string) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

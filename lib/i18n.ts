@@ -28,7 +28,7 @@ export const HEAD = {
     lang: 'en',
     locale: 'en_US',
     title: 'House & Commercial Cleaning in New Jersey | Genesis Cleaning',
-    desc: 'Residential, commercial, construction and window cleaning in Essex, Union, Morris, Middlesex & Hudson County, NJ. Free quote: (908) 338-3160. Se habla español.',
+    desc: 'Residential, commercial, construction and window cleaning in Essex, Union, Morris, Middlesex & Hudson County, NJ. Free quote: (882) 930-0319. Se habla español.',
     ogTitle: 'Genesis Cleaning Service LLC | Professional Cleaning You Can Trust',
     ogDesc: 'Residential, commercial, construction and window cleaning across Essex, Union, Morris, Middlesex and Hudson County, NJ. Aquí se habla español.'
   },
@@ -37,7 +37,7 @@ export const HEAD = {
     lang: 'es',
     locale: 'es_US',
     title: 'Limpieza Residencial y Comercial en Nueva Jersey | Genesis',
-    desc: 'Limpieza residencial, comercial, post-construcción y de ventanas en Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización gratis: (908) 338-3160.',
+    desc: 'Limpieza residencial, comercial, post-construcción y de ventanas en Essex, Union, Morris, Middlesex y Hudson, NJ. Cotización gratis: (882) 930-0319.',
     ogTitle: 'Genesis Cleaning Service LLC | Limpieza profesional en la que puedes confiar',
     ogDesc: 'Limpieza residencial, comercial, post-construcción y de ventanas en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Aquí se habla español.'
   }
@@ -59,7 +59,7 @@ export const ES: Record<string, string> = {
   'nav.contact': 'Contacto',
   'cta.quote': 'Cotización gratis',
   'cta.quoteshort': 'Cotizar',
-  'cta.call': 'Llama al (908) 338-3160',
+  'cta.call': 'Llama al (882) 930-0319',
   'cta.callshort': 'Llamar',
   'cta.email': 'Correo',
   'hero.h1a': 'Limpieza de casas y negocios',
