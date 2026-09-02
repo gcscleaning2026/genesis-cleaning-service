@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { HEAD, SITE_ORIGIN, type Lang } from '@/lib/i18n';
 import { SERVICE_PAGES } from '@/lib/service-pages';
 import { AREA_SERVED, BUSINESS_ADDRESS } from '@/lib/service-area';
+import { OPENING_HOURS_SPECIFICATION } from '@/lib/business-hours';
 import { servicePath } from '@/lib/routes';
 import { SAME_AS } from '@/lib/social';
 import { aggregateRating, getApprovedReviews } from '@/lib/reviews-cache';
@@ -80,6 +81,9 @@ const BUSINESS = {
   telephone: '+1-882-930-0319',
   email: 'service@gcscleaning.net',
   address: BUSINESS_ADDRESS,
+  // Hours the crew books. No streetAddress, geo or priceRange: service-area business,
+  // no public storefront, quotes per job rather than a range.
+  openingHoursSpecification: OPENING_HOURS_SPECIFICATION,
   // The profiles Google and the AI crawlers already have; sameAs is what ties them to this
   // entity, and the same URLs are linked from the contact card and the footer.
   sameAs: SAME_AS,

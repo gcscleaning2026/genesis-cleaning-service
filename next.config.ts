@@ -1,12 +1,57 @@
 import { withBotId } from 'botid/next/config';
 import type { NextConfig } from 'next';
 
+const APEX_HOST = 'gcscleaning.net';
+const WWW_HOST = 'www.gcscleaning.net';
+const CANONICAL_ORIGIN = 'https://www.gcscleaning.net';
+
 const nextConfig: NextConfig = {
   // The site is one stylesheet of ~4 KB and both routes are prerendered, so a separate
   // CSS request is a round trip the first paint waits on for no caching benefit. The
   // Vite build inlined it by hand in scripts/prerender.mjs; this is the same trade.
   experimental: {
     inlineCss: true
+  },
+  async redirects() {
+    // Apex → https://www in one hop. HTTP on the apex is included because the destination
+    // is already https://www; a separate http→https on the apex first would be two hops.
+    return [
+      {
+        source: '/',
+        has: [{ type: 'host', value: APEX_HOST }],
+        destination: `${CANONICAL_ORIGIN}/`,
+        permanent: true
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: APEX_HOST }],
+        destination: `${CANONICAL_ORIGIN}/:path*`,
+        permanent: true
+      },
+      {
+        source: '/',
+        has: [
+          { type: 'host', value: WWW_HOST },
+          { type: 'header', key: 'x-forwarded-proto', value: 'http' }
+        ],
+        destination: `${CANONICAL_ORIGIN}/`,
+        permanent: true
+      },
+      {
+        source: '/:path*',
+        has: [
+          { type: 'host', value: WWW_HOST },
+          { type: 'header', key: 'x-forwarded-proto', value: 'http' }
+        ],
+        destination: `${CANONICAL_ORIGIN}/:path*`,
+        permanent: true
+      }
+    ];
+  },
+  async rewrites() {
+    const key = process.env.INDEXNOW_KEY?.trim();
+    if (!key || !/^[A-Za-z0-9-]+$/.test(key)) return [];
+    return [{ source: `/${key}.txt`, destination: '/api/indexnow-key' }];
   }
 };
 
