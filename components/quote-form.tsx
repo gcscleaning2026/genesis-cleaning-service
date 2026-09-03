@@ -43,9 +43,36 @@ const COPY = {
   }
 } as const;
 
+const FORM_FIELDS = ['name', 'phone', 'zip', 'propertyType'] as const;
+type FormField = (typeof FORM_FIELDS)[number];
+
+const API_KEY_TO_FIELD: Record<string, FormField> = {
+  name: 'name',
+  phone: 'phone',
+  zip: 'zip',
+  town: 'zip',
+  propertyType: 'propertyType'
+};
+
+function fieldsFromQuote400(body: Record<string, unknown>): FormField[] {
+  const marked = new Set<FormField>();
+  for (const key of Object.keys(API_KEY_TO_FIELD)) {
+    const value = body[key];
+    if (typeof value === 'string' && value) marked.add(API_KEY_TO_FIELD[key]);
+  }
+  const extra = body.fields ?? body.invalid;
+  if (Array.isArray(extra)) {
+    for (const item of extra) {
+      if (typeof item === 'string' && API_KEY_TO_FIELD[item]) marked.add(API_KEY_TO_FIELD[item]);
+    }
+  }
+  return FORM_FIELDS.filter(field => marked.has(field));
+}
+
 export function QuoteForm({ lang }: { lang: Lang }) {
   const t = COPY[lang];
   const [status, setStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [invalid, setInvalid] = useState<FormField[]>([]);
   const [pending, setPending] = useState(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -67,6 +94,7 @@ export function QuoteForm({ lang }: { lang: Lang }) {
 
     setPending(true);
     setStatus('idle');
+    setInvalid([]);
     try {
       const res = await fetch('/api/quote', {
         method: 'POST',
@@ -89,8 +117,7 @@ export function QuoteForm({ lang }: { lang: Lang }) {
         } catch {
           body = {};
         }
-        const keys = ['name', 'phone', 'zip', 'town', 'propertyType'];
-        void keys.filter(key => typeof body[key] === 'string' && String(body[key]));
+        setInvalid(fieldsFromQuote400(body));
         setStatus('err');
         return;
       }
@@ -111,6 +138,9 @@ export function QuoteForm({ lang }: { lang: Lang }) {
     border: '1.5px solid #CFE0EC',
     color: '#0B1E4E'
   };
+  const inputInvalid = { ...input, border: '1.5px solid #B4225F', boxShadow: '0 0 0 3px rgba(180,34,95,.15)' };
+  const marked = new Set(invalid);
+  const describedBy = status === 'err' ? 'quote-err' : undefined;
 
   return (
     <section
@@ -139,21 +169,57 @@ export function QuoteForm({ lang }: { lang: Lang }) {
               <input name="website" type="text" tabIndex={-1} autoComplete="off" hidden />
             </label>
           </div>
-          <label style={field}>
+          <label style={field} htmlFor="quote-name">
             <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.name}</span>
-            <input name="name" required autoComplete="name" placeholder={t.namePh} style={input} />
+            <input
+              id="quote-name"
+              name="name"
+              required
+              autoComplete="name"
+              placeholder={t.namePh}
+              aria-invalid={marked.has('name')}
+              aria-describedby={marked.has('name') ? describedBy : undefined}
+              style={marked.has('name') ? inputInvalid : input}
+            />
           </label>
-          <label style={field}>
+          <label style={field} htmlFor="quote-phone">
             <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.phone}</span>
-            <input name="phone" type="tel" required autoComplete="tel" placeholder="(882) 930-0319" style={input} />
+            <input
+              id="quote-phone"
+              name="phone"
+              type="tel"
+              required
+              autoComplete="tel"
+              placeholder="(882) 930-0319"
+              aria-invalid={marked.has('phone')}
+              aria-describedby={marked.has('phone') ? describedBy : undefined}
+              style={marked.has('phone') ? inputInvalid : input}
+            />
           </label>
-          <label style={field}>
+          <label style={field} htmlFor="quote-zip">
             <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.zip}</span>
-            <input name="zip" required autoComplete="postal-code" placeholder={t.zipPh} style={input} />
+            <input
+              id="quote-zip"
+              name="zip"
+              required
+              autoComplete="postal-code"
+              placeholder={t.zipPh}
+              aria-invalid={marked.has('zip')}
+              aria-describedby={marked.has('zip') ? describedBy : undefined}
+              style={marked.has('zip') ? inputInvalid : input}
+            />
           </label>
-          <label style={field}>
+          <label style={field} htmlFor="quote-propertyType">
             <span style={{ fontWeight: 700, fontSize: 14, color: '#0B1E4E' }}>{t.property}</span>
-            <select name="propertyType" required defaultValue="" style={input}>
+            <select
+              id="quote-propertyType"
+              name="propertyType"
+              required
+              defaultValue=""
+              aria-invalid={marked.has('propertyType')}
+              aria-describedby={marked.has('propertyType') ? describedBy : undefined}
+              style={marked.has('propertyType') ? inputInvalid : input}
+            >
               <option value="" disabled>
                 {t.property}
               </option>
@@ -194,7 +260,7 @@ export function QuoteForm({ lang }: { lang: Lang }) {
             </p>
           ) : null}
           {status === 'err' ? (
-            <p role="status" style={{ fontSize: 15, fontWeight: 700, color: '#B4225F', margin: 0 }}>
+            <p id="quote-err" role="alert" style={{ fontSize: 15, fontWeight: 700, color: '#B4225F', margin: 0 }}>
               {t.error}
             </p>
           ) : null}

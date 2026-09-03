@@ -22,7 +22,7 @@ async function notifyQuote(quote: { name: string; phone: string; zip: string; pr
       html: `<div style="font-family:system-ui,sans-serif;line-height:1.5">
         <p><strong>${esc(quote.name)}</strong></p>
         <p>Phone: ${esc(quote.phone)}<br>ZIP/town: ${esc(quote.zip)}<br>Type: ${esc(quote.propertyType)}</p>
-        <p>${esc(quote.need) || '—'}</p>
+        <p>${esc(quote.need) || 'â€”'}</p>
       </div>`
     });
   } catch (error) {
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
   const parsed = parseQuoteBody(body);
   if (parsed.status === 200) return NextResponse.json({ ok: true }, { status: 200 });
-  if (parsed.status === 400) return NextResponse.json({ ok: false }, { status: 400 });
+  if (parsed.status === 400) return NextResponse.json({ ok: false, ...parsed.fields }, { status: 400 });
 
   after(async () => {
     await notifyQuote(parsed.quote);

@@ -24,6 +24,20 @@ describe('quote POST body', () => {
     expect(parseQuoteBody({ ...good, propertyType: 'warehouse' }).status).toBe(400);
   });
 
+  it('returns field keys on 400 without copying submitted values', () => {
+    const parsed = parseQuoteBody({ name: '', phone: '123', town: '', propertyType: 'warehouse' });
+    expect(parsed.status).toBe(400);
+    if (parsed.status !== 400) return;
+    expect(parsed.fields).toEqual({
+      name: 'required',
+      phone: 'required',
+      zip: 'required',
+      town: 'required',
+      propertyType: 'required'
+    });
+    expect(JSON.stringify(parsed.fields)).not.toMatch(/123/);
+  });
+
   it('returns 200 when the website honeypot is filled', () => {
     expect(parseQuoteBody({ ...good, website: 'http://spam.test' }).status).toBe(200);
   });
