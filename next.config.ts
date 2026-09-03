@@ -6,6 +6,9 @@ const WWW_HOST = 'www.gcscleaning.net';
 const CANONICAL_ORIGIN = 'https://www.gcscleaning.net';
 
 const nextConfig: NextConfig = {
+  // Lock URL shape to the sitemap: home is `/`, every other loc is unslashed.
+  // vercel.ts sets the same value so the dashboard cannot reintroduce trailing slashes.
+  trailingSlash: false,
   // The site is one stylesheet of ~4 KB and both routes are prerendered, so a separate
   // CSS request is a round trip the first paint waits on for no caching benefit. The
   // Vite build inlined it by hand in scripts/prerender.mjs; this is the same trade.
@@ -47,11 +50,6 @@ const nextConfig: NextConfig = {
         permanent: true
       }
     ];
-  },
-  async rewrites() {
-    const key = process.env.INDEXNOW_KEY?.trim();
-    if (!key || !/^[A-Za-z0-9-]+$/.test(key)) return [];
-    return [{ source: `/${key}.txt`, destination: '/api/indexnow-key' }];
   }
 };
 

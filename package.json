@@ -11,7 +11,8 @@
     "images": "node scripts/images.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "email:test": "node --env-file=.env.local scripts/test-email.mjs"
+    "email:test": "node --env-file=.env.local scripts/test-email.mjs",
+    "postbuild": "node --experimental-strip-types --experimental-detect-module --import ./scripts/register-ts-ext.mjs scripts/submit-indexnow.mts"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",

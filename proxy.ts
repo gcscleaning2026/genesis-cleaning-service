@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { ADMIN_COOKIE, isValidSessionToken } from '@/lib/admin-session';
 import { canonicalLocation } from '@/lib/host-redirect';
+import { isIndexNowKeyFilePath } from '@/lib/indexnow';
 
 // `middleware` was renamed to `proxy` in Next.js 16. This is the gate in front of the admin
 // area; the server actions behind it check the session again, because a proxy runs before
@@ -16,6 +17,14 @@ export async function proxy(request: NextRequest) {
     request.nextUrl.search
   );
   if (location) return NextResponse.redirect(location, 308);
+
+  // `/{INDEXNOW_KEY}.txt` is matched against the live env on this request so a runtime-only
+  // key still serves the file. A next.config rewrite of `/${process.env.INDEXNOW_KEY}.txt`
+  // would freeze whatever was set when the config module loaded, and a generic `/:key.txt`
+  // rewrite would swallow `/robots.txt`.
+  if (isIndexNowKeyFilePath(request.nextUrl.pathname)) {
+    return NextResponse.rewrite(new URL('/api/indexnow-key', request.url));
+  }
 
   if (!request.nextUrl.pathname.startsWith('/admin')) return NextResponse.next();
   if (request.nextUrl.pathname === '/admin/login') return NextResponse.next();

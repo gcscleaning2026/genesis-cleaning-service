@@ -13,7 +13,7 @@ export const config: VercelConfig = {
   // the old Vite build (framework `vite`, output `dist`). Declaring them here overrides
   // the dashboard, so the deploy follows the repo instead of stale project settings.
   framework: 'nextjs',
-  buildCommand: 'next build',
+  buildCommand: 'next build && node --experimental-strip-types --experimental-detect-module --import ./scripts/register-ts-ext.mjs scripts/submit-indexnow.mts',
   outputDirectory: '.next',
   trailingSlash: false,
   headers: [
