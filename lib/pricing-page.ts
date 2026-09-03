@@ -24,10 +24,6 @@ export const PRICING: Record<Lang, PricingCopy> = {
       {
         h2: 'Phone, WhatsApp, or the form',
         body: 'Three ways to get the number. WhatsApp stays the main button. Call (882) 930-0319 if you would rather talk. The short form is for people who will not open WhatsApp — we still reply by phone or WhatsApp. We do not publish rates.'
-      },
-      {
-        h2: 'What we quote',
-        body: 'These pages explain the job. Prices still come in the quote. House cleaning, commercial cleaning, and office cleaning are linked below. Standing plans are [standard cleaning](/services/standard-cleaning).'
       }
     ],
     includesH2: 'How to reach us',
@@ -66,10 +62,6 @@ export const PRICING: Record<Lang, PricingCopy> = {
       {
         h2: 'Teléfono, WhatsApp o el formulario',
         body: 'Tres caminos para el número. WhatsApp sigue siendo el botón principal. Llama al (882) 930-0319 si prefieres hablar. El formulario corto es para quien no abre WhatsApp: igual respondemos por teléfono o WhatsApp. No publicamos tarifas.'
-      },
-      {
-        h2: 'Qué cotizamos',
-        body: 'Estas páginas explican el trabajo. El precio sigue yendo en la cotización. Limpieza de casas, limpieza comercial y limpieza de oficinas están enlazadas abajo. Los planes fijos son [limpieza estándar](/es/services/standard-cleaning).'
       }
     ],
     includesH2: 'Cómo contactarnos',

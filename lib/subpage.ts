@@ -600,8 +600,8 @@ ${includes(input)}
 </section>
 ${input.kind === 'area' ? townList(input) : ''}
 ${coverageNote(input)}
-${related(input)}
-${quoteForm(input)}
+${input.showQuoteForm ? quoteForm(input) : related(input)}
+${input.showQuoteForm ? related(input) : quoteForm(input)}
 ${faq(input)}
 ${cta(input)}
 </main>
