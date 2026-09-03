@@ -21,3 +21,17 @@ export function canonicalLocation(
   const path = pathname.startsWith('/') ? pathname : `/${pathname}`;
   return `https://${CANONICAL_HOST}${path}${search}`;
 }
+
+/**
+ * The old combo service URL permanently becomes house-cleaning (not commercial).
+ * Live 200s for house/commercial/pricing mean the combo page is no longer a destination.
+ */
+const COMBO_REDIRECTS: Record<string, string> = {
+  '/services/residential-commercial-cleaning': '/services/house-cleaning',
+  '/es/services/residential-commercial-cleaning': '/es/services/house-cleaning'
+};
+
+export function comboServiceRedirect(pathname: string): string | null {
+  const path = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  return COMBO_REDIRECTS[path] ?? null;
+}

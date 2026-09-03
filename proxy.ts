@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { ADMIN_COOKIE, isValidSessionToken } from '@/lib/admin-session';
-import { canonicalLocation } from '@/lib/host-redirect';
+import { canonicalLocation, comboServiceRedirect } from '@/lib/host-redirect';
 import { isIndexNowKeyFilePath } from '@/lib/indexnow';
 
 // `middleware` was renamed to `proxy` in Next.js 16. This is the gate in front of the admin
@@ -8,8 +8,16 @@ import { isIndexNowKeyFilePath } from '@/lib/indexnow';
 // routing and is not a substitute for authorisation at the point of mutation.
 //
 // It also folds http and the apex onto https://www.gcscleaning.net{path} in one 308 so a
-// crawler never sees a two-step chain.
+// crawler never sees a two-step chain, and permanently sends the old combo service URL to
+// house-cleaning.
 export async function proxy(request: NextRequest) {
+  const combo = comboServiceRedirect(request.nextUrl.pathname);
+  if (combo) {
+    const url = request.nextUrl.clone();
+    url.pathname = combo;
+    return NextResponse.redirect(url, 308);
+  }
+
   const location = canonicalLocation(
     request.headers.get('host'),
     request.headers.get('x-forwarded-proto'),

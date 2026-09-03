@@ -18,7 +18,18 @@ const nextConfig: NextConfig = {
   async redirects() {
     // Apex → https://www in one hop. HTTP on the apex is included because the destination
     // is already https://www; a separate http→https on the apex first would be two hops.
+    // Combo service URL permanently becomes house-cleaning (never commercial).
     return [
+      {
+        source: '/services/residential-commercial-cleaning',
+        destination: '/services/house-cleaning',
+        permanent: true
+      },
+      {
+        source: '/es/services/residential-commercial-cleaning',
+        destination: '/es/services/house-cleaning',
+        permanent: true
+      },
       {
         source: '/',
         has: [{ type: 'host', value: APEX_HOST }],

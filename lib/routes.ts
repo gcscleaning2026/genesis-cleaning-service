@@ -20,6 +20,9 @@ export const servicePath = (lang: Lang, slug: string) => `${servicesIndexPath(la
 
 export const areaPath = (lang: Lang, slug: string) => `${areasIndexPath(lang)}/${slug}`;
 
+/** Wave 1 city pages live flat under /areas/{city}, same shape as county hubs. */
+export const cityPath = (lang: Lang, slug: string) => areaPath(lang, slug);
+
 export const pricingPath = (lang: Lang) => `${langPrefix(lang)}/pricing`;
 
 /**
