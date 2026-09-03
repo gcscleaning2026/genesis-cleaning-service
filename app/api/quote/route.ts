@@ -14,6 +14,15 @@ function invalid(errors: QuoteErrors) {
   return NextResponse.json({ ok: false, errors }, { status: 400 });
 }
 
+function queueNotify(quote: ReturnType<typeof readQuoteRequest>) {
+  try {
+    after(() => notifyOwnerOfQuoteRequest(quote));
+  } catch (error) {
+    console.error('[quote] could not queue owner notification', error);
+    void notifyOwnerOfQuoteRequest(quote);
+  }
+}
+
 export async function POST(request: NextRequest) {
   let body: unknown;
   try {
@@ -35,7 +44,6 @@ export async function POST(request: NextRequest) {
   const errors = quoteFieldErrors(record);
   if (Object.keys(errors).length) return invalid(errors);
 
-  const quote = readQuoteRequest(record);
-  after(() => notifyOwnerOfQuoteRequest(quote));
+  queueNotify(readQuoteRequest(record));
   return new NextResponse(null, { status: 204 });
 }
