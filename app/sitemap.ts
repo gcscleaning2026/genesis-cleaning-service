@@ -3,7 +3,6 @@ import { SITE_ORIGIN, type Lang } from '@/lib/i18n';
 import { SERVICE_PAGES } from '@/lib/service-pages';
 import { AREA_PAGES } from '@/lib/area-pages';
 import { areaPath, areasIndexPath, homePath, servicePath, servicesIndexPath } from '@/lib/routes';
-import { submitToIndexNow } from '@/lib/indexnow';
 
 /**
  * Replaces the hand-written public/sitemap.xml.
@@ -15,6 +14,9 @@ import { submitToIndexNow } from '@/lib/indexnow';
  * Home loc keeps the trailing slash (`https://www.gcscleaning.net/`). County pages only —
  * Wave 1 city URLs are not published. There is no extra `/services/house-cleaning` URL;
  * house cleaning lives on residential-commercial-cleaning.
+ *
+ * IndexNow is not a side effect of this function. Sitemap generation can run on every
+ * cold start; the ping belongs on publish/deploy (see scripts/submit-indexnow.mts).
  */
 const HOME_LASTMOD = new Date('2026-09-02');
 const DEFAULT_LASTMOD = new Date('2026-08-27');
@@ -60,7 +62,5 @@ export function sitemapEntries(): MetadataRoute.Sitemap {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const entries = sitemapEntries();
-  void submitToIndexNow(entries.map(entry => entry.url));
-  return entries;
+  return sitemapEntries();
 }

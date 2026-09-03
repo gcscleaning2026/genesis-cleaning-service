@@ -49,4 +49,34 @@ describe('submitToIndexNow', () => {
     const { submitToIndexNow } = await import('../lib/indexnow');
     await expect(submitToIndexNow(['https://www.gcscleaning.net/'])).resolves.toBeUndefined();
   });
+
+  it('does not latch on an in-memory submitted flag across calls', async () => {
+    process.env.INDEXNOW_KEY = 'test-key-123';
+    const { submitToIndexNow } = await import('../lib/indexnow');
+    await submitToIndexNow(['https://www.gcscleaning.net/']);
+    await submitToIndexNow(['https://www.gcscleaning.net/es']);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('isIndexNowKeyFilePath', () => {
+  afterEach(() => {
+    delete process.env.INDEXNOW_KEY;
+  });
+
+  it('is false when the key is missing', async () => {
+    delete process.env.INDEXNOW_KEY;
+    vi.resetModules();
+    const { isIndexNowKeyFilePath } = await import('../lib/indexnow');
+    expect(isIndexNowKeyFilePath('/anything.txt')).toBe(false);
+  });
+
+  it('matches /{key}.txt from the runtime env', async () => {
+    process.env.INDEXNOW_KEY = 'runtime-key-9';
+    vi.resetModules();
+    const { isIndexNowKeyFilePath } = await import('../lib/indexnow');
+    expect(isIndexNowKeyFilePath('/runtime-key-9.txt')).toBe(true);
+    expect(isIndexNowKeyFilePath('/other.txt')).toBe(false);
+    expect(isIndexNowKeyFilePath('/robots.txt')).toBe(false);
+  });
 });

@@ -1,20 +1,19 @@
 import { SITE_ORIGIN } from './i18n';
 
 const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow';
-
-// Sitemap generation can run more than once in a process. One POST per process is enough.
-let submitted = false;
+const KEY_PATTERN = /^[A-Za-z0-9-]+$/;
 
 /**
  * Tell IndexNow about a set of URLs. No-op when INDEXNOW_KEY is unset — local and preview
  * deploys should not ping Bing with a key they do not host a matching key file for.
  *
- * Failures are swallowed: a sitemap that cannot reach IndexNow is still a sitemap.
+ * Failures are swallowed: a failed ping must not fail the deploy.
+ * There is no in-memory "already submitted" latch: serverless cold starts would reset it,
+ * and publish/deploy is the durable caller (scripts/submit-indexnow.mts).
  */
 export async function submitToIndexNow(urls: string[]): Promise<void> {
-  const key = process.env.INDEXNOW_KEY?.trim();
-  if (!key || urls.length === 0 || submitted) return;
-  submitted = true;
+  const key = indexNowKey();
+  if (!key || urls.length === 0) return;
 
   const host = new URL(SITE_ORIGIN).host;
   const payload = {
@@ -38,7 +37,15 @@ export async function submitToIndexNow(urls: string[]): Promise<void> {
   }
 }
 
+/** INDEXNOW_KEY as it is on this request / this process, not as it was at config load. */
 export function indexNowKey(): string | undefined {
   const key = process.env.INDEXNOW_KEY?.trim();
-  return key || undefined;
+  if (!key || !KEY_PATTERN.test(key)) return undefined;
+  return key;
+}
+
+/** True when this request is the IndexNow key file (`/{INDEXNOW_KEY}.txt`). */
+export function isIndexNowKeyFilePath(pathname: string): boolean {
+  const key = indexNowKey();
+  return Boolean(key) && pathname === `/${key}.txt`;
 }

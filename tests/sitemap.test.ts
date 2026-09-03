@@ -3,10 +3,11 @@ import sitemap from '../app/sitemap';
 import robots from '../app/robots';
 import { AREA_PAGES } from '../lib/area-pages';
 import { SERVICE_PAGES } from '../lib/service-pages';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 
-vi.mock('../lib/indexnow', () => ({
-  submitToIndexNow: vi.fn().mockResolvedValue(undefined)
-}));
+const rootDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 describe('sitemap', () => {
   const entries = sitemap();
@@ -15,6 +16,13 @@ describe('sitemap', () => {
   it('lists the English home with a trailing slash', () => {
     expect(urls).toContain('https://www.gcscleaning.net/');
     expect(urls).not.toContain('https://www.gcscleaning.net');
+  });
+
+  it('gives every non-home URL an unslashed loc', () => {
+    for (const url of urls) {
+      if (url === 'https://www.gcscleaning.net/') continue;
+      expect(url.endsWith('/'), url).toBe(false);
+    }
   });
 
   it('gives every URL its own lastmod', () => {
@@ -51,6 +59,22 @@ describe('sitemap', () => {
     expect(SERVICE_PAGES.some(page => page.slug === 'house-cleaning')).toBe(false);
     expect(urls).toContain('https://www.gcscleaning.net/services/residential-commercial-cleaning');
   });
+
+  it('does not fire-and-forget IndexNow from sitemap()', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK' });
+    vi.stubGlobal('fetch', fetchMock);
+    process.env.INDEXNOW_KEY = 'test-key-123';
+    sitemap();
+    await Promise.resolve();
+    expect(fetchMock).not.toHaveBeenCalled();
+    delete process.env.INDEXNOW_KEY;
+    vi.unstubAllGlobals();
+  });
+
+  it('does not import submitToIndexNow', () => {
+    const src = readFileSync(join(rootDir, 'app/sitemap.ts'), 'utf8');
+    expect(src).not.toMatch(/submitToIndexNow/);
+  });
 });
 
 describe('robots', () => {
@@ -59,5 +83,20 @@ describe('robots', () => {
       rules: [{ userAgent: '*', allow: '/' }],
       sitemap: 'https://www.gcscleaning.net/sitemap.xml'
     });
+  });
+});
+
+describe('trailingSlash lock', () => {
+  it('is false in next.config.ts and vercel.ts', () => {
+    const nextConfig = readFileSync(join(rootDir, 'next.config.ts'), 'utf8');
+    const vercel = readFileSync(join(rootDir, 'vercel.ts'), 'utf8');
+    expect(nextConfig).toMatch(/trailingSlash:\s*false/);
+    expect(vercel).toMatch(/trailingSlash:\s*false/);
+  });
+
+  it('does not bake INDEXNOW_KEY into next.config rewrites', () => {
+    const nextConfig = readFileSync(join(rootDir, 'next.config.ts'), 'utf8');
+    expect(nextConfig).not.toMatch(/INDEXNOW_KEY/);
+    expect(nextConfig).not.toMatch(/rewrites\s*\(/);
   });
 });
