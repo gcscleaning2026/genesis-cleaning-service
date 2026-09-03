@@ -32,7 +32,6 @@ describe('quote POST body', () => {
       name: 'required',
       phone: 'required',
       zip: 'required',
-      town: 'required',
       propertyType: 'required'
     });
     expect(JSON.stringify(parsed.fields)).not.toMatch(/123/);

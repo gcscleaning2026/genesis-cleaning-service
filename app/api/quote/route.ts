@@ -22,7 +22,7 @@ async function notifyQuote(quote: { name: string; phone: string; zip: string; pr
       html: `<div style="font-family:system-ui,sans-serif;line-height:1.5">
         <p><strong>${esc(quote.name)}</strong></p>
         <p>Phone: ${esc(quote.phone)}<br>ZIP/town: ${esc(quote.zip)}<br>Type: ${esc(quote.propertyType)}</p>
-        <p>${esc(quote.need) || 'â€”'}</p>
+        <p>${esc(quote.need) || '—'}</p>
       </div>`
     });
   } catch (error) {

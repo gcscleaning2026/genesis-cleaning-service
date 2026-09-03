@@ -13,7 +13,7 @@ export type QuoteInput = {
   need: string;
 };
 
-export type QuoteFieldKey = 'name' | 'phone' | 'zip' | 'town' | 'propertyType';
+export type QuoteFieldKey = 'name' | 'phone' | 'zip' | 'propertyType';
 
 export type QuoteParse =
   | { status: 200 }
@@ -36,10 +36,7 @@ export function parseQuoteBody(body: Record<string, unknown>): QuoteParse {
   const fields: Partial<Record<QuoteFieldKey, string>> = {};
   if (!name || name.length < 2) fields.name = 'required';
   if (!phoneOk) fields.phone = 'required';
-  if (zip.length < 2) {
-    fields.zip = 'required';
-    fields.town = 'required';
-  }
+  if (zip.length < 2) fields.zip = 'required';
   if (!typeOk) fields.propertyType = 'required';
   if (Object.keys(fields).length) return { status: 400, reason: 'invalid', fields };
 
