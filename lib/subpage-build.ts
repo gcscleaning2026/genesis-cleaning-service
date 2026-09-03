@@ -206,8 +206,8 @@ export function areaInput(slug: string, lang: Lang): SubpageInput | null {
       ctaEmail: false,
       ctaH2: es ? `¿Listo para un espacio más limpio en ${city.city}?` : `Ready for a cleaner space in ${city.city}?`,
       ctaSub: es
-        ? 'Dinos el edificio o la casa. Cotizamos por WhatsApp, teléfono o correo.'
-        : 'Tell us the building or the house. We quote on WhatsApp, phone, or email.',
+        ? 'Dinos el edificio o la casa. Cotizamos por WhatsApp o por teléfono.'
+        : 'Tell us the building or the house. We quote on WhatsApp or the phone.',
       path: areaPath(lang, slug),
       altPath: areaPath(otherLang(lang), slug)
     };

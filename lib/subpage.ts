@@ -687,5 +687,6 @@ ${header(chrome)}
 ${cta(chrome)}
 </main>
 ${footer(chrome)}
+<script>${NAV_MOTION}</script>
 </div>`;
 }

@@ -213,75 +213,19 @@ function cityCopy(
 }
 
 export const WAVE1_CITY_SLUGS = [
-  'orange',
-  'newark',
   'jersey-city',
   'hoboken',
+  'orange',
   'east-orange',
   'west-orange',
   'montclair',
   'bloomfield',
+  'newark',
   'elizabeth',
   'edison'
 ] as const;
 
 export const CITY_PAGES: CityPage[] = [
-  {
-    slug: 'orange',
-    city: 'Orange',
-    county: 'Essex',
-    countySlug: 'essex-county',
-    nearby: nearby('Orange', ESSEX, ['East Orange', 'West Orange', 'Newark', 'Montclair']),
-    apartmentFirst: false,
-    variant: 'house',
-    relatedSlug: 'house-cleaning',
-    copy: cityCopy(
-      'Orange',
-      'Essex',
-      'house',
-      {
-        en: 'House Cleaning in Orange, New Jersey | Genesis Cleaning',
-        es: 'Limpieza de Casas en Orange, NJ | Genesis Cleaning'
-      },
-      {
-        en: 'House cleaning in Orange, Essex County, NJ 07050 — we are based here. Kitchens, baths and floors quoted to your house. Call (882) 930-0319. Se habla español.',
-        es: 'Limpieza de casas en Orange, condado de Essex, NJ 07050 — tenemos base aquí. Cocinas, baños y pisos cotizados a tu casa. Llama al (882) 930-0319. WhatsApp.'
-      },
-      {
-        en: 'Genesis cleans houses in Orange, Essex County — we are based here (07050). We quote the house in front of us, not a county average. WhatsApp the town, beds/baths, and whether this is a one-time visit.',
-        es: 'Genesis limpia casas en Orange, condado de Essex — tenemos base aquí (07050). Cotizamos la casa que tienes, no un promedio del condado. Por WhatsApp dinos el pueblo, recámaras/baños y si es una visita única.'
-      },
-      { en: 'We clean houses in Orange', es: 'Limpiamos casas en Orange' }
-    )
-  },
-  {
-    slug: 'newark',
-    city: 'Newark',
-    county: 'Essex',
-    countySlug: 'essex-county',
-    nearby: nearby('Newark', ESSEX, ['East Orange', 'Orange', 'Elizabeth']),
-    apartmentFirst: false,
-    variant: 'move-out',
-    relatedSlug: 'move-in-move-out-cleaning',
-    copy: cityCopy(
-      'Newark',
-      'Essex',
-      'move-out',
-      {
-        en: 'Move-Out Cleaning in Newark, NJ | Genesis Cleaning',
-        es: 'Limpieza de Mudanza en Newark, NJ | Genesis Cleaning'
-      },
-      {
-        en: 'House and move-out cleaning in Newark, Essex County, NJ. Lived-in homes or empty units ready for the next keys. Free quote: (882) 930-0319. Se habla español.',
-        es: 'Limpieza de casas y mudanza en Newark, condado de Essex, NJ. Casa habitada o unidad vacía para las llaves. Cotización: (882) 930-0319. Se habla español.'
-      },
-      {
-        en: 'Genesis cleans homes and street-level businesses in Newark. Houses get a room-by-room visit; empty units are a different job. WhatsApp whether this is a home or a turnover and we quote from there.',
-        es: 'Genesis limpia casas y negocios a pie de calle en Newark. En casas, habitación por habitación; las unidades vacías son otro trabajo. Por WhatsApp dinos si es casa o mudanza y cotizamos desde ahí.'
-      },
-      { en: 'We clean move-outs and turnovers in Newark', es: 'Limpiamos mudanzas y entregas en Newark' }
-    )
-  },
   {
     slug: 'jersey-city',
     city: 'Jersey City',
@@ -336,6 +280,34 @@ export const CITY_PAGES: CityPage[] = [
         es: 'Genesis limpia apartamentos y condos en Hoboken: torres, walk-ups y unidades de corta estadía. La cotización incluye acceso al edificio, ascensores, COI y estacionamiento. Escríbenos por WhatsApp con tu edificio y tipo de unidad.'
       },
       { en: 'We clean apartments in Hoboken', es: 'Limpiamos apartamentos en Hoboken' }
+    )
+  },
+  {
+    slug: 'orange',
+    city: 'Orange',
+    county: 'Essex',
+    countySlug: 'essex-county',
+    nearby: nearby('Orange', ESSEX, ['East Orange', 'West Orange', 'Newark', 'Montclair']),
+    apartmentFirst: false,
+    variant: 'house',
+    relatedSlug: 'house-cleaning',
+    copy: cityCopy(
+      'Orange',
+      'Essex',
+      'house',
+      {
+        en: 'House Cleaning in Orange, New Jersey | Genesis Cleaning',
+        es: 'Limpieza de Casas en Orange, NJ | Genesis Cleaning'
+      },
+      {
+        en: 'House cleaning in Orange, Essex County, NJ 07050 — we are based here. Kitchens, baths and floors quoted to your house. Call (882) 930-0319. Se habla español.',
+        es: 'Limpieza de casas en Orange, condado de Essex, NJ 07050 — tenemos base aquí. Cocinas, baños y pisos cotizados a tu casa. Llama al (882) 930-0319. WhatsApp.'
+      },
+      {
+        en: 'Genesis cleans houses in Orange, Essex County — we are based here (07050). We quote the house in front of us, not a county average. WhatsApp the town, beds/baths, and whether this is a one-time visit.',
+        es: 'Genesis limpia casas en Orange, condado de Essex — tenemos base aquí (07050). Cotizamos la casa que tienes, no un promedio del condado. Por WhatsApp dinos el pueblo, recámaras/baños y si es una visita única.'
+      },
+      { en: 'We clean houses in Orange', es: 'Limpiamos casas en Orange' }
     )
   },
   {
@@ -451,6 +423,34 @@ export const CITY_PAGES: CityPage[] = [
     )
   },
   {
+    slug: 'newark',
+    city: 'Newark',
+    county: 'Essex',
+    countySlug: 'essex-county',
+    nearby: nearby('Newark', ESSEX, ['East Orange', 'Orange', 'Elizabeth']),
+    apartmentFirst: false,
+    variant: 'move-out',
+    relatedSlug: 'move-in-move-out-cleaning',
+    copy: cityCopy(
+      'Newark',
+      'Essex',
+      'move-out',
+      {
+        en: 'Move-Out Cleaning in Newark, NJ | Genesis Cleaning',
+        es: 'Limpieza de Mudanza en Newark, NJ | Genesis Cleaning'
+      },
+      {
+        en: 'House and move-out cleaning in Newark, Essex County, NJ. Lived-in homes or empty units ready for the next keys. Free quote: (882) 930-0319. Se habla español.',
+        es: 'Limpieza de casas y mudanza en Newark, condado de Essex, NJ. Casa habitada o unidad vacía para las llaves. Cotización: (882) 930-0319. Se habla español.'
+      },
+      {
+        en: 'Genesis cleans homes and street-level businesses in Newark. Houses get a room-by-room visit; empty units are a different job. WhatsApp whether this is a home or a turnover and we quote from there.',
+        es: 'Genesis limpia casas y negocios a pie de calle en Newark. En casas, habitación por habitación; las unidades vacías son otro trabajo. Por WhatsApp dinos si es casa o mudanza y cotizamos desde ahí.'
+      },
+      { en: 'We clean move-outs and turnovers in Newark', es: 'Limpiamos mudanzas y entregas en Newark' }
+    )
+  },
+  {
     slug: 'elizabeth',
     city: 'Elizabeth',
     county: 'Union',
@@ -475,7 +475,7 @@ export const CITY_PAGES: CityPage[] = [
         en: 'Genesis cleans homes and street-level businesses in Elizabeth. Houses get a room-by-room visit; storefronts get a scope that fits opening hours. WhatsApp whether this is a home or a shop and we quote from there.',
         es: 'Genesis limpia casas y negocios a pie de calle en Elizabeth. En casas, habitación por habitación; en locales, un alcance que cabe en el horario. Por WhatsApp dinos si es casa o negocio y cotizamos desde ahí.'
       },
-      { en: 'We clean storefronts and homes in Elizabeth', es: 'Limpiamos locales y casas en Elizabeth' }
+      { en: 'We clean shops in Elizabeth', es: 'Limpiamos locales en Elizabeth' }
     )
   },
   {
@@ -503,7 +503,7 @@ export const CITY_PAGES: CityPage[] = [
         en: 'Genesis cleans homes and street-level businesses in Edison. Houses get a room-by-room visit; storefronts get a scope that fits opening hours. WhatsApp whether this is a home or a shop and we quote from there.',
         es: 'Genesis limpia casas y negocios a pie de calle en Edison. En casas, habitación por habitación; en locales, un alcance que cabe en el horario. Por WhatsApp dinos si es casa o negocio y cotizamos desde ahí.'
       },
-      { en: 'We clean storefronts and homes in Edison', es: 'Limpiamos locales y casas en Edison' }
+      { en: 'We clean shops in Edison', es: 'Limpiamos locales en Edison' }
     )
   }
 ];

@@ -7,6 +7,7 @@ import { COMMERCIAL_CLEANING, HOUSE_CLEANING, NAV_DROP_SLUGS, PRICING_COPY } fro
 import { cityInput, cityJsonLd, pricingInput, servicesIndexInput, wave1ServiceInput } from '../lib/subpage-build';
 import { subpageHtml } from '../lib/subpage';
 import { SERVICE_PAGES } from '../lib/service-pages';
+import { SITE_HTML } from '../lib/site-content';
 import { AREA_PAGES } from '../lib/area-pages';
 
 const LANGS = ['en', 'es'] as const;
@@ -114,5 +115,73 @@ describe('wave 1 services and pricing', () => {
     expect(subpageHtml(pricingInput('en'))).toContain('<!--QUOTE_FORM-->');
     expect(pricingPath('en')).toBe('/pricing');
     expect(pricingPath('es')).toBe('/es/pricing');
+  });
+});
+
+describe('wave 1 review fixes', () => {
+  it('maps one related service per city variant', () => {
+    const related: Record<string, string> = {
+      'jersey-city': 'apartment-condo-cleaning',
+      hoboken: 'apartment-condo-cleaning',
+      orange: 'house-cleaning',
+      'east-orange': 'house-cleaning',
+      'west-orange': 'house-cleaning',
+      montclair: 'house-cleaning',
+      bloomfield: 'house-cleaning',
+      elizabeth: 'commercial-cleaning',
+      edison: 'commercial-cleaning',
+      newark: 'move-in-move-out-cleaning'
+    };
+    for (const page of CITY_PAGES) expect(page.relatedSlug).toBe(related[page.slug]);
+  });
+
+  it('uses Home / Areas / County / City crumbs and a four-rung BreadcrumbList', () => {
+    const input = cityInput('jersey-city', 'en')!;
+    expect(input.crumbs?.map(c => c.href)).toEqual(['/', '/areas', '/areas/hudson-county', '/areas/jersey-city']);
+    const json = cityJsonLd('jersey-city', 'en')!;
+    expect(json).toContain('/areas/hudson-county');
+    expect(json).toContain('/areas/jersey-city');
+    expect(json).not.toContain('/areas/hudson-county/jersey-city');
+  });
+
+  it('sets H1s to apartment, house, shop, or move-out by city', () => {
+    expect(CITY_PAGES.find(p => p.slug === 'newark')!.copy.en.h1).toMatch(/move-out/i);
+    expect(CITY_PAGES.find(p => p.slug === 'elizabeth')!.copy.en.h1).toMatch(/shop/i);
+    expect(CITY_PAGES.find(p => p.slug === 'edison')!.copy.en.h1).toMatch(/shop/i);
+    expect(CITY_PAGES.find(p => p.slug === 'jersey-city')!.copy.en.h1).toMatch(/apartment/i);
+    expect(CITY_PAGES.find(p => p.slug === 'orange')!.copy.en.h1).toMatch(/house/i);
+  });
+
+  it('keeps city, house, and commercial bottom bands to WhatsApp and Call', () => {
+    const band = (html: string) => html.slice(html.indexOf('id="contact"'), html.indexOf('</main>'));
+    for (const html of [
+      subpageHtml(cityInput('orange', 'en')!),
+      subpageHtml(wave1ServiceInput('house-cleaning', 'en')!),
+      subpageHtml(wave1ServiceInput('commercial-cleaning', 'en')!)
+    ]) {
+      const cta = band(html);
+      expect(cta).toContain('wa.me');
+      expect(cta).toContain('tel:+18829300319');
+      expect(cta).not.toContain('mailto:');
+    }
+  });
+
+  it('puts areas, pricing, and services on subpage mobile nav and a hamburger', () => {
+    const html = subpageHtml(cityInput('hoboken', 'en')!);
+    expect(html).toContain('id="gcs-burger"');
+    expect(html).toContain('id="gcs-mobnav"');
+    const nav = html.slice(html.indexOf('id="gcs-mobnav"'), html.indexOf('</header>'));
+    expect(nav).toContain('/areas');
+    expect(nav).toContain('/pricing');
+    expect(nav).toContain('/services');
+  });
+
+  it('links commercial cleaning from the home grid and keeps combo off nav', () => {
+    expect(SITE_HTML).toContain('href="/services/commercial-cleaning"');
+    const mob = SITE_HTML.slice(SITE_HTML.indexOf('id="gcs-mobnav"'));
+    expect(mob).toContain('/areas');
+    expect(mob).toContain('/pricing');
+    expect(mob).toContain('/services');
+    expect(mob).not.toContain('residential-commercial-cleaning');
   });
 });
