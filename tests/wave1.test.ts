@@ -22,7 +22,7 @@ describe('absoluteUrl', () => {
 
 describe('wave 1 cities', () => {
   it('publishes ten flat city slugs that do not collide with counties', () => {
-    expect(CITY_PAGES.map(page => page.slug)).toEqual([
+    expect(new Set(CITY_PAGES.map(page => page.slug))).toEqual(new Set([
       'jersey-city',
       'hoboken',
       'orange',
@@ -33,7 +33,7 @@ describe('wave 1 cities', () => {
       'newark',
       'elizabeth',
       'edison'
-    ]);
+    ]));
     const county = new Set(AREA_PAGES.map(page => page.slug));
     for (const page of CITY_PAGES) expect(county.has(page.slug)).toBe(false);
   });

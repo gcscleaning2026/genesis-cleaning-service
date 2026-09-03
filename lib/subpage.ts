@@ -18,7 +18,7 @@ import 'server-only';
 import { iconSprite, icon } from './icon-sprite';
 import { SOCIAL_PROFILES } from './social';
 import { WA_TEXT, type Lang } from './i18n';
-import { areasIndexPath, homePath, otherLang, pricingPath, servicesIndexPath } from './routes';
+import { areasIndexPath, homePath, otherLang, pricingPath, servicePath, servicesIndexPath } from './routes';
 import type { Copy } from './page-types';
 import type { IndexCopy } from './index-pages';
 
@@ -80,7 +80,10 @@ const UI: Record<Lang, Record<string, string>> = {
     tag:
       'Professional cleaning, trust and quality for homes and businesses across Essex, Union, Morris, Middlesex and Hudson County, NJ. Los detalles hacen la diferencia.',
     copy: '© 2026 Genesis Cleaning Service LLC. All rights reserved.',
-    spanish: 'Aquí se habla español'
+    spanish: 'Aquí se habla español',
+    menu: 'Open menu',
+    house: 'House cleaning',
+    commercial: 'Commercial cleaning'
   },
   es: {
     skip: 'Saltar al contenido',
@@ -112,7 +115,10 @@ const UI: Record<Lang, Record<string, string>> = {
     tag:
       'Limpieza profesional, confianza y calidad para casas y negocios en los condados de Essex, Union, Morris, Middlesex y Hudson, NJ. Los detalles hacen la diferencia.',
     copy: '© 2026 Genesis Cleaning Service LLC. Todos los derechos reservados.',
-    spanish: 'Aquí se habla español'
+    spanish: 'Aquí se habla español',
+    menu: 'Abrir menú',
+    house: 'Limpieza de casas',
+    commercial: 'Limpieza comercial'
   }
 };
 
@@ -150,6 +156,8 @@ export type SubpageInput = {
   coverageHref?: string;
   showQuoteForm?: boolean;
   mobileBar?: boolean;
+  /** Bottom conversion band includes Email. City/house/commercial leave this false. */
+  ctaEmail?: boolean;
   /** This page's own path, used by the header logo link and the breadcrumb. */
   path: string;
   /** The same page in the other language. */
@@ -192,6 +200,20 @@ function header(input: SubpageInput) {
         ${icon('i-bold-chat-circle-dots', 17)}<span>${esc(t.quote)}</span>
       </a>
     </div>
+    <button type="button" id="gcs-burger" data-mob="1" aria-expanded="false" aria-controls="gcs-mobnav" aria-label="${esc(t.menu)}" style="margin-left:auto;align-items:center;justify-content:center;width:46px;height:46px;border-radius:14px;border:1px solid #DCE7F0;background:#fff;color:#0B1E4E;cursor:pointer">
+      ${icon('i-bold-list', 22)}
+    </button>
+  </div>
+  <div id="gcs-mobnav" style="display:none;border-top:1px solid #E3ECF3;background:#fff;padding:18px 24px 24px">
+    <nav aria-label="${esc(t.mainNav)}" style="display:flex;flex-direction:column;gap:2px">
+      <a href="${homePath(lang)}" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8">${esc(t.home)}</a>
+      <a href="${servicesIndexPath(lang)}" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8">${esc(t.services)}</a>
+      <a href="${servicePath(lang, 'house-cleaning')}" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8">${esc(t.house)}</a>
+      <a href="${servicePath(lang, 'commercial-cleaning')}" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8">${esc(t.commercial)}</a>
+      <a href="${areasIndexPath(lang)}" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8">${esc(t.areas)}</a>
+      <a href="${pricingPath(lang)}" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8">${esc(t.pricing)}</a>
+      <a href="${homePath(lang)}#contact" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8">${lang === 'es' ? 'Contacto' : 'Contact'}</a>
+    </nav>
   </div>
 </header>`;
 }
@@ -215,9 +237,11 @@ function breadcrumb(input: SubpageInput) {
   const html = items
     .map((item, i) => {
       const last = i === items.length - 1;
-      const node = last || !item.href
+      const node = !item.href
         ? `<span style="color:#0B1E4E;font-weight:700">${esc(item.label)}</span>`
-        : crumb(item.href, item.label);
+        : last
+          ? `<a href="${item.href}" aria-current="page" style="color:#0B1E4E;font-weight:700">${esc(item.label)}</a>`
+          : crumb(item.href, item.label);
       return i ? `${sep}${node}` : node;
     })
     .join('');
@@ -434,7 +458,7 @@ function cta(input: SubpageInput) {
       <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
         <a href="${waHref(lang, input.waText)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:#D42A80;color:#fff;font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px;box-shadow:0 10px 26px rgba(212,42,128,.36)">${icon('i-bold-chat-circle-dots', 18)}<span>${esc(t.quote)}</span></a>
         <a href="${PHONE_HREF}" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.34);font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px">${icon('i-bold-phone-call', 18)}<span>${esc(t.call)}</span></a>
-        <a href="mailto:${EMAIL}" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.34);font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px">${icon('i-bold-envelope-simple', 18)}<span>${esc(t.email)}</span></a>
+        ${input.ctaEmail === false ? '' : `<a href="mailto:${EMAIL}" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.34);font-weight:700;font-size:16px;padding:16px 28px;border-radius:999px">${icon('i-bold-envelope-simple', 18)}<span>${esc(t.email)}</span></a>`}
       </div>
     </div>
   </section>`;
@@ -511,54 +535,10 @@ d.addEventListener('click',function(e){
 })()`;
 
 
-const QUOTE_MOTION = `(function(){
-var form=document.getElementById('gcs-quote');
-if(!form)return;
-form.addEventListener('submit',function(ev){
- ev.preventDefault();
- var fd=new FormData(form);
- var payload={name:fd.get('name'),phone:fd.get('phone'),zip:fd.get('zip'),propertyType:fd.get('propertyType'),need:fd.get('need'),website:fd.get('website')};
- var status=form.querySelector('[data-quote-status]');
- fetch('/api/quote',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}).then(function(res){
-  if(res.status===204||res.status===200){if(status)status.textContent=form.getAttribute('data-ok')||'';form.reset();return;}
-  if(status)status.textContent=form.getAttribute('data-err')||'';
- }).catch(function(){if(status)status.textContent=form.getAttribute('data-err')||'';});
-});
-})()`;
-
 function quoteForm(input: SubpageInput) {
   if (!input.showQuoteForm) return '';
-  const es = input.lang === 'es';
-  const label = (forId: string, text: string) =>
-    `<label for="${forId}" style="display:block;font-size:13.5px;font-weight:700;color:#0B1E4E;margin:0 0 6px">${esc(text)}</label>`;
-  const field = (id: string, name: string, type: string, lab: string, ph: string) =>
-    `${label(id, lab)}<input id="${id}" name="${name}" type="${type}" required placeholder="${esc(ph)}" style="width:100%;border:1.5px solid #CFE0EC;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 16px">`;
-  return `<section id="quote" aria-labelledby="quote-h" style="max-width:1240px;margin:0 auto;padding:clamp(36px,4vw,56px) 24px 0">
-    <div data-reveal="0" style="position:relative;background:#fff;border:1px solid #DFEAF3;border-radius:24px;padding:clamp(24px,3vw,36px);max-width:640px">
-      <h2 id="quote-h" style="font-family:Outfit,sans-serif;font-weight:800;font-size:clamp(24px,2.6vw,32px);line-height:1.14;color:#0B1E4E;margin:0 0 8px">${esc(es ? 'Pedir cotización' : 'Request a quote')}</h2>
-      <p style="font-size:15px;color:#4A5A7D;margin:0 0 22px">${esc(es ? 'Respondemos por teléfono o WhatsApp. No publicamos tarifas.' : 'We reply by phone or WhatsApp. We do not publish rates.')}</p>
-      <form id="gcs-quote" data-ok="${esc(es ? 'Gracias. Genesis te escribe por teléfono o WhatsApp.' : 'Thanks. Genesis will reach you by phone or WhatsApp.')}" data-err="${esc(es ? 'Revisa los campos obligatorios e inténtalo de nuevo.' : 'Check the required fields and try again.')}">
-        ${field('q-name', 'name', 'text', es ? 'Nombre' : 'Name', es ? 'Tu nombre' : 'Your name')}
-        ${field('q-phone', 'phone', 'tel', es ? 'Teléfono o número de WhatsApp' : 'Phone or WhatsApp number', '(882) 930-0319')}
-        ${field('q-zip', 'zip', 'text', es ? 'ZIP o pueblo' : 'ZIP or town', 'Orange 07050')}
-        ${label('q-type', es ? 'Casa / apartamento / negocio' : 'Home / apartment / business')}
-        <select id="q-type" name="propertyType" required style="width:100%;border:1.5px solid #CFE0EC;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 16px">
-          <option value="home">${esc(es ? 'Casa' : 'Home')}</option>
-          <option value="apartment">${esc(es ? 'Apartamento' : 'Apartment')}</option>
-          <option value="business">${esc(es ? 'Negocio' : 'Business')}</option>
-        </select>
-        ${label('q-need', es ? 'Qué necesitas' : 'What you need')}
-        <textarea id="q-need" name="need" rows="4" placeholder="${esc(es ? 'Pueblo, recámaras/baños o tipo de negocio' : 'Town, beds/baths, or business type')}" style="width:100%;border:1.5px solid #CFE0EC;border-radius:12px;padding:12px 14px;font:inherit;margin:0 0 16px"></textarea>
-        <div aria-hidden="true" style="position:absolute;left:-9999px;height:0;overflow:hidden">
-          <label for="q-website">Website</label>
-          <input id="q-website" name="website" type="text" tabindex="-1" autocomplete="off">
-        </div>
-        <button type="submit" style="display:inline-flex;background:#D42A80;color:#fff;font-weight:700;font-size:15.5px;padding:14px 24px;border:0;border-radius:999px;cursor:pointer">${esc(es ? 'Pedir cotización' : 'Request a quote')}</button>
-        <p data-quote-status="1" role="status" style="margin:14px 0 0;font-size:14.5px;color:#4A5A7D"></p>
-        <p style="margin:10px 0 0;font-size:13px;color:#7A8AAB">${esc(es ? 'Lo usamos para cotizar tu trabajo. No lo vendemos.' : 'We use this to quote your job. We do not sell it.')}</p>
-      </form>
-    </div>
-  </section>`;
+  // Placeholder so pricing pages can inject the React #quote form without a duplicate.
+  return `<!--QUOTE_FORM-->`;
 }
 
 function mobileBar(input: SubpageInput) {
@@ -568,7 +548,7 @@ function mobileBar(input: SubpageInput) {
   return `<nav aria-label="${esc(t.quote)}" style="position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;background:#071336;padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:8px">
   <a href="${waHref(lang, input.waText)}" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#D42A80;color:#fff;font-weight:700;font-size:14px;padding:12px 8px;border-radius:12px">${icon('i-bold-chat-circle-dots', 16)}<span>${esc(lang === 'es' ? 'Cotizar' : 'Quote')}</span></a>
   <a href="${PHONE_HREF}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0B1E4E;font-weight:700;font-size:14px;padding:12px 8px;border-radius:12px">${icon('i-bold-phone-call', 16)}<span>${esc(lang === 'es' ? 'Llamar' : 'Call')}</span></a>
-  <a href="mailto:${EMAIL}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0B1E4E;font-weight:700;font-size:14px;padding:12px 8px;border-radius:12px">${icon('i-bold-envelope-simple', 16)}<span>${esc(t.email)}</span></a>
+  ${input.ctaEmail === false ? '' : `<a href="mailto:${EMAIL}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#0B1E4E;font-weight:700;font-size:14px;padding:12px 8px;border-radius:12px">${icon('i-bold-envelope-simple', 16)}<span>${esc(t.email)}</span></a>`}
 </nav>`;
 }
 
@@ -577,6 +557,7 @@ function spriteFor(input: SubpageInput) {
   return iconSprite([
     input.icon,
     'i-bold-chat-circle-dots',
+    'i-bold-list',
     'i-bold-chats-circle',
     'i-bold-phone-call',
     'i-bold-envelope-simple',
@@ -587,6 +568,21 @@ function spriteFor(input: SubpageInput) {
     ...SOCIAL_PROFILES.map(profile => profile.icon)
   ]);
 }
+
+const NAV_MOTION = `(function(){
+var b=document.getElementById('gcs-burger');
+var n=document.getElementById('gcs-mobnav');
+if(!b||!n)return;
+b.addEventListener('click',function(){
+ var open=n.style.display==='block';
+ n.style.display=open?'none':'block';
+ b.setAttribute('aria-expanded',open?'false':'true');
+});
+n.addEventListener('click',function(e){
+ var t=e.target;
+ if(t&&t.closest&&t.closest('a')){n.style.display='none';b.setAttribute('aria-expanded','false')}
+});
+})()`;
 
 export function subpageHtml(input: SubpageInput) {
   const t = UI[input.lang];
@@ -612,7 +608,7 @@ ${cta(input)}
 ${footer(input)}
 ${mobileBar(input)}
 <script>${FAQ_MOTION}</script>
-${input.showQuoteForm ? `<script>${QUOTE_MOTION}</script>` : ''}
+<script>${NAV_MOTION}</script>
 </div>`;
 }
 

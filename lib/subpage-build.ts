@@ -11,6 +11,7 @@ import { navServicePages, SERVICE_PAGES } from './service-pages';
 import { AREA_PAGES } from './area-pages';
 import { CITY_PAGES } from './city-pages';
 import { PRICING } from './pricing-page';
+import { wave1ServiceBySlug } from './wave1-services';
 import { SITE_ORIGIN, type Lang } from './i18n';
 import { absoluteUrl, areaPath, areasIndexPath, homePath, otherLang, pricingPath, servicePath, servicesIndexPath } from './routes';
 import { AREA_SERVED } from './service-area';
@@ -19,7 +20,7 @@ import { AREAS_INDEX, SERVICES_INDEX } from './index-pages';
 
 const BUSINESS_ID = `${SITE_ORIGIN}/#business`;
 
-export const serviceBySlug = (slug: string) => SERVICE_PAGES.find(page => page.slug === slug);
+export const serviceBySlug = (slug: string) => wave1ServiceBySlug(slug) ?? SERVICE_PAGES.find(page => page.slug === slug);
 export const areaBySlug = (slug: string) =>
   AREA_PAGES.find(page => page.slug === slug) ?? CITY_PAGES.find(page => page.slug === slug);
 export { navServicePages };
@@ -112,7 +113,8 @@ export function serviceInput(slug: string, lang: Lang): SubpageInput | null {
       ctaH2: es ? '¿Listo para una casa más limpia?' : 'Ready for a cleaner house?',
       ctaSub: es
         ? 'Dinos el pueblo, recámaras y baños. Cotizamos por WhatsApp o por teléfono.'
-        : 'Tell us the town, beds, and baths. We quote on WhatsApp or the phone.'
+        : 'Tell us the town, beds, and baths. We quote on WhatsApp or the phone.',
+      ctaEmail: false
     };
   }
   if (slug === 'commercial-cleaning') {
@@ -137,7 +139,8 @@ export function serviceInput(slug: string, lang: Lang): SubpageInput | null {
       ctaH2: es ? '¿Listo para un local u obra más limpios?' : 'Ready for a cleaner shop or job site?',
       ctaSub: es
         ? 'Envía el tipo de negocio, el pueblo y el horario en que podemos entrar.'
-        : 'Send the business type, town, and hours we can be inside.'
+        : 'Send the business type, town, and hours we can be inside.',
+      ctaEmail: false
     };
   }
   return base;
@@ -184,7 +187,7 @@ export function areaInput(slug: string, lang: Lang): SubpageInput | null {
       relatedHelper: es ? '¿Otro tipo de trabajo? Ver todos los servicios.' : 'Need a different job? See all services.',
       crumbs: [
         { href: homePath(lang), label: es ? 'Inicio' : 'Home' },
-        { href: areasIndexPath(lang), label: es ? 'Áreas de servicio' : 'Service areas' },
+        { href: areasIndexPath(lang), label: es ? 'Áreas' : 'Areas' },
         {
           href: areaPath(lang, city.countySlug),
           label: es ? `Condado de ${city.county}` : `${city.county} County`
@@ -200,6 +203,7 @@ export function areaInput(slug: string, lang: Lang): SubpageInput | null {
         : `Full ${city.county} County coverage lives on the county page.`,
       coverageHref: areaPath(lang, city.countySlug),
       mobileBar: true,
+      ctaEmail: false,
       ctaH2: es ? `¿Listo para un espacio más limpio en ${city.city}?` : `Ready for a cleaner space in ${city.city}?`,
       ctaSub: es
         ? 'Dinos el edificio o la casa. Cotizamos por WhatsApp, teléfono o correo.'
@@ -403,7 +407,7 @@ export function areaJsonLd(slug: string, lang: Lang) {
           {
             '@type': 'ListItem',
             position: 2,
-            name: lang === 'es' ? 'Áreas de servicio' : 'Service areas',
+            name: lang === 'es' ? 'Áreas' : 'Areas',
             item: abs(areasIndexPath(lang))
           },
           {
@@ -550,6 +554,7 @@ export function pricingInput(lang: Lang): SubpageInput {
     eyebrow: es ? 'Cotizaciones' : 'Quotes',
     showQuoteForm: true,
     mobileBar: true,
+    ctaEmail: false,
     ctaH2: es ? '¿Listo para un número para tu trabajo?' : 'Ready for a number on your job?',
     ctaSub: es ? 'WhatsApp, llama o el formulario. Sin tarifas publicadas.' : 'WhatsApp, call, or the form. No published rates.',
     path: pricingPath(lang),
@@ -579,4 +584,35 @@ export function pricingJsonLd(lang: Lang) {
     page,
     breadcrumb(lang, lang === 'es' ? 'Inicio' : 'Home', homePath(lang), copy.name, path)
   ]);
+}
+
+export function cityInput(slug: string, lang: Lang) {
+  if (!CITY_PAGES.some(page => page.slug === slug)) return null;
+  return areaInput(slug, lang);
+}
+
+export function cityJsonLd(slug: string, lang: Lang) {
+  if (!CITY_PAGES.some(page => page.slug === slug)) return null;
+  return areaJsonLd(slug, lang);
+}
+
+export function cityMetadata(slug: string, lang: Lang) {
+  if (!CITY_PAGES.some(page => page.slug === slug)) return {};
+  return areaMetadata(slug, lang);
+}
+
+export function wave1ServiceInput(slug: string, lang: Lang) {
+  if (!wave1ServiceBySlug(slug)) return null;
+  const built = serviceInput(slug, lang);
+  return built ? { ...built, ctaEmail: false } : null;
+}
+
+export function wave1ServiceMetadata(slug: string, lang: Lang) {
+  if (!wave1ServiceBySlug(slug)) return {};
+  return serviceMetadata(slug, lang);
+}
+
+export function wave1ServiceJsonLd(slug: string, lang: Lang) {
+  if (!wave1ServiceBySlug(slug)) return null;
+  return serviceJsonLd(slug, lang);
 }

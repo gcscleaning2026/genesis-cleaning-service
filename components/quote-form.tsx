@@ -73,10 +73,28 @@ export function QuoteForm({ lang }: { lang: Lang }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (res.status === 204 || res.status === 200) {
+      if (res.status === 204) {
         setStatus('ok');
         form.reset();
-      } else setStatus('err');
+        return;
+      }
+      if (res.status === 200) {
+        form.reset();
+        return;
+      }
+      if (res.status === 400) {
+        let body: Record<string, unknown> = {};
+        try {
+          body = (await res.json()) as Record<string, unknown>;
+        } catch {
+          body = {};
+        }
+        const keys = ['name', 'phone', 'zip', 'town', 'propertyType'];
+        void keys.filter(key => typeof body[key] === 'string' && String(body[key]));
+        setStatus('err');
+        return;
+      }
+      setStatus('err');
     } catch {
       setStatus('err');
     } finally {
@@ -115,10 +133,10 @@ export function QuoteForm({ lang }: { lang: Lang }) {
         </h2>
         <p style={{ fontSize: 15, lineHeight: 1.6, color: '#4A5A7D', margin: '0 0 20px' }}>{t.helper}</p>
         <form onSubmit={onSubmit} style={{ display: 'grid', gap: 16, position: 'relative' }} noValidate>
-          <div aria-hidden="true" style={{ position: 'absolute', left: -10000, width: 1, height: 1, overflow: 'hidden' }}>
+          <div aria-hidden="true" inert style={{ position: 'absolute', left: -10000, width: 1, height: 1, overflow: 'hidden' }}>
             <label>
               Website
-              <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+              <input name="website" type="text" tabIndex={-1} autoComplete="off" hidden />
             </label>
           </div>
           <label style={field}>

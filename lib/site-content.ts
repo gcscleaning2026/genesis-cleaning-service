@@ -65,7 +65,11 @@ ${ICON_SPRITE_ALL}
   <div id="gcs-mobnav" style="display:none;border-top:1px solid #E3ECF3;background:#fff;padding:18px 24px 24px">
     <nav aria-label="Mobile" style="display:flex;flex-direction:column;gap:2px">
       <a href="#top" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.home">Home</a>
-      <a href="#services" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.services">Services</a>
+      <a href="/services" data-eshref="/es/services" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.services">Services</a>
+      <a href="/services/house-cleaning" data-eshref="/es/services/house-cleaning" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.house">House cleaning</a>
+      <a href="/services/commercial-cleaning" data-eshref="/es/services/commercial-cleaning" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.commercial">Commercial cleaning</a>
+      <a href="/areas" data-eshref="/es/areas" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.areas">Service areas</a>
+      <a href="/pricing" data-eshref="/es/pricing" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.pricing">Pricing</a>
       <a href="#why" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.why">Why GCS</a>
       <a href="#faq" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.faq">FAQ</a>
       <a href="#contact" data-action="closeNav" style="font-size:17px;font-weight:600;color:#0B1E4E;padding:12px 0;border-bottom:1px solid #EEF4F8" data-i18n="nav.contact">Contact</a>
@@ -166,6 +170,22 @@ ${ICON_SPRITE_ALL}
           </span>
           <h3 style="font-family:Outfit,sans-serif;font-size:clamp(20px,2.1vw,25px);font-weight:700;line-height:1.2;color:#0B1E4E;margin:0"><a href="/services/house-cleaning" data-eshref="/es/services/house-cleaning" data-i18n="svc.1.t" style="color:inherit" data-navlink="1">House cleaning</a></h3>
           <p style="font-size:15.5px;line-height:1.6;color:#4A5A7D;margin:0" data-i18n="svc.1.b">Genesis cleans houses across five New Jersey counties — kitchens, baths, floors, and living rooms, quoted from the house you have.</p>
+        </div>
+      </article>
+
+      <article data-svccard="1" data-reveal="1" style="display:flex;flex-direction:column;overflow:hidden;border-radius:22px;background:#fff;border:1px solid #E3ECF3;transition:transform .22s ease,box-shadow .22s ease" style-hover="transform:translateY(-4px);box-shadow:0 20px 44px rgba(11,30,78,.12)">
+        <div data-svc-figure="1" style="position:relative;background:#EAF4FA;aspect-ratio:16/10">
+          <picture style="display:block;width:100%;height:100%">
+            <source type="image/avif" srcset="/assets/services/gcs-svc-construction-480.avif 480w, /assets/services/gcs-svc-construction-800.avif 800w" sizes="(max-width:640px) 92vw, (max-width:1024px) 46vw, 31vw">
+            <img src="/assets/services/gcs-svc-construction-800.webp" srcset="/assets/services/gcs-svc-construction-480.webp 480w, /assets/services/gcs-svc-construction-800.webp 800w" sizes="(max-width:640px) 92vw, (max-width:1024px) 46vw, 31vw" alt="Interior of a building under construction before the final clean" width="800" height="500" loading="lazy" decoding="async" data-svc-img="1" style="width:100%;height:100%;object-fit:cover;display:block">
+          </picture>
+          <span aria-hidden="true" style="position:absolute;left:18px;bottom:-24px;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:16px;background:#fff;box-shadow:0 8px 20px rgba(0,169,224,.24)">
+            <svg class="gi" style="width:24px;height:24px;color:#00A9E0"><use href="#i-bold-buildings"/></svg>
+          </span>
+        </div>
+        <div style="padding:40px 24px 26px">
+          <h3 style="font-family:Outfit,sans-serif;font-size:18.5px;font-weight:700;line-height:1.25;color:#0B1E4E;margin:0 0 9px"><a href="/services/commercial-cleaning" data-eshref="/es/services/commercial-cleaning" data-i18n="svc.commercial.t" style="color:inherit" data-navlink="1">Commercial cleaning</a></h3>
+          <p style="font-size:15px;line-height:1.58;color:#5A6A8C;margin:0" data-i18n="svc.commercial.b">Shops, studios, gym floors, showrooms and job sites — quoted to the hours the public is gone. Offices stay on office cleaning.</p>
         </div>
       </article>
 

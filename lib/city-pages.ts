@@ -279,7 +279,7 @@ export const CITY_PAGES: CityPage[] = [
         en: 'Genesis cleans homes and street-level businesses in Newark. Houses get a room-by-room visit; empty units are a different job. WhatsApp whether this is a home or a turnover and we quote from there.',
         es: 'Genesis limpia casas y negocios a pie de calle en Newark. En casas, habitación por habitación; las unidades vacías son otro trabajo. Por WhatsApp dinos si es casa o mudanza y cotizamos desde ahí.'
       },
-      { en: 'We clean homes and storefronts in Newark', es: 'Limpiamos casas y locales en Newark' }
+      { en: 'We clean move-outs and turnovers in Newark', es: 'Limpiamos mudanzas y entregas en Newark' }
     )
   },
   {
@@ -475,7 +475,7 @@ export const CITY_PAGES: CityPage[] = [
         en: 'Genesis cleans homes and street-level businesses in Elizabeth. Houses get a room-by-room visit; storefronts get a scope that fits opening hours. WhatsApp whether this is a home or a shop and we quote from there.',
         es: 'Genesis limpia casas y negocios a pie de calle en Elizabeth. En casas, habitación por habitación; en locales, un alcance que cabe en el horario. Por WhatsApp dinos si es casa o negocio y cotizamos desde ahí.'
       },
-      { en: 'We clean homes and storefronts in Elizabeth', es: 'Limpiamos casas y locales en Elizabeth' }
+      { en: 'We clean storefronts and homes in Elizabeth', es: 'Limpiamos locales y casas en Elizabeth' }
     )
   },
   {
@@ -503,7 +503,12 @@ export const CITY_PAGES: CityPage[] = [
         en: 'Genesis cleans homes and street-level businesses in Edison. Houses get a room-by-room visit; storefronts get a scope that fits opening hours. WhatsApp whether this is a home or a shop and we quote from there.',
         es: 'Genesis limpia casas y negocios a pie de calle en Edison. En casas, habitación por habitación; en locales, un alcance que cabe en el horario. Por WhatsApp dinos si es casa o negocio y cotizamos desde ahí.'
       },
-      { en: 'We clean homes and storefronts in Edison', es: 'Limpiamos casas y locales en Edison' }
+      { en: 'We clean storefronts and homes in Edison', es: 'Limpiamos locales y casas en Edison' }
     )
   }
 ];
+
+export function otherTownsFor(countySlug: string, city: string): string[] {
+  const page = CITY_PAGES.find(item => item.countySlug === countySlug && item.city === city);
+  return (page?.nearby ?? []).filter(name => name !== city);
+}

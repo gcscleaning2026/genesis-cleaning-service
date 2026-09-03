@@ -7,6 +7,7 @@
  * gets a page that answers that search on its own terms and links back to the rest.
  */
 import type { ServicePage } from './page-types';
+import { COMMERCIAL_CLEANING, HOUSE_CLEANING, NAV_DROP_SLUGS } from './wave1-services';
 
 export const SERVICE_PAGES: ServicePage[] = [
   {
@@ -1222,3 +1223,14 @@ export const SERVICE_PAGES: ServicePage[] = [
     }
   }
 ];
+
+export function navServicePages(): ServicePage[] {
+  const extras: ServicePage[] = [HOUSE_CLEANING, COMMERCIAL_CLEANING].map(page => ({
+    slug: page.slug,
+    icon: page.icon,
+    image: page.image,
+    imageAlt: page.imageAlt,
+    copy: page.copy
+  }));
+  return [...extras, ...SERVICE_PAGES.filter(page => !NAV_DROP_SLUGS.has(page.slug))];
+}
