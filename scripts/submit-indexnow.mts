@@ -4,8 +4,8 @@
  *
  * No-op when INDEXNOW_KEY is unset.
  */
-import { indexNowKey, submitToIndexNow } from '../lib/indexnow.ts';
-import { sitemapEntries } from '../app/sitemap.ts';
+import { indexNowKey, submitToIndexNow } from '../lib/indexnow';
+import { sitemapEntries } from '../app/sitemap';
 
 if (!indexNowKey()) {
   console.log('[indexnow] skip: INDEXNOW_KEY unset');
