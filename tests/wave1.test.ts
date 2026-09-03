@@ -109,6 +109,8 @@ describe('wave 1 services and pricing', () => {
   it('locks house, commercial, and pricing English titles', () => {
     expect(HOUSE_CLEANING.copy.en.title).toBe('House Cleaning in New Jersey | Genesis Cleaning');
     expect(COMMERCIAL_CLEANING.copy.en.title).toBe('Commercial Cleaning in New Jersey | Genesis Cleaning');
+    expect(COMMERCIAL_CLEANING.copy.en.h1).toBe('Commercial cleaning in New Jersey');
+    expect(COMMERCIAL_CLEANING.copy.es.h1).toBe('Limpieza comercial en Nueva Jersey');
     expect(PRICING.en.title).toBe('Cleaning Prices in New Jersey | Genesis Cleaning');
     expect(PRICING_COPY.en.title).toBe(PRICING.en.title);
     for (const page of [HOUSE_CLEANING.copy, COMMERCIAL_CLEANING.copy, PRICING]) {

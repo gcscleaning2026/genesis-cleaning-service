@@ -163,7 +163,7 @@ export const COMMERCIAL_CLEANING: Wave1Service = {
       name: 'Commercial cleaning',
       title: 'Commercial Cleaning in New Jersey | Genesis Cleaning',
       desc: 'Genesis cleans shops, job sites, and showrooms across five New Jersey counties, usually after hours, on a written scope. (882) 930-0319. Se habla español.',
-      h1: 'Commercial cleaning for New Jersey businesses',
+      h1: 'Commercial cleaning in New Jersey',
       intro:
         'Genesis cleans shops, job sites, showrooms, and other businesses that are not an office floor — usually after hours, on a written scope. Offices have their own page. WhatsApp the business type, town, and the hours we can be in the space.',
       sections: [
@@ -208,7 +208,7 @@ export const COMMERCIAL_CLEANING: Wave1Service = {
       name: 'Limpieza comercial',
       title: 'Limpieza Comercial en Nueva Jersey | Genesis Cleaning',
       desc: 'Genesis limpia tiendas, obras y showrooms en cinco condados de Nueva Jersey, casi siempre fuera de horario. Llama al (882) 930-0319. Aquí se habla español.',
-      h1: 'Limpieza comercial para negocios en Nueva Jersey',
+      h1: 'Limpieza comercial en Nueva Jersey',
       intro:
         'Genesis limpia tiendas, obras, showrooms y otros negocios que no son una planta de oficinas — casi siempre fuera de horario, con un alcance por escrito. Las oficinas tienen su propia página. Por WhatsApp dinos el tipo de negocio, el pueblo y el horario en que podemos entrar.',
       sections: [
