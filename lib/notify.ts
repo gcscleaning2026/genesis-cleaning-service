@@ -49,3 +49,61 @@ export async function notifyOwnerOfPendingReview(review: CleanReview & { id: num
     console.error('[notify] could not send the owner notification', error);
   }
 }
+
+export type QuoteNotice = {
+  name: string;
+  phone: string;
+  whatsapp: string;
+  zip: string;
+  town: string;
+  propertyType: string;
+  need: string;
+};
+
+function mailConfig() {
+  const apiKey = process.env.RESEND_API_KEY;
+  const to = process.env.OWNER_EMAIL;
+  const from = process.env.REVIEW_FROM_EMAIL;
+  if (!apiKey || !to || !from) {
+    console.error('[notify] missing RESEND_API_KEY, OWNER_EMAIL or REVIEW_FROM_EMAIL; skipping email');
+    return null;
+  }
+  return { apiKey, to, from };
+}
+
+/**
+ * Notifies the owner of a quote request. Same env vars and same never-throw contract as
+ * review mail: a visitor who already got 204 must not see a failure because Resend was down.
+ */
+export async function notifyOwnerOfQuoteRequest(quote: QuoteNotice) {
+  const config = mailConfig();
+  if (!config) return;
+
+  const row = (label: string, value: string) =>
+    value
+      ? `<p style="margin:0 0 6px"><strong>${escape(label)}:</strong> ${escape(value)}</p>`
+      : '';
+
+  try {
+    const { Resend } = await import('resend');
+    await new Resend(config.apiKey).emails.send({
+      from: config.from,
+      to: [config.to],
+      subject: `New quote request from ${quote.name}`,
+      html: `
+        <div style="font-family:system-ui,sans-serif;line-height:1.5;color:#12203F">
+          <h2 style="margin:0 0 12px">New quote request</h2>
+          ${row('Name', quote.name)}
+          ${row('Phone', quote.phone)}
+          ${row('WhatsApp', quote.whatsapp)}
+          ${row('ZIP', quote.zip)}
+          ${row('Town', quote.town)}
+          ${row('Property', quote.propertyType)}
+          ${row('Need', quote.need)}
+        </div>
+      `
+    });
+  } catch (error) {
+    console.error('[notify] could not send the quote notification', error);
+  }
+}

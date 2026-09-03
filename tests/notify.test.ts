@@ -3,6 +3,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const send = vi.fn().mockResolvedValue({ data: { id: 'email_1' }, error: null });
 vi.mock('resend', () => ({ Resend: class { emails = { send }; } }));
 
+const quote = {
+  name: 'Maria R.',
+  phone: '8829300319',
+  whatsapp: '',
+  zip: '07083',
+  town: '',
+  propertyType: 'home',
+  need: 'Weekly kitchen and baths'
+};
+
 describe('notifyOwnerOfPendingReview', () => {
   beforeEach(() => {
     send.mockClear();
@@ -43,5 +53,41 @@ describe('notifyOwnerOfPendingReview', () => {
     const { notifyOwnerOfPendingReview } = await import('../lib/notify');
     await notifyOwnerOfPendingReview({ id: 10, name: 'Ana', comment: 'ok', rating: 5, lang: 'en' });
     expect(send).not.toHaveBeenCalled();
+  });
+});
+
+describe('notifyOwnerOfQuoteRequest', () => {
+  beforeEach(() => {
+    send.mockClear();
+    send.mockResolvedValue({ data: { id: 'email_1' }, error: null });
+    process.env.RESEND_API_KEY = 'test-key';
+    process.env.OWNER_EMAIL = 'owner@example.com';
+    process.env.REVIEW_FROM_EMAIL = 'Genesis Reviews <onboarding@resend.dev>';
+  });
+
+  it('emails the owner with the quote fields using the existing Resend env', async () => {
+    const { notifyOwnerOfQuoteRequest } = await import('../lib/notify');
+    await notifyOwnerOfQuoteRequest(quote);
+    expect(send).toHaveBeenCalledTimes(1);
+    const payload = send.mock.calls[0][0];
+    expect(payload.to).toEqual(['owner@example.com']);
+    expect(payload.from).toBe('Genesis Reviews <onboarding@resend.dev>');
+    expect(payload.subject).toContain('Maria R.');
+    expect(payload.html).toContain('8829300319');
+    expect(payload.html).toContain('07083');
+    expect(payload.html).toContain('Weekly kitchen and baths');
+  });
+
+  it('escapes quote content in the email body', async () => {
+    const { notifyOwnerOfQuoteRequest } = await import('../lib/notify');
+    await notifyOwnerOfQuoteRequest({ ...quote, name: '<b>x</b>', need: 'a & b' });
+    expect(send.mock.calls[0][0].html).toContain('&lt;b&gt;x&lt;/b&gt;');
+    expect(send.mock.calls[0][0].html).toContain('a &amp; b');
+  });
+
+  it('does not throw when the mail provider fails', async () => {
+    send.mockRejectedValueOnce(new Error('rate limited'));
+    const { notifyOwnerOfQuoteRequest } = await import('../lib/notify');
+    await expect(notifyOwnerOfQuoteRequest(quote)).resolves.toBeUndefined();
   });
 });
