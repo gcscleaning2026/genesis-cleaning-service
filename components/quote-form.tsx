@@ -54,11 +54,19 @@ const API_KEY_TO_FIELD: Record<string, FormField> = {
   propertyType: 'propertyType'
 };
 
+function collectQuote400Keys(source: Record<string, unknown>, marked: Set<FormField>) {
+  for (const key of Object.keys(API_KEY_TO_FIELD)) {
+    const value = source[key];
+    if ((typeof value === 'string' && value) || value === true) marked.add(API_KEY_TO_FIELD[key]);
+  }
+}
+
 function fieldsFromQuote400(body: Record<string, unknown>): FormField[] {
   const marked = new Set<FormField>();
-  for (const key of Object.keys(API_KEY_TO_FIELD)) {
-    const value = body[key];
-    if (typeof value === 'string' && value) marked.add(API_KEY_TO_FIELD[key]);
+  collectQuote400Keys(body, marked);
+  const nested = body.errors ?? body.fields;
+  if (nested && typeof nested === 'object' && !Array.isArray(nested)) {
+    collectQuote400Keys(nested as Record<string, unknown>, marked);
   }
   const extra = body.fields ?? body.invalid;
   if (Array.isArray(extra)) {
