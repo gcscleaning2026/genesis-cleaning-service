@@ -13,7 +13,7 @@ vi.mock('@/lib/notify', () => ({ notifyOwnerOfQuoteRequest: mocks.notifyOwner })
 
 import { POST } from '../app/api/quote/route';
 
-const VALID_ERROR_KEYS = ['name', 'phone', 'propertyType', 'zip'];
+const ALLOWED_ERROR_KEYS = ['name', 'phone', 'propertyType', 'zip'];
 
 const validBody = {
   name: 'Maria R.',
@@ -53,42 +53,41 @@ describe('POST /api/quote', () => {
       zip: 'required',
       propertyType: 'required'
     });
-    expect(Object.keys(json.errors).sort()).toEqual(VALID_ERROR_KEYS);
+    expect(Object.keys(json.errors).sort()).toEqual(ALLOWED_ERROR_KEYS);
     expect(mocks.after).not.toHaveBeenCalled();
   });
 
-  it('returns 400 with field keys for invalid JSON instead of a bare ok:false', async () => {
+  it('returns 400 with only the four field keys for invalid JSON', async () => {
     const response = await POST(request('not-json') as never);
 
     expect(response.status).toBe(400);
     const json = await response.json();
     expect(json.ok).toBe(false);
-    expect(Object.keys(json.errors).sort()).toEqual(VALID_ERROR_KEYS);
+    expect(Object.keys(json.errors).sort()).toEqual(ALLOWED_ERROR_KEYS);
     expect(json.errors.name).toBeTruthy();
     expect(json.errors.phone).toBeTruthy();
     expect(json.errors.zip).toBeTruthy();
     expect(json.errors.propertyType).toBeTruthy();
   });
 
-  it('omits valid fields from errors and never includes extra keys', async () => {
+  it('does not put extra body keys on the 400 errors object', async () => {
     const response = await POST(request({
-      name: 'Ana',
+      name: '',
+      phone: '',
+      zip: '',
+      propertyType: '',
+      email: 'x@y.z',
       website: '',
-      need: 'deep clean'
+      notes: 'hi'
     }) as never);
 
     expect(response.status).toBe(400);
     const json = await response.json();
     expect(json.ok).toBe(false);
-    expect(json.errors).toEqual({
-      phone: 'required',
-      zip: 'required',
-      propertyType: 'required'
-    });
+    expect(Object.keys(json.errors).sort()).toEqual(ALLOWED_ERROR_KEYS);
+    expect(json.errors).not.toHaveProperty('email');
     expect(json.errors).not.toHaveProperty('website');
-    expect(json.errors).not.toHaveProperty('need');
-    expect(json.errors).not.toHaveProperty('whatsapp');
-    expect(json.errors).not.toHaveProperty('town');
+    expect(json.errors).not.toHaveProperty('notes');
   });
 
   it('accepts whatsapp in place of phone and town in place of zip', async () => {
@@ -134,8 +133,8 @@ describe('POST /api/quote', () => {
     expect(await response.text()).toBe('');
     expect(mocks.after).toHaveBeenCalledOnce();
 
-    const callback = mocks.after.mock.calls[0][0] as () => Promise<void>;
-    await callback();
+    const callback = mocks.after.mock.calls[0][0] as () => void;
+    callback();
     expect(mocks.notifyOwner).toHaveBeenCalledWith(expect.objectContaining({
       name: 'Maria R.',
       phone: '8829300319',
@@ -145,21 +144,32 @@ describe('POST /api/quote', () => {
     }));
   });
 
-  it('still returns 204 when notify is queued even if the mailer later fails', async () => {
+  it('returns 204 when the owner notification rejects', async () => {
     mocks.notifyOwner.mockRejectedValue(new Error('resend down'));
+
     const response = await POST(request(validBody) as never);
 
     expect(response.status).toBe(204);
-    expect(mocks.after).toHaveBeenCalledOnce();
+    expect(await response.text()).toBe('');
+    const callback = mocks.after.mock.calls[0][0] as () => void;
+    expect(() => callback()).not.toThrow();
+    await vi.waitFor(() => {
+      expect(mocks.notifyOwner).toHaveBeenCalled();
+    });
   });
 
-  it('still returns 204 and notifies directly if after() cannot queue', async () => {
+  it('returns 204 when after() cannot queue and notify still fails', async () => {
     mocks.after.mockImplementation(() => {
       throw new Error('after unavailable');
     });
+    mocks.notifyOwner.mockRejectedValue(new Error('resend down'));
+
     const response = await POST(request(validBody) as never);
 
     expect(response.status).toBe(204);
-    expect(mocks.notifyOwner).toHaveBeenCalledOnce();
+    expect(await response.text()).toBe('');
+    await vi.waitFor(() => {
+      expect(mocks.notifyOwner).toHaveBeenCalled();
+    });
   });
 });

@@ -5,7 +5,8 @@ import {
   isQuoteHoneypot,
   quoteFieldErrors,
   readQuoteRequest,
-  type QuoteErrors
+  type QuoteErrors,
+  type QuoteRequest
 } from './fields';
 
 export const maxDuration = 30;
@@ -14,12 +15,18 @@ function invalid(errors: QuoteErrors) {
   return NextResponse.json({ ok: false, errors }, { status: 400 });
 }
 
-function queueNotify(quote: ReturnType<typeof readQuoteRequest>) {
+function notifySafely(quote: QuoteRequest) {
+  void Promise.resolve(notifyOwnerOfQuoteRequest(quote)).catch((error) => {
+    console.error('[quote] could not send owner notification', error);
+  });
+}
+
+function queueNotify(quote: QuoteRequest) {
   try {
-    after(() => notifyOwnerOfQuoteRequest(quote));
+    after(() => notifySafely(quote));
   } catch (error) {
     console.error('[quote] could not queue owner notification', error);
-    void notifyOwnerOfQuoteRequest(quote);
+    notifySafely(quote);
   }
 }
 
