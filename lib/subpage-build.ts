@@ -582,7 +582,14 @@ export function pricingJsonLd(lang: Lang) {
   };
   return serialize([
     page,
-    breadcrumb(lang, lang === 'es' ? 'Inicio' : 'Home', homePath(lang), copy.name, path)
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: lang === 'es' ? 'Inicio' : 'Home', item: abs(homePath(lang)) },
+        { '@type': 'ListItem', position: 2, name: copy.name, item: abs(path) }
+      ]
+    }
   ]);
 }
 

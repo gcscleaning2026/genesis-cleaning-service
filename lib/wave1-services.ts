@@ -52,7 +52,7 @@ export const HOUSE_CLEANING: Wave1Service = {
   copy: {
     en: {
       name: 'House cleaning',
-      title: 'House Cleaning in Five NJ Counties | Genesis Cleaning',
+      title: 'House Cleaning in New Jersey | Genesis Cleaning',
       desc: 'Genesis cleans houses across Essex, Union, Morris, Middlesex, and Hudson County, NJ. WhatsApp town, beds, and baths. Call (882) 930-0319. Se habla español.',
       h1: 'House cleaning in New Jersey',
       intro:
@@ -90,7 +90,7 @@ export const HOUSE_CLEANING: Wave1Service = {
     },
     es: {
       name: 'Limpieza de casas',
-      title: 'Limpieza de casas en Nueva Jersey | Genesis Cleaning',
+      title: 'Limpieza de Casas en Nueva Jersey | Genesis Cleaning',
       desc: 'Genesis limpia casas en Essex, Union, Morris, Middlesex y Hudson, NJ. Por WhatsApp dinos pueblo, recámaras y baños. (882) 930-0319. Aquí se habla español.',
       h1: 'Limpieza de casas en Nueva Jersey',
       intro:
@@ -161,7 +161,7 @@ export const COMMERCIAL_CLEANING: Wave1Service = {
   copy: {
     en: {
       name: 'Commercial cleaning',
-      title: 'Commercial Cleaning for NJ Shops | Genesis Cleaning',
+      title: 'Commercial Cleaning in New Jersey | Genesis Cleaning',
       desc: 'Genesis cleans shops, job sites, and showrooms across five New Jersey counties, usually after hours, on a written scope. (882) 930-0319. Se habla español.',
       h1: 'Commercial cleaning for New Jersey businesses',
       intro:
@@ -206,7 +206,7 @@ export const COMMERCIAL_CLEANING: Wave1Service = {
     },
     es: {
       name: 'Limpieza comercial',
-      title: 'Limpieza comercial para negocios NJ | Genesis Cleaning',
+      title: 'Limpieza Comercial en Nueva Jersey | Genesis Cleaning',
       desc: 'Genesis limpia tiendas, obras y showrooms en cinco condados de Nueva Jersey, casi siempre fuera de horario. Llama al (882) 930-0319. Aquí se habla español.',
       h1: 'Limpieza comercial para negocios en Nueva Jersey',
       intro:
@@ -255,7 +255,7 @@ export const COMMERCIAL_CLEANING: Wave1Service = {
 export const PRICING_COPY = {
   en: {
     name: 'Pricing',
-    title: 'How Genesis Cleaning Quotes Work Across New Jersey',
+    title: 'Cleaning Prices in New Jersey | Genesis Cleaning',
     desc: 'Genesis does not publish cleaning rates. Share your ZIP, property type, and the job. We reply by phone or WhatsApp. Call (882) 930-0319. Se habla español.',
     h1: 'How a Genesis cleaning quote works',
     intro:
@@ -297,7 +297,7 @@ export const PRICING_COPY = {
   },
   es: {
     name: 'Precios',
-    title: 'Cómo funciona una cotización de Genesis | Precios NJ',
+    title: 'Precios de Limpieza en Nueva Jersey | Genesis Cleaning',
     desc: 'Genesis no publica tarifas. Envía ZIP, tipo de propiedad y el trabajo; respondemos por teléfono o WhatsApp. Llama al (882) 930-0319. Aquí se habla español.',
     h1: 'Cómo funciona una cotización de Genesis',
     intro:

@@ -11,7 +11,7 @@ export type PricingCopy = Copy & {
 export const PRICING: Record<Lang, PricingCopy> = {
   en: {
     name: 'Pricing',
-    title: 'Quotes for Cleaning in New Jersey | Genesis Cleaning',
+    title: 'Cleaning Prices in New Jersey | Genesis Cleaning',
     desc: 'Cleaning quotes in Essex, Union, Morris, Middlesex and Hudson County, NJ. We send a number for your space — no published rates. Call (882) 930-0319. WhatsApp.',
     h1: 'How a Genesis cleaning quote works',
     intro:
@@ -49,7 +49,7 @@ export const PRICING: Record<Lang, PricingCopy> = {
   },
   es: {
     name: 'Precios',
-    title: 'Cotizaciones de Limpieza NJ | Genesis Cleaning Service',
+    title: 'Precios de Limpieza en Nueva Jersey | Genesis Cleaning',
     desc: 'Cotizaciones de limpieza en Essex, Union, Morris, Middlesex y Hudson, NJ. Un número para tu espacio — sin tarifas publicadas. Llama al (882) 930-0319.',
     h1: 'Cómo funciona una cotización de Genesis',
     intro:

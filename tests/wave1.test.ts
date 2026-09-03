@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { absoluteUrl, areaPath, homePath, pricingPath, servicePath } from '../lib/routes';
 import { CITY_PAGES, otherTownsFor } from '../lib/city-pages';
 import { COMMERCIAL_CLEANING, HOUSE_CLEANING, NAV_DROP_SLUGS, PRICING_COPY } from '../lib/wave1-services';
-import { cityInput, cityJsonLd, pricingInput, servicesIndexInput, wave1ServiceInput } from '../lib/subpage-build';
+import { PRICING } from '../lib/pricing-page';
+import { cityInput, cityJsonLd, pricingInput, pricingJsonLd, servicesIndexInput, wave1ServiceInput } from '../lib/subpage-build';
 import { subpageHtml } from '../lib/subpage';
 import { SERVICE_PAGES } from '../lib/service-pages';
 import { SITE_HTML } from '../lib/site-content';
@@ -39,7 +40,7 @@ describe('wave 1 cities', () => {
     for (const page of CITY_PAGES) expect(county.has(page.slug)).toBe(false);
   });
 
-  it('keeps titles 50-60 and descriptions 150-160, unique per language', () => {
+  it('locks city titles and H1s: house-primary except JC/Hoboken apartment', () => {
     for (const lang of LANGS) {
       const titles = CITY_PAGES.map(page => page.copy[lang].title);
       const descs = CITY_PAGES.map(page => page.copy[lang].desc);
@@ -47,11 +48,23 @@ describe('wave 1 cities', () => {
       expect(new Set(descs).size).toBe(descs.length);
       for (const page of CITY_PAGES) {
         const { title, desc, h1 } = page.copy[lang];
-        expect(title.length, `${page.slug}/${lang} title ${title}`).toBeGreaterThanOrEqual(50);
-        expect(title.length, `${page.slug}/${lang} title ${title}`).toBeLessThanOrEqual(60);
         expect(desc.length, `${page.slug}/${lang} desc`).toBeGreaterThanOrEqual(150);
         expect(desc.length, `${page.slug}/${lang} desc`).toBeLessThanOrEqual(160);
         expect(h1).toContain(page.city);
+        expect(h1).not.toMatch(/We clean|Limpiamos /);
+        if (page.apartmentFirst) {
+          if (lang === 'en') {
+            expect(title).toBe(`Apartment Cleaning in ${page.city}, NJ | Genesis Cleaning`);
+            expect(h1).toBe(`Apartment cleaning in ${page.city}, New Jersey`);
+          } else {
+            expect(h1).toBe(`Limpieza de apartamentos en ${page.city}, Nueva Jersey`);
+          }
+        } else if (lang === 'en') {
+          expect(title).toBe(`House Cleaning in ${page.city}, NJ | Genesis Cleaning`);
+          expect(h1).toBe(`House cleaning in ${page.city}, New Jersey`);
+        } else {
+          expect(h1).toBe(`Limpieza de casas en ${page.city}, Nueva Jersey`);
+        }
       }
     }
   });
@@ -93,17 +106,14 @@ describe('wave 1 services and pricing', () => {
     expect(NAV_DROP_SLUGS.has('residential-commercial-cleaning')).toBe(true);
   });
 
-  it('fits house, commercial, and pricing titles and descriptions', () => {
-    const pages = [
-      HOUSE_CLEANING.copy,
-      COMMERCIAL_CLEANING.copy,
-      { en: { title: PRICING_COPY.en.title, desc: PRICING_COPY.en.desc }, es: { title: PRICING_COPY.es.title, desc: PRICING_COPY.es.desc } }
-    ];
-    for (const page of pages) {
+  it('locks house, commercial, and pricing English titles', () => {
+    expect(HOUSE_CLEANING.copy.en.title).toBe('House Cleaning in New Jersey | Genesis Cleaning');
+    expect(COMMERCIAL_CLEANING.copy.en.title).toBe('Commercial Cleaning in New Jersey | Genesis Cleaning');
+    expect(PRICING.en.title).toBe('Cleaning Prices in New Jersey | Genesis Cleaning');
+    expect(PRICING_COPY.en.title).toBe(PRICING.en.title);
+    for (const page of [HOUSE_CLEANING.copy, COMMERCIAL_CLEANING.copy, PRICING]) {
       for (const lang of LANGS) {
-        expect(page[lang].title.length, page[lang].title).toBeGreaterThanOrEqual(50);
-        expect(page[lang].title.length, page[lang].title).toBeLessThanOrEqual(60);
-        expect(page[lang].desc.length).toBeGreaterThanOrEqual(150);
+        expect(page[lang].desc.length, page[lang].title).toBeGreaterThanOrEqual(150);
         expect(page[lang].desc.length).toBeLessThanOrEqual(160);
       }
     }
@@ -144,12 +154,22 @@ describe('wave 1 review fixes', () => {
     expect(json).not.toContain('/areas/hudson-county/jersey-city');
   });
 
-  it('sets H1s to apartment, house, shop, or move-out by city', () => {
-    expect(CITY_PAGES.find(p => p.slug === 'newark')!.copy.en.h1).toMatch(/move-out/i);
-    expect(CITY_PAGES.find(p => p.slug === 'elizabeth')!.copy.en.h1).toMatch(/shop/i);
-    expect(CITY_PAGES.find(p => p.slug === 'edison')!.copy.en.h1).toMatch(/shop/i);
-    expect(CITY_PAGES.find(p => p.slug === 'jersey-city')!.copy.en.h1).toMatch(/apartment/i);
-    expect(CITY_PAGES.find(p => p.slug === 'orange')!.copy.en.h1).toMatch(/house/i);
+  it('sets H1s house-primary except JC/Hoboken apartment', () => {
+    expect(CITY_PAGES.find(p => p.slug === 'newark')!.copy.en.h1).toBe('House cleaning in Newark, New Jersey');
+    expect(CITY_PAGES.find(p => p.slug === 'elizabeth')!.copy.en.h1).toBe('House cleaning in Elizabeth, New Jersey');
+    expect(CITY_PAGES.find(p => p.slug === 'edison')!.copy.en.h1).toBe('House cleaning in Edison, New Jersey');
+    expect(CITY_PAGES.find(p => p.slug === 'jersey-city')!.copy.en.h1).toBe('Apartment cleaning in Jersey City, New Jersey');
+    expect(CITY_PAGES.find(p => p.slug === 'orange')!.copy.en.h1).toBe('House cleaning in Orange, New Jersey');
+  });
+
+  it('uses Home / Pricing BreadcrumbList without a duplicate Home', () => {
+    const names = (lang: 'en' | 'es') => {
+      const nodes = JSON.parse(pricingJsonLd(lang)) as { '@type': string; itemListElement: { name: string }[] }[];
+      const crumbs = nodes.find(n => n['@type'] === 'BreadcrumbList');
+      return crumbs?.itemListElement.map(i => i.name);
+    };
+    expect(names('en')).toEqual(['Home', 'Pricing']);
+    expect(names('es')).toEqual(['Inicio', 'Precios']);
   });
 
   it('keeps city, house, and commercial bottom bands to WhatsApp and Call', () => {
